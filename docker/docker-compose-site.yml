@@ -1,0 +1,20 @@
+services:
+  php:
+    image: dunglas/frankenphp
+    restart: always
+    ports:
+      - "${SITE_PORT}:443"
+    volumes:
+      - ../public_html/:/app/public:cached
+      - ~/.docker-kikdev/logs:/var/log/apache2/:cached
+    networks:
+      kikdev:
+        aliases:
+          - ${SITE_ALIAS}
+    environment:
+      XDEBUG_CONFIG: remote_host=docker.for.mac.host.internal
+
+networks:
+  kikdev:
+    external: true
+    name: kikdev
