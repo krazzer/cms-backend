@@ -1,12 +1,12 @@
 services:
   php:
-    image: dunglas/frankenphp
+    image: kiksaus/kikdev-symfony
     restart: always
     ports:
       - "${SITE_PORT}:443"
     volumes:
-      - ../:/app:cached
-      - ../public/:/app/public:cached
+      - ../:/var/www:cached
+      - ../public_html/:/var/www/public_html:cached
       - ~/.docker-kikdev/logs:/var/log/apache2/:cached
     networks:
       kikdev:
