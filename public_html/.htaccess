@@ -8,14 +8,16 @@ DirectoryIndex index.html index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Files after cms are handled by the front controller
+    RewriteCond %{REQUEST_URI} ^/cms/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^cms/.*$ /cms/index.html [L]
+
     # If the requested URL is not a file or a directory, we assume it is a front controller.
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index.html -f
     RewriteRule ^(.*)/?$ $1/index.html [L]
-
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index.php -f
-    RewriteRule ^(.*)/?$ $1/index.php [L]
 
     RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::\2$
     RewriteRule .* - [E=BASE:%1]
