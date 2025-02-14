@@ -1,5 +1,5 @@
 # For more information see https://gist.github.com/alch/7766993
-DirectoryIndex index.php
+DirectoryIndex index.html index.php
 
 <IfModule mod_negotiation.c>
     Options -MultiViews
@@ -7,6 +7,15 @@ DirectoryIndex index.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # If the requested URL is not a file or a directory, we assume it is a front controller.
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index.html -f
+    RewriteRule ^(.*)/?$ $1/index.html [L]
+
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index.php -f
+    RewriteRule ^(.*)/?$ $1/index.php [L]
 
     RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::\2$
     RewriteRule .* - [E=BASE:%1]
