@@ -1,0 +1,45 @@
+datatable:
+  deleteSingle: Are you sure you want to delete this item?
+  deleteMultiple: Are you sure you want to delete these :amount items?
+
+general:
+  search: Search
+  cancel: Cancel
+  loading: loading...
+  language: Language
+  save: Save
+  saveAndClose: Save & close
+  saved: Saved
+  close: Close
+  closeWarning: You have unsaved changes, are you sure you want to close this window?
+
+media:
+  editKeyPrompt: Give a name for the key of this file
+  editNamePrompt: Give a new name for this file
+  newFolderPrompt: Give a name for the new folder
+  newFolderPlaceholder: New folder
+  upload: Upload
+  newFolder: New folder
+  cut: Cut
+  editKey: Edit key
+  paste: Paste
+  delete: Delete
+  pickFile: Pick file
+  deleteConfirm: Are you sure you want to delete the selected files?
+
+login:
+  login: Login
+  emailAddress: E-mail address
+  password: Password
+  remember: Remember me
+  passwordLost: Lost password?
+  wrongLogin: Wrong e-mail or password
+  sendResetLink: Send password reset link
+  backToLogin: Back to login
+  resetLinkSendSuccess: If your e-mail address is registered, you will receive a password reset link shortly.
+  resetLinkSendError: Something went wrong sending the reset e-mail. Please try again later.
+
+validation:
+  email: Invalid e-mail address
+  emailRequired: E-mail address is required
+  inputRequired: This field is required

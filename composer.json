@@ -102,6 +102,7 @@
         "symfony": {
             "allow-contrib": false,
             "require": "5.4.*"
-        }
+        },
+        "public-dir": "public_html"
     }
 }
