@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Object\Login;
+namespace App\Entity\Login;
 
 class EmailDto
 {
