@@ -7,6 +7,7 @@ use App\Entity\User\User;
 use App\Entity\User\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -26,25 +27,25 @@ class LoginController extends AbstractController
     /** @var UserRepository */
     private UserRepository $userRepository;
 
-    /** @var TagAwareCacheInterface */
-    private TagAwareCacheInterface      $keyValueStore;
-
     /** @var NativePasswordHasher */
     private NativePasswordHasher $passwordHasher;
+
+    /** @var TagAwareAdapterInterface|TagAwareCacheInterface */
+    private TagAwareCacheInterface|TagAwareAdapterInterface $keyValueStore;
 
     /**
      * @param MailerInterface $mailer
      * @param UserRepository $userRepository
-     * @param TagAwareCacheInterface $keyValueStore
      * @param NativePasswordHasher $passwordHasher
+     * @param TagAwareCacheInterface $keyValueStore
      */
     public function __construct(MailerInterface $mailer, UserRepository $userRepository,
-        TagAwareCacheInterface $keyValueStore, NativePasswordHasher $passwordHasher)
+        NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore)
     {
         $this->mailer         = $mailer;
         $this->userRepository = $userRepository;
-        $this->keyValueStore  = $keyValueStore;
         $this->passwordHasher = $passwordHasher;
+        $this->keyValueStore  = $keyValueStore;
     }
 
     #[Route('/api/login')]
@@ -92,10 +93,18 @@ class LoginController extends AbstractController
     public function reset(User $user, string $hash): Response
     {
         $hash = base64_decode($hash);
-        $key = $this->keyValueStore->get('user_' . $user->getId(), fn() => null);
 
-        $isValid = $this->passwordHasher->verify($hash, $key);
+        /** @var ItemInterface $key */
+        $key = $this->keyValueStore->getItem('user_' . $user->getId());
 
+        if ( ! $key->isHit()) {
+            // todo: expired
+            return new Response('No reset key found for user ' . $user->getId());
+        }
+
+        $isValid = $this->passwordHasher->verify($hash, $key->get());
+
+        // todo: success
         return new Response('Reset password for user ' . $user->getId() . ' with hash ' . $hash . ' => ' .
             ($isValid ? 'valid' : 'invalid'));
     }
