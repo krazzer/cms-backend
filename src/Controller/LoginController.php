@@ -78,7 +78,7 @@ class LoginController extends AbstractController
             ->from('hello@example.com')
             ->to($email->getEmail())
             ->subject('Reset!')
-            ->html('<p>RESET! ' . $url . '</p>');
+            ->html('<p>RESET! <a href="' . $url. '">' . $url . '</a></p>');
 
         try {
             $this->mailer->send($email);

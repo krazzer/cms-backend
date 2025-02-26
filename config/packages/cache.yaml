@@ -5,4 +5,12 @@ framework:
                 default_lifetime: 31536000 # One year
                 adapters:
                     - cache.adapter.apcu
-                    - cache.adapter.doctrine_dbal
+                    - app.cms_pdo_provider
+
+services:
+    app.cms_pdo_provider:
+        parent: cache.adapter.doctrine_dbal
+        arguments:
+            $connOrDsn: '@database_connection'
+            $options:
+                db_table: cms_keyvalue
