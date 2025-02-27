@@ -3,26 +3,25 @@
 namespace App\Entity\Mail;
 
 use Exception;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class CmsMailer
 {
     /** @var MailerInterface */
-    private MailerInterface       $mailer;
+    private MailerInterface $mailer;
 
-    /** @var ParameterBagInterface */
-    private ParameterBagInterface $params;
+    /** @var string */
+    private string $defaultEmailFrom;
 
     /**
      * @param MailerInterface $mailer
-     * @param ParameterBagInterface $params
+     * @param string $defaultEmailFrom
      */
-    public function __construct(MailerInterface $mailer, ParameterBagInterface $params)
+    public function __construct(MailerInterface $mailer, string $defaultEmailFrom)
     {
-        $this->mailer = $mailer;
-        $this->params = $params;
+        $this->mailer           = $mailer;
+        $this->defaultEmailFrom = $defaultEmailFrom;
     }
 
     /**
@@ -31,11 +30,11 @@ class CmsMailer
      */
     public function send(Email $email): bool
     {
-        if( ! $email->getFrom()){
-            $email->from($this->params->get('app.default_email_from'));
+        if ( ! $email->getFrom()) {
+            $email->from($this->defaultEmailFrom);
         }
 
-        try{
+        try {
             $this->mailer->send($email);
             return true;
         } catch (Exception) {
