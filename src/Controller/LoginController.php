@@ -16,6 +16,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\String\ByteString;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -33,19 +34,24 @@ class LoginController extends AbstractController
     /** @var TagAwareAdapterInterface|TagAwareCacheInterface */
     private TagAwareCacheInterface|TagAwareAdapterInterface $keyValueStore;
 
+    /** @var ByteString */
+    private ByteString $byteString;
+
     /**
      * @param MailerInterface $mailer
      * @param UserRepository $userRepository
      * @param NativePasswordHasher $passwordHasher
      * @param TagAwareCacheInterface $keyValueStore
+     * @param ByteString $byteString
      */
     public function __construct(MailerInterface $mailer, UserRepository $userRepository,
-        NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore)
+        NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore, ByteString $byteString)
     {
         $this->mailer         = $mailer;
         $this->userRepository = $userRepository;
         $this->passwordHasher = $passwordHasher;
         $this->keyValueStore  = $keyValueStore;
+        $this->byteString     = $byteString;
     }
 
     #[Route('/api/login')]
@@ -63,22 +69,29 @@ class LoginController extends AbstractController
             return new JsonResponse(['success' => true]);
         }
 
-        $key = $this->keyValueStore->get('user_' . $user->getId(), function (ItemInterface $item) use ($user) {
+        $id  = $this->byteString->fromRandom(4)->lower();
+        $key = $this->byteString->fromRandom()->lower();
+
+        $hash = $this->passwordHasher->hash($key);
+
+        $cacheKey = 'user_' . $user->getId() . '_' . $id;
+
+        $this->keyValueStore->deleteItem($cacheKey);
+
+        $this->keyValueStore->get($cacheKey, function (ItemInterface $item) use ($hash) {
             $item->tag('reset_password');
             $item->expiresAfter(3600);
 
-            return bin2hex(random_bytes(32));
+            return $hash;
         });
 
-        $hash = base64_encode($this->passwordHasher->hash($key));
-
-        $url = $this->generateUrl('reset', ['user' => $user->getId(), 'hash' => $hash], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generateUrl('reset', ['user' => $user->getId(), 'id' => $id, 'key' => $key], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $email = (new Email())
             ->from('hello@example.com')
             ->to($email->getEmail())
             ->subject('Reset!')
-            ->html('<p>RESET! <a href="' . $url. '">' . $url . '</a></p>');
+            ->html('<p>RESET! <a href="' . $url . '">' . $url . '</a></p>');
 
         try {
             $this->mailer->send($email);
@@ -89,23 +102,21 @@ class LoginController extends AbstractController
         return new JsonResponse(['success' => true]);
     }
 
-    #[Route('/reset/{user}/{hash}', name: 'reset')]
-    public function reset(User $user, string $hash): Response
+    #[Route('/reset/{user}/{id}/{key}', name: 'reset')]
+    public function reset(User $user, string $id, string $key): Response
     {
-        $hash = base64_decode($hash);
-
         /** @var ItemInterface $key */
-        $key = $this->keyValueStore->getItem('user_' . $user->getId());
+        $hash = $this->keyValueStore->getItem('user_' . $user->getId() . '_' . $id);
 
-        if ( ! $key->isHit()) {
+        if ( ! $hash->isHit()) {
             // todo: expired
             return new Response('No reset key found for user ' . $user->getId());
         }
 
-        $isValid = $this->passwordHasher->verify($hash, $key->get());
+        $isValid = $this->passwordHasher->verify($hash->get(), $key);
 
         // todo: success
-        return new Response('Reset password for user ' . $user->getId() . ' with hash ' . $hash . ' => ' .
+        return new Response('Reset password for user ' . $user->getId() . ' with key ' . $key . ' => ' .
             ($isValid ? 'valid' : 'invalid'));
     }
 }

@@ -7,6 +7,7 @@ parameters:
 
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
+    Symfony\Component\String\ByteString: ~
 
     # default configuration for services in *this* file
     _defaults:
