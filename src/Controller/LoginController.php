@@ -76,8 +76,6 @@ class LoginController extends AbstractController
 
         $cacheKey = 'user_' . $user->getId() . '_' . $id;
 
-        $this->keyValueStore->deleteItem($cacheKey);
-
         $this->keyValueStore->get($cacheKey, function (ItemInterface $item) use ($hash) {
             $item->tag('reset_password');
             $item->expiresAfter(3600);
