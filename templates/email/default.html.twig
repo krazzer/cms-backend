@@ -1,0 +1,51 @@
+<!doctype html>
+<!--suppress HtmlDeprecatedAttribute -->
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Simple Transactional Email</title>
+    {% include 'email/style.twig' %}
+</head>
+<body>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
+    <tr>
+        <td>&nbsp;</td>
+        <td class="container">
+            <div class="content">
+                <!-- START CENTERED WHITE CONTAINER -->
+                {% if preheader is defined %}
+                    <span class="preheader">{{ preheader }}</span>
+                {% endif %}
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
+
+                    <!-- START MAIN CONTENT AREA -->
+                    <tr>
+                        <td class="wrapper">
+                            {{ body|raw }}
+                            {% include 'email/button.twig' with {url: "https://google.nl", label: 'Button!'} %}
+                        </td>
+                    </tr>
+                    <!-- END MAIN CONTENT AREA -->
+                </table>
+
+                <!-- START FOOTER -->
+                <div class="footer">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="content-block">
+                                Company Inc, 7-11 Commercial Ct, Belfast BT1 2NB
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- END FOOTER -->
+
+                <!-- END CENTERED WHITE CONTAINER -->
+            </div>
+        </td>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+</body>
+</html>

@@ -5,7 +5,7 @@ namespace App\Entity\Login;
 use App\Entity\Mail\CmsMailer;
 use App\Entity\User\User;
 use App\Entity\User\UserRepository;
-use Symfony\Component\Mime\Email;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\String\ByteString;
@@ -54,10 +54,10 @@ class PasswordResetService
 
         $url = $this->generateResetUrl($user);
 
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->to($email->getEmail())
             ->subject('Reset!')
-            ->html('<p>RESET! <a href="' . $url . '">' . $url . '</a></p>');
+            ->context(['body' => '<p>RESET! <a href="' . $url . '">' . $url . '</a></p>']);
 
         return $this->mailer->send($email);
     }
