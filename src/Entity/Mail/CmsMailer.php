@@ -19,16 +19,21 @@ class CmsMailer
     /** @var LoggerInterface */
     private LoggerInterface $logger;
 
+    /** @var string */
+    private string $companyInfoLine;
+
     /**
      * @param MailerInterface $mailer
      * @param LoggerInterface $logger
      * @param string $defaultEmailFrom
+     * @param string $companyInfoLine
      */
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger, string $defaultEmailFrom)
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger, string $defaultEmailFrom, string $companyInfoLine)
     {
         $this->mailer           = $mailer;
         $this->defaultEmailFrom = $defaultEmailFrom;
         $this->logger           = $logger;
+        $this->companyInfoLine  = $companyInfoLine;
     }
 
     /**
@@ -44,6 +49,13 @@ class CmsMailer
 
         if ( ! $email->getHtmlTemplate()) {
             $email->htmlTemplate('email/default.twig');
+        }
+
+        $context = $email->getContext();
+
+        if ( ! isset($context['company'])) {
+            $context['company'] = $this->companyInfoLine;
+            $email->context($context);
         }
 
         try {

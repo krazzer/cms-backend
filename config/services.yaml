@@ -5,6 +5,12 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.default_email_from: '%env(DEFAULT_EMAIL_FROM)%'
+    app.company.name: 'Kiksaus'
+    app.company.email: 'info@kiksaus.nl'
+    app.company.address: 'Koningin Wilhelminaweg 16'
+    app.company.city: 'Hollands Kroon'
+    app.company.zip: '1774 AA'
+    app.company.infoLine: '%app.company.name%, %app.company.address%, %app.company.zip%, %app.company.city%'
 
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
@@ -29,3 +35,4 @@ services:
     App\Entity\Mail\CmsMailer:
         arguments:
             $defaultEmailFrom: '%app.default_email_from%'
+            $companyInfoLine: '%app.company.infoLine%'
