@@ -2,10 +2,9 @@
 
 namespace App\Entity\Login;
 
+use App\Entity\Mail\CmsMailer;
 use App\Entity\User\User;
 use App\Entity\User\UserRepository;
-use Exception;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -15,7 +14,7 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class PasswordResetService
 {
-    private MailerInterface        $mailer;
+    private CmsMailer              $mailer;
     private UserRepository         $userRepository;
     private NativePasswordHasher   $passwordHasher;
     private TagAwareCacheInterface $keyValueStore;
@@ -23,16 +22,15 @@ class PasswordResetService
     private UrlGeneratorInterface  $router;
 
     /**
-     * @param MailerInterface $mailer
+     * @param CmsMailer $mailer
      * @param UserRepository $userRepository
      * @param NativePasswordHasher $passwordHasher
      * @param TagAwareCacheInterface $keyValueStore
      * @param ByteString $byteString
      * @param UrlGeneratorInterface $router
      */
-    public function __construct(MailerInterface $mailer, UserRepository $userRepository,
-        NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore, ByteString $byteString,
-        UrlGeneratorInterface $router)
+    public function __construct(CmsMailer $mailer, UserRepository $userRepository, NativePasswordHasher $passwordHasher,
+        TagAwareCacheInterface $keyValueStore, ByteString $byteString, UrlGeneratorInterface $router)
     {
         $this->mailer         = $mailer;
         $this->userRepository = $userRepository;
@@ -57,18 +55,11 @@ class PasswordResetService
         $url = $this->generateResetUrl($user);
 
         $email = (new Email())
-            ->from('hello@example.com')
             ->to($email->getEmail())
             ->subject('Reset!')
             ->html('<p>RESET! <a href="' . $url . '">' . $url . '</a></p>');
 
-        try {
-            $this->mailer->send($email);
-        } catch (Exception) {
-            return false;
-        }
-
-        return true;
+        return $this->mailer->send($email);
     }
 
     /**
