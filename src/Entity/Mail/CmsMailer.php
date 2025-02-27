@@ -43,7 +43,7 @@ class CmsMailer
         }
 
         if ( ! $email->getHtmlTemplate()) {
-            $email->htmlTemplate('email/default.html.twig');
+            $email->htmlTemplate('email/default.twig');
         }
 
         try {
