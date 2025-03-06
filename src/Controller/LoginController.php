@@ -28,28 +28,23 @@ class LoginController extends AbstractController
     /** @var PasswordResetService */
     private PasswordResetService $passwordResetService;
 
-    /** @var LoggerInterface */
-    private LoggerInterface      $logger;
-
     /** @var TranslatorInterface */
-    private TranslatorInterface  $translator;
+    private TranslatorInterface $translator;
 
     /**
      * @param NativePasswordHasher $passwordHasher
      * @param TagAwareCacheInterface $keyValueStore
      * @param PasswordResetService $passwordResetService
-     * @param LoggerInterface $logger
      * @param TranslatorInterface $translator
      */
     public function __construct(NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore,
-        PasswordResetService $passwordResetService, LoggerInterface $logger, TranslatorInterface $translator
+        PasswordResetService $passwordResetService, TranslatorInterface $translator
     )
     {
         $this->passwordHasher       = $passwordHasher;
         $this->keyValueStore        = $keyValueStore;
         $this->passwordResetService = $passwordResetService;
-        $this->logger = $logger;
-        $this->translator = $translator;
+        $this->translator           = $translator;
     }
 
     #[Route('/api/login')]
@@ -72,9 +67,7 @@ class LoginController extends AbstractController
         $userId = $dto->getUserId();
 
         /** @var ItemInterface $key */
-        $hash = $this->keyValueStore->getItem('user_' . $userId . '_' . $dto->getId());
-
-        $this->logger->debug('user_' . $userId . '_' . $dto->getId());
+        $hash = $this->keyValueStore->getItem($this->passwordResetService->getCacheKey($userId, $dto->getId()));
 
         $invalidOrExpiredMessage = $this->translator->trans('setPassword.invalidOrExpiredUrl', domain: 'login');
         $passwordTooShortMessage = $this->translator->trans('setPassword.length', domain: 'login');
@@ -83,11 +76,11 @@ class LoginController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => $invalidOrExpiredMessage]);
         }
 
-        if( ! $this->passwordHasher->verify($hash->get(), $dto->getKey())){
+        if ( ! $this->passwordHasher->verify($hash->get(), $dto->getKey())) {
             return new JsonResponse(['success' => false, 'message' => $invalidOrExpiredMessage]);
         }
 
-        if(strlen($dto->getPassword()) < 12){
+        if (strlen($dto->getPassword()) < 12) {
             return new JsonResponse(['success' => false, 'message' => $passwordTooShortMessage]);
         }
 

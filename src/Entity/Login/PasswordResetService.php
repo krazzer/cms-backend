@@ -69,6 +69,16 @@ class PasswordResetService
     }
 
     /**
+     * @param int $userId
+     * @param string $id
+     * @return string
+     */
+    public function getCacheKey(int $userId, string $id): string
+    {
+        return 'user_' . $userId . '_' . $id;
+    }
+
+    /**
      * @param User $user
      * @return string
      */
@@ -79,7 +89,7 @@ class PasswordResetService
 
         $hash = $this->passwordHasher->hash($key);
 
-        $cacheKey = 'user_' . $user->getId() . '_' . $id;
+        $cacheKey = $this->getCacheKey($user->getId(), $id);
 
         $this->keyValueStore->get($cacheKey, function (ItemInterface $item) use ($hash) {
             $item->tag('reset_password');
