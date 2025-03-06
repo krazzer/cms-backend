@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Entity\Login\EmailDto;
 use App\Entity\Login\PasswordResetService;
 use App\Entity\Login\SetPasswordDto;
-use Psr\Log\LoggerInterface;
+use App\Entity\User\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,20 +32,31 @@ class LoginController extends AbstractController
     /** @var TranslatorInterface */
     private TranslatorInterface $translator;
 
+    /** @var UserRepository */
+    private UserRepository         $userRepository;
+
+    /** @var EntityManagerInterface */
+    private EntityManagerInterface $entityManager;
+
     /**
      * @param NativePasswordHasher $passwordHasher
      * @param TagAwareCacheInterface $keyValueStore
      * @param PasswordResetService $passwordResetService
      * @param TranslatorInterface $translator
+     * @param UserRepository $userRepository
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore,
-        PasswordResetService $passwordResetService, TranslatorInterface $translator
+        PasswordResetService $passwordResetService, TranslatorInterface $translator, UserRepository $userRepository,
+        EntityManagerInterface $entityManager
     )
     {
         $this->passwordHasher       = $passwordHasher;
         $this->keyValueStore        = $keyValueStore;
         $this->passwordResetService = $passwordResetService;
         $this->translator           = $translator;
+        $this->userRepository       = $userRepository;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/api/login')]
@@ -83,6 +95,12 @@ class LoginController extends AbstractController
         if (strlen($dto->getPassword()) < 12) {
             return new JsonResponse(['success' => false, 'message' => $passwordTooShortMessage]);
         }
+
+        $user = $this->userRepository->find($userId);
+        $user->setPassword($this->passwordHasher->hash($dto->getPassword()));
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
 
         return new JsonResponse(['success' => true]);
     }
