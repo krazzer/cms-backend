@@ -1,0 +1,5 @@
+resetMail:
+    subject: Reset password
+    message: Press the button below or copy-paste the URL to your browser to reset your password. This link is
+        valid for 2 hours since this message was send
+    button: Reset

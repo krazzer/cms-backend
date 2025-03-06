@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\String\ByteString;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PasswordResetService
 {
@@ -20,6 +21,7 @@ class PasswordResetService
     private TagAwareCacheInterface $keyValueStore;
     private ByteString             $byteString;
     private UrlGeneratorInterface  $router;
+    private TranslatorInterface    $translator;
 
     /**
      * @param CmsMailer $mailer
@@ -28,9 +30,11 @@ class PasswordResetService
      * @param TagAwareCacheInterface $keyValueStore
      * @param ByteString $byteString
      * @param UrlGeneratorInterface $router
+     * @param TranslatorInterface $translator
      */
     public function __construct(CmsMailer $mailer, UserRepository $userRepository, NativePasswordHasher $passwordHasher,
-        TagAwareCacheInterface $keyValueStore, ByteString $byteString, UrlGeneratorInterface $router)
+        TagAwareCacheInterface $keyValueStore, ByteString $byteString, UrlGeneratorInterface $router,
+        TranslatorInterface $translator)
     {
         $this->mailer         = $mailer;
         $this->userRepository = $userRepository;
@@ -38,6 +42,7 @@ class PasswordResetService
         $this->keyValueStore  = $keyValueStore;
         $this->byteString     = $byteString;
         $this->router         = $router;
+        $this->translator     = $translator;
     }
 
     /**
@@ -56,8 +61,9 @@ class PasswordResetService
 
         $email = (new TemplatedEmail())
             ->to($email->getEmail())
-            ->subject('Reset!')
-            ->context(['body' => '<p>RESET! <a href="' . $url . '">' . $url . '</a></p>']);
+            ->subject($this->translator->trans('resetMail.subject', domain: 'login'))
+            ->htmlTemplate('email/reset.twig')
+            ->context(['url' => $url]);
 
         return $this->mailer->send($email);
     }

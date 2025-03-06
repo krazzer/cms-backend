@@ -1,0 +1,7 @@
+{% extends 'email/default.twig' %}
+
+{% block body %}
+    <h2>{{ 'resetMail.subject'|trans({}, 'login') }}</h2>
+    <p>{{ 'resetMail.message'|trans({}, 'login') }}</p>
+    {% include 'email/button.twig' with {url: url, label: 'resetMail.button'|trans({}, 'login')} %}
+{% endblock %}
