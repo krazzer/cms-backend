@@ -3,3 +3,6 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+reset:
+    path: /cms/login/password-reset/{user}/{id}/{key}

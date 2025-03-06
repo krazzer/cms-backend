@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Login\EmailDto;
 use App\Entity\Login\PasswordResetService;
-use App\Entity\User\User;
+use App\Entity\Login\SetPasswordDto;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LoginController extends AbstractController
 {
@@ -26,18 +28,28 @@ class LoginController extends AbstractController
     /** @var PasswordResetService */
     private PasswordResetService $passwordResetService;
 
+    /** @var LoggerInterface */
+    private LoggerInterface      $logger;
+
+    /** @var TranslatorInterface */
+    private TranslatorInterface  $translator;
+
     /**
      * @param NativePasswordHasher $passwordHasher
      * @param TagAwareCacheInterface $keyValueStore
      * @param PasswordResetService $passwordResetService
+     * @param LoggerInterface $logger
+     * @param TranslatorInterface $translator
      */
     public function __construct(NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore,
-        PasswordResetService $passwordResetService
+        PasswordResetService $passwordResetService, LoggerInterface $logger, TranslatorInterface $translator
     )
     {
         $this->passwordHasher       = $passwordHasher;
         $this->keyValueStore        = $keyValueStore;
         $this->passwordResetService = $passwordResetService;
+        $this->logger = $logger;
+        $this->translator = $translator;
     }
 
     #[Route('/api/login')]
@@ -54,21 +66,31 @@ class LoginController extends AbstractController
         return new JsonResponse(['success' => $success]);
     }
 
-    #[Route('/reset/{user}/{id}/{key}', name: 'reset')]
-    public function reset(User $user, string $id, string $key): Response
+    #[Route('/api/reset/setpassword', name: 'set-password')]
+    public function setPassword(#[MapRequestPayload] SetPasswordDto $dto): JsonResponse
     {
+        $userId = $dto->getUserId();
+
         /** @var ItemInterface $key */
-        $hash = $this->keyValueStore->getItem('user_' . $user->getId() . '_' . $id);
+        $hash = $this->keyValueStore->getItem('user_' . $userId . '_' . $dto->getId());
+
+        $this->logger->debug('user_' . $userId . '_' . $dto->getId());
+
+        $invalidOrExpiredMessage = $this->translator->trans('setPassword.invalidOrExpiredUrl', domain: 'login');
+        $passwordTooShortMessage = $this->translator->trans('setPassword.length', domain: 'login');
 
         if ( ! $hash->isHit()) {
-            // todo: expired
-            return new Response('No reset key found for user ' . $user->getId());
+            return new JsonResponse(['success' => false, 'message' => $invalidOrExpiredMessage]);
         }
 
-        $isValid = $this->passwordHasher->verify($hash->get(), $key);
+        if( ! $this->passwordHasher->verify($hash->get(), $dto->getKey())){
+            return new JsonResponse(['success' => false, 'message' => $invalidOrExpiredMessage]);
+        }
 
-        // todo: success
-        return new Response('Reset password for user ' . $user->getId() . ' with key ' . $key . ' => ' .
-            ($isValid ? 'valid' : 'invalid'));
+        if(strlen($dto->getPassword()) < 12){
+            return new JsonResponse(['success' => false, 'message' => $passwordTooShortMessage]);
+        }
+
+        return new JsonResponse(['success' => true]);
     }
 }

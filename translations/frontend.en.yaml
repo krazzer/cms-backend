@@ -43,6 +43,11 @@ login:
         message: Press the button below or copy-paste the URL to your browser to reset your password. This link is
             valid for 2 hours since this message was send
 
+    repeatPassword: Repeat password
+    resetPasswordButton: Set new password
+    enterNewPassword: Enter a new password
+    passwordMismatch: Passwords don't match
+
 validation:
     email: Invalid e-mail address
     emailRequired: E-mail address is required

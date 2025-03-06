@@ -3,3 +3,7 @@ resetMail:
     message: Press the button below or copy-paste the URL to your browser to reset your password. This link is
         valid for 2 hours since this message was send
     button: Reset
+
+setPassword:
+    invalidOrExpiredUrl: The URL is invalid or has expired
+    length: The password must be at least 12 characters long
