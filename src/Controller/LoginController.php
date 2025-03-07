@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -33,7 +34,7 @@ class LoginController extends AbstractController
     private TranslatorInterface $translator;
 
     /** @var UserRepository */
-    private UserRepository         $userRepository;
+    private UserRepository $userRepository;
 
     /** @var EntityManagerInterface */
     private EntityManagerInterface $entityManager;
@@ -56,13 +57,13 @@ class LoginController extends AbstractController
         $this->passwordResetService = $passwordResetService;
         $this->translator           = $translator;
         $this->userRepository       = $userRepository;
-        $this->entityManager = $entityManager;
+        $this->entityManager        = $entityManager;
     }
 
-    #[Route('/api/login')]
+    #[Route('/api/login', name: 'login')]
     public function login(): Response
     {
-        return new JsonResponse(['success' => false]);
+        throw new AuthenticationException('This route is handled by the LoginAuthenticator');
     }
 
     #[Route('/api/reset/send', methods: 'POST')]
