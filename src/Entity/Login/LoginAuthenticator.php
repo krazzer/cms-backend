@@ -2,7 +2,6 @@
 
 namespace App\Entity\Login;
 
-use App\Entity\User\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -8,12 +8,13 @@ use App\Entity\Login\SetPasswordDto;
 use App\Entity\User\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
@@ -39,6 +40,9 @@ class LoginController extends AbstractController
     /** @var EntityManagerInterface */
     private EntityManagerInterface $entityManager;
 
+    /** @var Security */
+    private Security               $security;
+
     /**
      * @param NativePasswordHasher $passwordHasher
      * @param TagAwareCacheInterface $keyValueStore
@@ -46,10 +50,11 @@ class LoginController extends AbstractController
      * @param TranslatorInterface $translator
      * @param UserRepository $userRepository
      * @param EntityManagerInterface $entityManager
+     * @param Security $security
      */
     public function __construct(NativePasswordHasher $passwordHasher, TagAwareCacheInterface $keyValueStore,
         PasswordResetService $passwordResetService, TranslatorInterface $translator, UserRepository $userRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager, Security $security
     )
     {
         $this->passwordHasher       = $passwordHasher;
@@ -58,12 +63,26 @@ class LoginController extends AbstractController
         $this->translator           = $translator;
         $this->userRepository       = $userRepository;
         $this->entityManager        = $entityManager;
+        $this->security = $security;
     }
 
     #[Route('/api/login', name: 'login')]
     public function login(): Response
     {
         throw new AuthenticationException('This route is handled by the LoginAuthenticator');
+    }
+
+    #[Route('/api/logout', name: 'logout')]
+    public function logout(): Response
+    {
+        if($this->security->getUser()) {
+            $this->security->logout(false);
+            $message = 'succesfully logged out';
+        } else {
+            $message = 'already logged out';
+        }
+
+        return new JsonResponse(['message' => $message]);
     }
 
     #[Route('/api/reset/send', methods: 'POST')]
@@ -102,6 +121,8 @@ class LoginController extends AbstractController
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        $this->security->login($user);
 
         return new JsonResponse(['success' => true]);
     }
