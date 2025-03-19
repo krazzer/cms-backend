@@ -102,4 +102,33 @@ class PasswordResetService
 
         return $this->router->generate('reset', $urlParams, UrlGeneratorInterface::ABSOLUTE_URL);
     }
+
+    /**
+     * @param SetPasswordDto $dto
+     * @return string|null
+     */
+    public function checkHashValidity(SetPasswordDto $dto): ?string
+    {
+        $userId = $dto->getUserId();
+
+        /** @var ItemInterface $key */
+        $hash = $this->keyValueStore->getItem($this->getCacheKey($userId, $dto->getId()));
+
+        $invalidOrExpiredMessage = $this->translator->trans('setPassword.invalidOrExpiredUrl', domain: 'login');
+        $passwordTooShortMessage = $this->translator->trans('setPassword.length', domain: 'login');
+
+        if ( ! $hash->isHit()) {
+            return $invalidOrExpiredMessage;
+        }
+
+        if ( ! $this->passwordHasher->verify($hash->get(), $dto->getKey())) {
+            return $invalidOrExpiredMessage;
+        }
+
+        if (strlen($dto->getPassword()) < 12) {
+            return $passwordTooShortMessage;
+        }
+
+        return null;
+    }
 }

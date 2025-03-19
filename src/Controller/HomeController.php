@@ -26,13 +26,16 @@ class HomeController extends AbstractController
     {
         $loggedIn = (bool) $this->security->getUser();
 
+        $menu = [
+            'pages'  => ['label' => "Pages", 'icon' => 'view-grid'],
+            'module' => ['label' => "Module", 'icon' => 'view-grid'],
+        ];
+
         return new JsonResponse([
-            'loggedIn' => $loggedIn,
-            'menu'     => [
-                'pages'  => ['label' => "Pages", 'icon' => 'view-grid'],
-                'module' => ['label' => "Module", 'icon' => 'view-grid'],
-            ],
-            'html'     => 'Pages',
+            'loggedIn'         => $loggedIn,
+            'menu'             => $menu,
+            'html'             => 'Pages',
+            'selectedMenuItem' => 'pages',
         ]);
     }
 
