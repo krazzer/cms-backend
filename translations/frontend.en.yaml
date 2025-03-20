@@ -12,6 +12,7 @@ general:
     saved: Saved
     close: Close
     closeWarning: You have unsaved changes, are you sure you want to close this window?
+    logout: Logout
 
 media:
     editKeyPrompt: Give a name for the key of this file
