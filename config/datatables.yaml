@@ -1,0 +1,3 @@
+users:
+    source:
+        model: App\Entity\User\User

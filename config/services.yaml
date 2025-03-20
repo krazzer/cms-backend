@@ -15,6 +15,7 @@ parameters:
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
     Symfony\Component\String\ByteString: ~
+    Symfony\Component\Yaml\Parser: ~
 
     # default configuration for services in *this* file
     _defaults:

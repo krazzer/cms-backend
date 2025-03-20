@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\DataTable\DataTableService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,12 +14,17 @@ class HomeController extends AbstractController
     /** @var Security */
     private Security $security;
 
+    /** @var DataTableService */
+    private DataTableService $dataTableService;
+
     /**
      * @param Security $security
+     * @param DataTableService $dataTableService
      */
-    public function __construct(Security $security)
+    public function __construct(Security $security, DataTableService $dataTableService)
     {
-        $this->security = $security;
+        $this->security         = $security;
+        $this->dataTableService = $dataTableService;
     }
 
     #[Route('/api/home')]
@@ -27,8 +33,9 @@ class HomeController extends AbstractController
         $loggedIn = (bool) $this->security->getUser();
 
         $menu = [
-            'pages'   => ['label' => "Pages", 'icon' => 'view-grid'],
-            'clients' => ['label' => "Clients", 'icon' => 'account-multiple-outline'],
+            'pages' => ['label' => "Pages", 'icon' => 'view-grid'],
+            'users' => ['label' => "Users", 'icon' => 'account-multiple-outline'],
+            'fail'  => ['label' => "Fail"],
         ];
 
         return new JsonResponse([
@@ -40,9 +47,7 @@ class HomeController extends AbstractController
     #[Route('/api/default-module')]
     public function defaultModule(): Response
     {
-        return new JsonResponse([
-            'html' => 'Welcome!',
-        ]);
+        return $this->pageModule();
     }
 
     #[Route('/api/module/pages')]
@@ -54,12 +59,12 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/api/module/clients')]
+    #[Route('/api/module/users')]
     public function moduleModule(): Response
     {
         $data = [
             'buttons'       => [
-                ['label' => 'Add client', 'action' => 'add'],
+                ['label' => 'Add user', 'action' => 'add'],
                 ['label' => 'Delete', 'action' => 'delete'],
             ],
             'headers'       => [
@@ -70,14 +75,8 @@ class HomeController extends AbstractController
                 'category' => 'Category',
             ],
             'mobileColumns' => ['id', 'name'],
-            'data'          => [
-                ['id' => 'a1', 'data' => ['a1', 'Peter', 'Peterstreet 17', '12345', 1]],
-                ['id' => 'a2', 'data' => ['a2', 'John', 'Johnstreet 17', '23456', 2]],
-                ['id' => 'a3', 'data' => ['a3', 'Susan', 'Susanstreet 17', '34567', 3]],
-                ['id' => 'a4', 'data' => ['a4', 'Henry', 'Henrystreet 17', '45678', 4]],
-                ['id' => 'a5', 'data' => ['a5', 'Naomi', 'Naomistreet 17', '56789', 1]],
-            ],
-            'instance'      => 'clients',
+            'data'          => $this->dataTableService->getData('users'),
+            'instance'      => 'users',
         ];
 
         $fields = [
@@ -168,7 +167,7 @@ class HomeController extends AbstractController
 
         return new JsonResponse([
             'dataTable'        => $data,
-            'selectedMenuItem' => 'clients',
+            'selectedMenuItem' => 'users',
         ]);
     }
 }
