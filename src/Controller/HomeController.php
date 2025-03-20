@@ -32,10 +32,8 @@ class HomeController extends AbstractController
         ];
 
         return new JsonResponse([
-            'loggedIn'         => $loggedIn,
-            'menu'             => $menu,
-            'html'             => 'Pages',
-            'selectedMenuItem' => 'pages',
+            'loggedIn' => $loggedIn,
+            'menu'     => $menu,
         ]);
     }
 
@@ -84,59 +82,59 @@ class HomeController extends AbstractController
 
         $fields = [
             [
-                'key' => 'group1',
-                'type' => 'group',
-                'size' => ['md' => 6],
+                'key'    => 'group1',
+                'type'   => 'group',
+                'size'   => ['md' => 6],
                 'fields' => [
                     [
-                        'key' => 'firstname',
-                        'type' => 'text',
-                        'label' => 'Legal first name',
-                        'size' => ['sm' => 6, 'md' => 4],
-                        'hint' => 'example of helper text only on focus',
+                        'key'       => 'firstname',
+                        'type'      => 'text',
+                        'label'     => 'Legal first name',
+                        'size'      => ['sm' => 6, 'md' => 4],
+                        'hint'      => 'example of helper text only on focus',
                         'validator' => ['name' => 'presence', 'parameters' => []]
                     ],
                     [
-                        'key' => 'middlename',
-                        'type' => 'text',
+                        'key'   => 'middlename',
+                        'type'  => 'text',
                         'label' => 'Legal middle name',
-                        'size' => ['sm' => 6, 'md' => 4],
-                        'hint' => 'example of helper text only on focus 2'
+                        'size'  => ['sm' => 6, 'md' => 4],
+                        'hint'  => 'example of helper text only on focus 2'
                     ],
                     [
-                        'key' => 'lastname',
-                        'type' => 'text',
+                        'key'   => 'lastname',
+                        'type'  => 'text',
                         'label' => 'Legal last name',
-                        'size' => ['sm' => 6, 'md' => 4],
-                        'hint' => 'example of helper text only on focus 3'
+                        'size'  => ['sm' => 6, 'md' => 4],
+                        'hint'  => 'example of helper text only on focus 3'
                     ],
                     [
-                        'key' => 'email',
-                        'type' => 'text',
-                        'label' => 'E-mail address',
+                        'key'       => 'email',
+                        'type'      => 'text',
+                        'label'     => 'E-mail address',
                         'validator' => ['name' => 'email', 'parameters' => ['required' => true]]
                     ],
                     [
-                        'key' => 'password',
-                        'type' => 'text',
+                        'key'   => 'password',
+                        'type'  => 'text',
                         'label' => 'Password',
                     ],
                 ]
             ],
             [
-                'key' => 'group2',
-                'type' => 'group',
-                'size' => ['md' => 6],
+                'key'    => 'group2',
+                'type'   => 'group',
+                'size'   => ['md' => 6],
                 'fields' => [
                     [
-                        'key' => 'zip',
-                        'type' => 'text',
-                        'label' => 'Zip code',
+                        'key'       => 'zip',
+                        'type'      => 'text',
+                        'label'     => 'Zip code',
                         'validator' => ['name' => 'server', 'parameters' => ['name' => 'postalcode']]
                     ],
                     [
-                        'key' => 'age',
-                        'type' => 'select',
+                        'key'   => 'age',
+                        'type'  => 'select',
                         'label' => 'Age',
                         'items' => [
                             ['key' => '0-17', 'value' => '0-17'],
@@ -144,14 +142,14 @@ class HomeController extends AbstractController
                             ['key' => '30-54', 'value' => '30-54'],
                             ['key' => '54+', 'value' => '54+']
                         ],
-                        'size' => ['sm' => 6],
+                        'size'  => ['sm' => 6],
                     ],
                     [
-                        'key' => 'interests',
-                        'type' => 'autocomplete',
+                        'key'      => 'interests',
+                        'type'     => 'autocomplete',
                         'multiple' => true,
-                        'label' => 'Interests',
-                        'items' => [
+                        'label'    => 'Interests',
+                        'items'    => [
                             ['key' => '1', 'value' => 'Skiing'],
                             ['key' => '2', 'value' => 'Ice hockey'],
                             ['key' => '3', 'value' => 'Soccer'],
@@ -162,7 +160,7 @@ class HomeController extends AbstractController
                             ['key' => '8', 'value' => 'Coding'],
                             ['key' => '9', 'value' => 'Basejump'],
                         ],
-                        'size' => ['sm' => 6],
+                        'size'     => ['sm' => 6],
                     ],
                 ],
             ],
@@ -170,7 +168,7 @@ class HomeController extends AbstractController
 
         return new JsonResponse([
             'dataTable'        => $data,
-            'selectedMenuItem' => 'module',
+            'selectedMenuItem' => 'clients',
         ]);
     }
 }
