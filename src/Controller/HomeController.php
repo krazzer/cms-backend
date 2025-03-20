@@ -64,7 +64,6 @@ class HomeController extends AbstractController
                 ['label' => 'Add client', 'action' => 'add'],
                 ['label' => 'Delete', 'action' => 'delete'],
             ],
-            'pages'         => [1, null, 5, 6, 7, null, 11],
             'headers'       => [
                 'id'       => 'Id',
                 'name'     => 'Name',
