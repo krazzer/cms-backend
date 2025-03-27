@@ -1,3 +1,8 @@
 users:
+    headersTranslate:
+        id: general.id
+        email: general.email
+        role: general.role
+        blocked: general.blocked
     source:
         model: App\Entity\User\User

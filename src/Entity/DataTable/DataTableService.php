@@ -34,4 +34,13 @@ class DataTableService
 
         return [];
     }
+
+    /**
+     * @param string $instance
+     * @return array
+     */
+    public function getHeaders(string $instance): array
+    {
+        return $this->configService->getFromConfigByInstance($instance)->getHeaders();
+    }
 }

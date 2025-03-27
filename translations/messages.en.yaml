@@ -1,0 +1,6 @@
+general:
+    id: Id
+    name: Name
+    email: E-Mail
+    role: Role
+    blocked: Blocked

@@ -16,6 +16,9 @@ class DataTable
     /** @var string */
     private string $cachePool;
 
+    /** @var array */
+    private array $headers;
+
     /**
      * @return string
      */
@@ -85,6 +88,24 @@ class DataTable
     public function setCachePool(string $cachePool): DataTable
     {
         $this->cachePool = $cachePool;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param array $headers
+     * @return $this
+     */
+    public function setHeaders(array $headers): DataTable
+    {
+        $this->headers = $headers;
         return $this;
     }
 }
