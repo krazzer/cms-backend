@@ -4,5 +4,22 @@ users:
         email: general.email
         role: general.role
         blocked: general.blocked
+    form:
+        fields:
+            email:
+                type: text
+                label: E-mail address
+                validator:
+                    name: email
+                    parameters:
+                        required: true
+            role:
+                type: select
+                items: App\Entity\User\User::getRoles
+                label: Role
+            blocked:
+                type: checkbox
+                label: Blocked
+
     source:
         model: App\Entity\User\User

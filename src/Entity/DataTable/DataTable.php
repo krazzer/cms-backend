@@ -19,6 +19,9 @@ class DataTable
     /** @var array */
     private array $headers;
 
+    /** @var array */
+    private array $form;
+
     /**
      * @return string
      */
@@ -106,6 +109,24 @@ class DataTable
     public function setHeaders(array $headers): DataTable
     {
         $this->headers = $headers;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getForm(): array
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param array $form
+     * @return $this
+     */
+    public function setForm(array $form): DataTable
+    {
+        $this->form = $form;
         return $this;
     }
 }

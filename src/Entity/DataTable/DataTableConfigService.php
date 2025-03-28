@@ -43,6 +43,7 @@ class DataTableConfigService
             throw new Exception("No config found for DataTable '$instance'");
         }
 
+        $form             = $dataTableConfig['form'] ?? [];
         $source           = $dataTableConfig['source'];
         $headers          = $dataTableConfig['headers'] ?? [];
         $headersTranslate = $dataTableConfig['headersTranslate'] ?? [];
@@ -58,7 +59,7 @@ class DataTableConfigService
             throw new Exception("Class '$pdoModel' doesn't exist for DataTable '$instance'");
         }
 
-        if($headersTranslate){
+        if ($headersTranslate) {
             $headers = array_map(fn($value) => $this->translator->trans($value), $headersTranslate);
         }
 
@@ -66,6 +67,7 @@ class DataTableConfigService
         $dataTable->setSource($sourceType);
         $dataTable->setPdoModel($pdoModel);
         $dataTable->setHeaders($headers);
+        $dataTable->setForm($form);
 
         return $dataTable;
     }
