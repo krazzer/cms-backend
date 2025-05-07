@@ -1,0 +1,9 @@
+general:
+    id: Id
+    name: Name
+    email: E-Mail
+    role: Role
+    blocked: Blocked
+
+dataTable:
+    objectNotFound: Object for ID {id} not found

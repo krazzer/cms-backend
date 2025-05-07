@@ -52,4 +52,21 @@ class DataTableService
     {
         return $this->configService->getFromConfigByInstance($instance);
     }
+
+    /**
+     * @param string $instance
+     * @param string $id
+     * @return array|null
+     */
+    public function getEditData(string $instance, string $id): ?array
+    {
+        $dataTable = $this->getByInstance($instance);
+
+        if ($dataTable->getSource() == SourceType::Pdo) {
+            return $this->dataTablePdoService->getEditData($dataTable, $id);
+        }
+
+        // not implemented yet
+        return [];
+    }
 }

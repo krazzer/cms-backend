@@ -35,7 +35,7 @@ class DataTablePdoService
             $id = $this->getId($row, $dataTable);
 
             // Filter data to only get the fields needed by header
-            $headers = array_keys($dataTable->getHeaders());
+            $headers      = array_keys($dataTable->getHeaders());
             $filteredData = array_map(fn($key) => $row[$key] ?? null, $headers);
 
             $returnData[] = ['id' => $id, 'data' => $filteredData];
@@ -62,5 +62,45 @@ class DataTablePdoService
         }
 
         return implode(":", $idParts);
+    }
+
+    /**
+     * @param DataTable $dataTable
+     * @param string $id
+     * @return array|null
+     */
+    public function getEditData(DataTable $dataTable, string $id): ?array
+    {
+        $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+
+        if ( ! $entity = $repository->find($id)) {
+            return null;
+        }
+
+        return $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
+    }
+
+    /**
+     * @param string $model
+     * @param object $entity
+     * @return array
+     */
+    public function getEntityDataAsArray(string $model, object $entity): array
+    {
+        $metadata = $this->entityManager->getClassMetadata($model);
+
+        $data = [];
+
+        foreach ($metadata->getFieldNames() as $field) {
+            $getter = 'get' . ucfirst($field);
+
+            if (method_exists($entity, $getter)) {
+                $data[$field] = $entity->$getter();
+            } else {
+                $data[$field] = null;
+            }
+        }
+
+        return $data;
     }
 }
