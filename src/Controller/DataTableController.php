@@ -38,7 +38,7 @@ class DataTableController extends AbstractController
 
         if( ! $editData){
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
-            return new JsonResponse(['error' => $errorMessage]);
+            return new JsonResponse(['error' => $errorMessage], Response::HTTP_NOT_FOUND);
         }
 
         return new JsonResponse(['form' => $dataTable->getForm(), 'data' => $editData]);
