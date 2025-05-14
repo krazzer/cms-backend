@@ -5,5 +5,11 @@ general:
     role: Role
     blocked: Blocked
 
+roles:
+    dev: Developer
+    admin: Admin
+    user: User
+    client: Client
+
 dataTable:
     objectNotFound: Object for ID {id} not found

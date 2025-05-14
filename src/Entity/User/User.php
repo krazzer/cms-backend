@@ -216,7 +216,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles[] = 'ROLE_ADMIN';
+        $roles[] = 'admin';
 
         return array_unique($roles);
     }

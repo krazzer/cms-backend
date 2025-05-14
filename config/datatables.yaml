@@ -15,7 +15,7 @@ users:
                         required: true
             role:
                 type: select
-                items: App\Entity\User\User::getRoles
+                items: 'App\Entity\User\UserService::getRoleMap'
                 label: Role
             blocked:
                 type: checkbox

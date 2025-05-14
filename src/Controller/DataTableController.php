@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\DataTable\DataTableService;
+use App\Entity\DataTable\Dto\DataTableAddDto;
 use App\Entity\DataTable\Dto\DataTableEditDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,5 +42,13 @@ class DataTableController extends AbstractController
         }
 
         return new JsonResponse(['form' => $dataTable->getForm(), 'data' => $editData]);
+    }
+
+    #[Route('/api/datatable/add', methods: 'POST')]
+    public function add(#[MapRequestPayload] DataTableAddDto $dto): Response
+    {
+        $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
+
+        return new JsonResponse(['form' => $dataTable->getForm()]);
     }
 }

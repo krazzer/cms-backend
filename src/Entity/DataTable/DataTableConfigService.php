@@ -2,6 +2,7 @@
 
 namespace App\Entity\DataTable;
 
+use App\Entity\App\CallableService;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
@@ -19,16 +20,22 @@ class DataTableConfigService
     /** @var TranslatorInterface */
     private TranslatorInterface $translator;
 
+    /** @var CallableService */
+    private CallableService $callableService;
+
     /**
      * @param Parser $yamlParser
      * @param ParameterBagInterface $params
      * @param TranslatorInterface $translator
+     * @param CallableService $callableService
      */
-    public function __construct(Parser $yamlParser, ParameterBagInterface $params, TranslatorInterface $translator)
+    public function __construct(Parser $yamlParser, ParameterBagInterface $params, TranslatorInterface $translator,
+        CallableService $callableService)
     {
-        $this->yamlParser = $yamlParser;
-        $this->params     = $params;
-        $this->translator = $translator;
+        $this->yamlParser      = $yamlParser;
+        $this->params          = $params;
+        $this->translator      = $translator;
+        $this->callableService = $callableService;
     }
 
     /**
@@ -63,6 +70,8 @@ class DataTableConfigService
             $headers = array_map(fn($value) => $this->translator->trans($value), $headersTranslate);
         }
 
+        $form = $this->updateFormConfig($form);
+
         $dataTable = new DataTable;
         $dataTable->setSource($sourceType);
         $dataTable->setPdoModel($pdoModel);
@@ -70,5 +79,22 @@ class DataTableConfigService
         $dataTable->setForm($form);
 
         return $dataTable;
+    }
+
+    /**
+     * @param array $form
+     * @return array
+     */
+    public function updateFormConfig(array $form): array
+    {
+        foreach ($form['fields'] as &$field) {
+            if ($field['type'] == DataTableConfig::FIELD_TYPE_SELECT) {
+                if ($callable = $this->callableService->getCallableByString($field['items'])) {
+                    $field['items'] = call_user_func($callable);
+                }
+            }
+        }
+
+        return $form;
     }
 }
