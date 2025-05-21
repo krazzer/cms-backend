@@ -2,6 +2,8 @@
 
 namespace App\Entity\DataTable;
 
+use Symfony\Polyfill\Intl\Icu\Exception\NotImplementedException;
+
 class DataTableService
 {
     /** @var DataTableConfigService */
@@ -66,7 +68,24 @@ class DataTableService
             return $this->dataTablePdoService->getEditData($dataTable, $id);
         }
 
-        // not implemented yet
-        return [];
+        throw new NotImplementedException('Not implemented yet');
+    }
+
+    /**
+     * @param string $instance
+     * @param string $id
+     * @param array $data
+     * @return void
+     */
+    public function update(string $instance, string $id, array $data): void
+    {
+        $dataTable = $this->getByInstance($instance);
+
+        if ($dataTable->getSource() == SourceType::Pdo) {
+            $this->dataTablePdoService->update($dataTable, $id, $data);
+            return;
+        }
+
+        throw new NotImplementedException('Not implemented yet');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\DataTable\DataTableService;
 use App\Entity\DataTable\Dto\DataTableAddDto;
 use App\Entity\DataTable\Dto\DataTableEditDto;
+use App\Entity\DataTable\Dto\DataTableSaveDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +28,7 @@ class DataTableController extends AbstractController
     public function __construct(DataTableService $dataTableService, TranslatorInterface $translator)
     {
         $this->dataTableService = $dataTableService;
-        $this->translator = $translator;
+        $this->translator       = $translator;
     }
 
     #[Route('/api/datatable/edit', methods: 'POST')]
@@ -36,7 +37,7 @@ class DataTableController extends AbstractController
         $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
         $editData  = $this->dataTableService->getEditData($dto->getInstance(), $dto->getId());
 
-        if( ! $editData){
+        if ( ! $editData) {
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
             return new JsonResponse(['error' => $errorMessage], Response::HTTP_NOT_FOUND);
         }
@@ -50,5 +51,13 @@ class DataTableController extends AbstractController
         $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
 
         return new JsonResponse(['form' => $dataTable->getForm()]);
+    }
+
+    #[Route('/api/datatable/save', methods: 'POST')]
+    public function save(#[MapRequestPayload] DataTableSaveDto $dto): Response
+    {
+        $this->dataTableService->update($dto->getInstance(), $dto->getId(), $dto->getData());
+
+        return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
     }
 }
