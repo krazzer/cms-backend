@@ -121,6 +121,14 @@ class DataTable
     }
 
     /**
+     * @return array
+     */
+    public function getFormFields(): array
+    {
+        return array_keys($this->form[DataTableConfig::KEY_FORM_FIELDS] ?? []);
+    }
+
+    /**
      * @param array $form
      * @return $this
      */

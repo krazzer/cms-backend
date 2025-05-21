@@ -77,7 +77,10 @@ class DataTablePdoService
             return null;
         }
 
-        return $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
+        $arrayData = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
+
+        // remove all fields not required in the form
+        return array_intersect_key($arrayData, array_flip($dataTable->getFormFields()));
     }
 
     /**
