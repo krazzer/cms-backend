@@ -178,7 +178,23 @@ class DataTablePdoService
 
         $this->updateEntityByArray($entity, $data);
 
-        // Persist en flush de veranderingen
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param DataTable $dataTable
+     * @param array $data
+     * @return void
+     */
+    public function create(DataTable $dataTable, array $data): void
+    {
+        $model = $dataTable->getPdoModel();
+
+        $entity = new $model();
+
+        $this->updateEntityByArray($entity, $data);
+
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
     }

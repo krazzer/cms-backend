@@ -7,8 +7,8 @@ class DataTableSaveDto
     /** @var string */
     public string $instance;
 
-    /** @var string */
-    public string $id;
+    /** @var string|null */
+    public string|null $id;
 
     /** @var array */
     public array $data;
@@ -22,9 +22,9 @@ class DataTableSaveDto
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -56,7 +56,11 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/save', methods: 'POST')]
     public function save(#[MapRequestPayload] DataTableSaveDto $dto): Response
     {
-        $this->dataTableService->update($dto->getInstance(), $dto->getId(), $dto->getData());
+        if($dto->getId()) {
+            $this->dataTableService->update($dto->getInstance(), $dto->getId(), $dto->getData());
+        } else {
+            $this->dataTableService->create($dto->getInstance(), $dto->getData());
+        }
 
         return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
     }

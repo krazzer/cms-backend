@@ -2,6 +2,7 @@
 
 namespace App\Entity\DataTable;
 
+use Exception;
 use Symfony\Polyfill\Intl\Icu\Exception\NotImplementedException;
 
 class DataTableService
@@ -83,6 +84,24 @@ class DataTableService
 
         if ($dataTable->getSource() == SourceType::Pdo) {
             $this->dataTablePdoService->update($dataTable, $id, $data);
+            return;
+        }
+
+        throw new NotImplementedException('Not implemented yet');
+    }
+
+    /**
+     * @param string $instance
+     * @param array $data
+     * @return void
+     * @throws Exception
+     */
+    public function create(string $instance, array $data): void
+    {
+        $dataTable = $this->getByInstance($instance);
+
+        if ($dataTable->getSource() == SourceType::Pdo) {
+            $this->dataTablePdoService->create($dataTable, $data);
             return;
         }
 

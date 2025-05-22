@@ -23,9 +23,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    private ?bool $blocked = null;
+    private bool $blocked = false;
 
-    #[ORM\Column]
+    #[ORM\Column(insertable: false)]
     private ?DateTimeImmutable $created_at = null;
 
     #[ORM\Column(length: 16)]
