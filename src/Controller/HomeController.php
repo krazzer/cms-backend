@@ -54,7 +54,7 @@ class HomeController extends AbstractController
     public function pageModule(): Response
     {
         return new JsonResponse([
-            'html'             => 'Pages',
+            'dataTable'        => $this->dataTableService->getFullConfig('pages'),
             'selectedMenuItem' => 'pages',
         ]);
     }

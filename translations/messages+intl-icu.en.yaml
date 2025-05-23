@@ -4,6 +4,9 @@ general:
     email: E-Mail
     role: Role
     blocked: Blocked
+    template: Template
+    slug: Slug
+    active: Active
 
 roles:
     dev: Developer

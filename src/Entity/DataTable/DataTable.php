@@ -131,6 +131,16 @@ class DataTable
      */
     public function getFormFields(): array
     {
+        if(isset($this->form[DataTableConfig::KEY_FORM_TABS])){
+            $fields = [];
+
+            foreach ($this->form[DataTableConfig::KEY_FORM_TABS] as $tab){
+                $fields = array_merge($fields, array_keys($tab[DataTableConfig::KEY_FORM_FIELDS]));
+            }
+
+            return $fields;
+        }
+
         return array_keys($this->form[DataTableConfig::KEY_FORM_FIELDS] ?? []);
     }
 

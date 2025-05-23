@@ -92,14 +92,35 @@ class DataTableConfigService
      */
     public function updateFormConfig(array $form): array
     {
-        foreach ($form['fields'] as &$field) {
-            if ($field['type'] == DataTableConfig::FIELD_TYPE_SELECT) {
+        if (isset($form['fields'])) {
+            $form['fields'] = $this->resolveSelectFieldItems($form['fields']);
+        }
+
+        if (isset($form['tabs'])) {
+            foreach ($form['tabs'] as &$tab) {
+                if (isset($tab['fields'])) {
+                    $tab['fields'] = $this->resolveSelectFieldItems($tab['fields']);
+                }
+            }
+        }
+
+        return $form;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    private function resolveSelectFieldItems(array $fields): array
+    {
+        foreach ($fields as &$field) {
+            if (($field['type'] ?? null) === DataTableConfig::FIELD_TYPE_SELECT && ! empty($field['items'])) {
                 if ($callable = $this->callableService->getCallableByString($field['items'])) {
                     $field['items'] = call_user_func($callable);
                 }
             }
         }
 
-        return $form;
+        return $fields;
     }
 }

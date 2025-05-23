@@ -30,3 +30,76 @@ users:
                 label: Blocked
     source:
         model: App\Entity\User\User
+
+pages:
+    headersTranslate:
+        name: general.name
+        template: general.template
+        slug: general.slug
+        active: general.active
+        id: general.id
+    mobileColumns:
+        - name
+    buttons:
+        -   label: Add page
+            action: add
+        -   label: Delete
+            action: delete
+        -   label: 'Add new…'
+            icon: 'mdi-menu'
+            type: 'menu'
+            items:
+                -   title: 'Add link'
+                    icon: 'mdi-link-variant'
+                    action: 'add'
+                    addType: 'link'
+                -   title: 'Add menu'
+                    icon: 'mdi-menu'
+                    action: 'add'
+                    addType: 'menu'
+    form:
+        tabs:
+            -   key: page
+                name: Page
+                fields:
+                    title:
+                        type: text
+                        label: Title
+                        validator:
+                            name: presence
+                    content:
+                        type: textarea
+                        label: Content
+                        validator:
+                            name: presence
+            -   key: seo
+                name: SEO
+                fields:
+                    seo_title:
+                        type: text
+                        label: SEO title
+                    seo_keywords:
+                        type: textarea
+                        label: SEO keywords
+                    seo_description:
+                        type: textarea
+                        label: SEO description
+            -   key: advanced
+                name: Advanced
+                fields:
+                    template:
+                        type: select
+                        label: Template
+                        items: {}
+                    slug:
+                        type: text
+                        label: Slug
+                    key:
+                        type: text
+                        label: Key
+                    active:
+                        type: checkbox
+                        label: Active
+
+    source:
+        model: App\Entity\Page\Page
