@@ -62,19 +62,8 @@ class HomeController extends AbstractController
     #[Route('/api/module/users')]
     public function moduleModule(): Response
     {
-        $data = [
-            'buttons'       => [
-                ['label' => 'Add user', 'action' => 'add'],
-                ['label' => 'Delete', 'action' => 'delete'],
-            ],
-            'mobileColumns' => ['id', 'name'],
-            'headers'       => $this->dataTableService->getHeaders('users'),
-            'data'          => $this->dataTableService->getData('users'),
-            'instance'      => 'users',
-        ];
-
         return new JsonResponse([
-            'dataTable'        => $data,
+            'dataTable'        => $this->dataTableService->getFullConfig('users'),
             'selectedMenuItem' => 'users',
         ]);
     }

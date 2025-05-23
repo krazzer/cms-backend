@@ -107,4 +107,21 @@ class DataTableService
 
         throw new NotImplementedException('Not implemented yet');
     }
+
+    /**
+     * @param string $instance
+     * @return array
+     */
+    public function getFullConfig(string $instance): array
+    {
+        $dataTable = $this->getByInstance($instance);
+
+        return [
+            'buttons'       => $dataTable->getButtons(),
+            'mobileColumns' => $dataTable->getMobileColumns(),
+            'headers'       => $dataTable->getHeaders(),
+            'data'          => $this->getData($instance),
+            'instance'      => $instance,
+        ];
+    }
 }

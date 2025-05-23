@@ -4,6 +4,14 @@ users:
         email: general.email
         role: general.role
         blocked: general.blocked
+    mobileColumns:
+        - id
+        - email
+    buttons:
+        -   label: Add user
+            action: add
+        -   label: Delete
+            action: delete
     form:
         fields:
             email:
@@ -20,6 +28,5 @@ users:
             blocked:
                 type: checkbox
                 label: Blocked
-
     source:
         model: App\Entity\User\User

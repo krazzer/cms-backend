@@ -54,6 +54,8 @@ class DataTableConfigService
         $source           = $dataTableConfig['source'];
         $headers          = $dataTableConfig['headers'] ?? [];
         $headersTranslate = $dataTableConfig['headersTranslate'] ?? [];
+        $buttons          = $dataTableConfig['buttons'] ?? [];
+        $mobileColumns    = $dataTableConfig['mobileColumns'] ?? [];
 
         $sourceType = $source['type'] ?? SourceType::Pdo;
         $pdoModel   = $source['model'] ?? null;
@@ -73,9 +75,12 @@ class DataTableConfigService
         $form = $this->updateFormConfig($form);
 
         $dataTable = new DataTable;
+        $dataTable->setInstance($instance);
         $dataTable->setSource($sourceType);
         $dataTable->setPdoModel($pdoModel);
         $dataTable->setHeaders($headers);
+        $dataTable->setButtons($buttons);
+        $dataTable->setMobileColumns($mobileColumns);
         $dataTable->setForm($form);
 
         return $dataTable;

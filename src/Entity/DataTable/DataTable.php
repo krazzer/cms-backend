@@ -20,6 +20,12 @@ class DataTable
     private array $headers;
 
     /** @var array */
+    private array $buttons;
+
+    /** @var array */
+    private array $mobileColumns;
+
+    /** @var array */
     private array $form;
 
     /**
@@ -135,6 +141,42 @@ class DataTable
     public function setForm(array $form): DataTable
     {
         $this->form = $form;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getButtons(): array
+    {
+        return $this->buttons;
+    }
+
+    /**
+     * @param array $buttons
+     * @return $this
+     */
+    public function setButtons(array $buttons): DataTable
+    {
+        $this->buttons = $buttons;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMobileColumns(): array
+    {
+        return $this->mobileColumns;
+    }
+
+    /**
+     * @param array $mobileColumns
+     * @return $this
+     */
+    public function setMobileColumns(array $mobileColumns): DataTable
+    {
+        $this->mobileColumns = $mobileColumns;
         return $this;
     }
 }
