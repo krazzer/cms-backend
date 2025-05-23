@@ -18,6 +18,18 @@ class Page
     private ?array $parents = null;
 
     #[ORM\Column(nullable: true)]
+    private ?array $name = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $active = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $slug = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $seo = null;
+
+    #[ORM\Column(nullable: true)]
     private ?array $content = null;
 
     #[ORM\Column(nullable: true)]
@@ -128,18 +140,6 @@ class Page
         return $this;
     }
 
-    public function getMaxMenuLevel(): ?int
-    {
-        return $this->menu_max_level;
-    }
-
-    public function setMaxMenuLevel(?int $level): static
-    {
-        $this->menu_max_level = $level;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->created_at;
@@ -172,6 +172,61 @@ class Page
     public function setContent(?array $content): Page
     {
         $this->content = $content;
+        return $this;
+    }
+
+    public function getName(): ?array
+    {
+        return $this->name;
+    }
+
+    public function setName(?array $name): Page
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function getActive(): ?array
+    {
+        return $this->active;
+    }
+
+    public function setActive(?array $active): Page
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    public function getSlug(): ?array
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?array $slug): Page
+    {
+        $this->slug = $slug;
+        return $this;
+    }
+
+    public function getSeo(): ?array
+    {
+        return $this->seo;
+    }
+
+    public function setSeo(?array $seo): Page
+    {
+        $this->seo = $seo;
+        return $this;
+    }
+
+    public function getMenuMaxLevel(): ?int
+    {
+        return $this->menu_max_level;
+    }
+
+    public function setMenuMaxLevel(?int $menu_max_level): Page
+    {
+        $this->menu_max_level = $menu_max_level;
         return $this;
     }
 }

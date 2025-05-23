@@ -23,7 +23,7 @@ class MigrateService
      * @return void
      * @throws Exception
      */
-    public function migrate(): void
+    public function migratePages(): void
     {
         $rows = $this->conn->fetchAllAssociative("
             SELECT 
@@ -78,6 +78,51 @@ class MigrateService
             ]);
 
             $inserted++;
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function migratePageLanguage(): void
+    {
+        $rows = $this->conn->fetchAllAssociative("SELECT * FROM cms_page_language");
+
+        $updates = [];
+
+        foreach ($rows as $row) {
+            $pageId   = $row['page_id'];
+            $langCode = $row['language_code'];
+
+            if ( ! array_key_exists($pageId, $updates)) {
+                $updates[$pageId] = [
+                    'active' => [],
+                    'name'   => [],
+                    'slug'   => [],
+                    'seo'    => [],
+                ];
+            }
+
+            $seo = [
+                'title'       => $row['seo_title'],
+                'keywords'    => $row['seo_keywords'],
+                'description' => $row['seo_description'],
+            ];
+
+            $updates[$pageId]['active'][$langCode] = $row['active'];
+            $updates[$pageId]['name'][$langCode]   = $row['name'];
+            $updates[$pageId]['slug'][$langCode]   = $row['slug'];
+            $updates[$pageId]['seo'][$langCode]    = $seo;
+        }
+
+        foreach ($updates as $id => $update) {
+            $update['active'] = json_encode($update['active']);
+            $update['name']   = json_encode($update['name']);
+            $update['slug']   = json_encode($update['slug']);
+            $update['seo']    = json_encode($update['seo']);
+
+            $this->conn->update('cms_page', $update, ['id' => $id]);
         }
     }
 }
