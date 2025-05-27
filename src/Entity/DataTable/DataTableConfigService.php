@@ -108,6 +108,32 @@ class DataTableConfigService
     }
 
     /**
+     * @param array $data
+     * @param string $path
+     * @param string $locale
+     * @return string|null
+     */
+    public function getDataByPath(array $data, string $path, string $locale): ?string
+    {
+        $resolvedPath = str_replace('*', $locale, $path);
+
+        // Split het pad op punten
+        $keys = explode('.', $resolvedPath);
+
+        $value = $data;
+
+        foreach ($keys as $key) {
+            if ( ! is_array($value) || ! array_key_exists($key, $value)) {
+                return null;
+            }
+
+            $value = $value[$key];
+        }
+
+        return $value;
+    }
+
+    /**
      * @param array $fields
      * @return array
      */

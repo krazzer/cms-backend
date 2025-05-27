@@ -10,12 +10,17 @@ class DataTablePdoService
     /** @var EntityManagerInterface */
     private EntityManagerInterface $entityManager;
 
+    /** @var DataTableConfigService */
+    private DataTableConfigService $configService;
+
     /**
      * @param EntityManagerInterface $entityManager
+     * @param DataTableConfigService $configService
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, DataTableConfigService $configService)
     {
         $this->entityManager = $entityManager;
+        $this->configService = $configService;
     }
 
     /**
@@ -35,9 +40,8 @@ class DataTablePdoService
         foreach ($rawData as $row) {
             $id = $this->getId($row, $dataTable);
 
-            // Filter data to only get the fields needed by the header
             $headers      = array_keys($dataTable->getHeaders());
-            $filteredData = array_map(fn($key) => $row[$key] ?? null, $headers);
+            $filteredData = $this->filterRowData($row, $headers);
 
             $returnData[] = ['id' => $id, 'data' => $filteredData];
         }
@@ -197,5 +201,29 @@ class DataTablePdoService
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param array $row
+     * @param array $headers
+     * @return array
+     */
+    private function filterRowData(array $row, array $headers): array
+    {
+        $filteredData = [];
+
+        foreach ($headers as $header) {
+            if (array_key_exists($header, $row)) {
+                $filteredData[$header] = $row[$header];
+            } else {
+                if (str_contains($header, '.')) {
+                    $filteredData[$header] = $this->configService->getDataByPath($row, $header, 'nl');
+                } else {
+                    $filteredData[$header] = '';
+                }
+            }
+        }
+
+        return $filteredData;
     }
 }

@@ -33,10 +33,10 @@ users:
 
 pages:
     headersTranslate:
-        name: general.name
+        name.*: general.name
         template: general.template
-        slug: general.slug
-        active: general.active
+        slug.*: general.slug
+        active.*: general.active
         id: general.id
     mobileColumns:
         - name
@@ -64,7 +64,8 @@ pages:
                 fields:
                     title:
                         type: text
-                        label: Title
+                        field: name.*
+                        label: Name
                         validator:
                             name: presence
                     content:
@@ -76,12 +77,15 @@ pages:
                 name: SEO
                 fields:
                     seo_title:
+                        field: seo.*.title
                         type: text
                         label: SEO title
                     seo_keywords:
+                        field: seo.*.keywords
                         type: textarea
                         label: SEO keywords
                     seo_description:
+                        field: seo.*.description
                         type: textarea
                         label: SEO description
             -   key: advanced
@@ -94,6 +98,7 @@ pages:
                     slug:
                         type: text
                         label: Slug
+                        field: slug.*
                     key:
                         type: text
                         label: Key
