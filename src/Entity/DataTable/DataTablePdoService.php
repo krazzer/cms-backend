@@ -214,12 +214,12 @@ class DataTablePdoService
 
         foreach ($headers as $header) {
             if (array_key_exists($header, $row)) {
-                $filteredData[$header] = $row[$header];
+                $filteredData[] = $row[$header];
             } else {
                 if (str_contains($header, '.')) {
-                    $filteredData[$header] = $this->configService->getDataByPath($row, $header, 'nl');
+                    $filteredData[] = $this->configService->getDataByPath($row, $header, 'nl');
                 } else {
-                    $filteredData[$header] = '';
+                    $filteredData[] = '';
                 }
             }
         }

@@ -39,7 +39,7 @@ pages:
         active.*: general.active
         id: general.id
     mobileColumns:
-        - name
+        - name.*
     buttons:
         -   label: Add page
             action: add
