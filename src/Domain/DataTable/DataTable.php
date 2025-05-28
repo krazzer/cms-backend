@@ -14,6 +14,8 @@ class DataTable
     private array $form;
     private array $cells;
     private string $langCode;
+    private ?string $query;
+    private ?string $modify;
 
     public function getInstance(): string
     {
@@ -143,5 +145,27 @@ class DataTable
     public function getClass(): ?string
     {
         return 'default';
+    }
+
+    public function getQuery(): ?string
+    {
+        return $this->query;
+    }
+
+    public function setQuery(?string $query): DataTable
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    public function getModify(): ?string
+    {
+        return $this->modify;
+    }
+
+    public function setModify(?string $modify): DataTable
+    {
+        $this->modify = $modify;
+        return $this;
     }
 }

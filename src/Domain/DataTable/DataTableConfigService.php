@@ -37,6 +37,8 @@ readonly class DataTableConfigService
 
         $sourceType = $source['type'] ?? SourceType::Pdo;
         $pdoModel   = $source['model'] ?? null;
+        $query      = $source['query'] ?? null;
+        $modify     = $source['modify'] ?? null;
 
         if ($sourceType == SourceType::Pdo && ! $pdoModel) {
             throw new Exception("No Pdo model configured for DataTable '$instance'");
@@ -65,6 +67,8 @@ readonly class DataTableConfigService
         $dataTable->setMobileColumns($mobileColumns);
         $dataTable->setForm($form);
         $dataTable->setCells($cells);
+        $dataTable->setQuery($query);
+        $dataTable->setModify($modify);
 
         return $dataTable;
     }

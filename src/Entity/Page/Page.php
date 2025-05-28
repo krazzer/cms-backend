@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'cms_page')]
 class Page
 {
+    const string FIELD_ID            = 'id';
+    const string FIELD_PARENTS       = 'parents';
+    const string FIELD_DISPLAY_ORDER = 'display_order';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

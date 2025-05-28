@@ -114,3 +114,4 @@ pages:
 
     source:
         model: App\Entity\Page\Page
+        modify: 'App\Entity\Page\PageService::modifyDataTableOutput'

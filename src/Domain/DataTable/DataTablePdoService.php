@@ -2,23 +2,32 @@
 
 namespace App\Domain\DataTable;
 
+use App\Domain\App\CallableService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
 
 readonly class DataTablePdoService
 {
     public function __construct(
+        private CallableService $callableService,
         private EntityManagerInterface $entityManager,
         private DataTableRowService $dataTableRowService,
     ) {}
 
     public function getData(DataTable $dataTable): array
     {
-        $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+        $queryBuilder = $this->getQueryBuilder($dataTable);
 
-        $rawData = $repository->createQueryBuilder('e')
-            ->getQuery()
-            ->getArrayResult();
+        if ($queryCallable = $this->callableService->getCallableByString($dataTable->getQuery())) {
+            call_user_func($queryCallable, $queryBuilder);
+        }
+
+        $rawData = $queryBuilder->getQuery()->getArrayResult();
+
+        if ($dataModifyCallable = $this->callableService->getCallableByString($dataTable->getModify())) {
+            $rawData = call_user_func($dataModifyCallable, $rawData);
+        }
 
         $returnData = [];
 
@@ -27,6 +36,13 @@ readonly class DataTablePdoService
         }
 
         return $returnData;
+    }
+
+    public function getQueryBuilder(DataTable $dataTable): QueryBuilder
+    {
+        $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+
+        return $repository->createQueryBuilder('e');
     }
 
     public function getEditData(DataTable $dataTable, string $id): ?array

@@ -9,9 +9,9 @@ readonly class CallableService
 {
     public function __construct(private ContainerInterface $container) {}
 
-    public function getCallableByString(string $configCallable): ?callable
+    public function getCallableByString(?string $configCallable): ?callable
     {
-        if ( ! str_contains($configCallable, '::')) {
+        if ( ! $configCallable || ! str_contains($configCallable, '::')) {
             return null;
         }
 
