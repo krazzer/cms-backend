@@ -2,16 +2,10 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableSaveDto
+class DataTableSaveDto extends DataTableDto
 {
-    public string $instance;
     public string|null $id;
     public array $data;
-
-    public function getInstance(): string
-    {
-        return $this->instance;
-    }
 
     public function getId(): ?string
     {

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Domain\DataTable\DataTableService;
-use App\Domain\DataTable\Dto\DataTableAddDto;
+use App\Domain\DataTable\Dto\DataTableDto;
 use App\Domain\DataTable\Dto\DataTableEditDto;
 use App\Domain\DataTable\Dto\DataTableSaveDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,7 +35,7 @@ class DataTableController extends AbstractController
     }
 
     #[Route('/api/datatable/add', methods: 'POST')]
-    public function add(#[MapRequestPayload] DataTableAddDto $dto): Response
+    public function add(#[MapRequestPayload] DataTableDto $dto): Response
     {
         $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
 

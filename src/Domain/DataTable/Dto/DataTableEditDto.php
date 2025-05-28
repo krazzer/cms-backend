@@ -2,15 +2,9 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableEditDto
+class DataTableEditDto extends DataTableDto
 {
-    public string $instance;
     public string $id;
-
-    public function getInstance(): string
-    {
-        return $this->instance;
-    }
 
     public function getId(): string
     {

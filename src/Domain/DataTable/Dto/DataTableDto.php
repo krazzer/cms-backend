@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableAddDto
+class DataTableDto
 {
     public string $instance;
 
