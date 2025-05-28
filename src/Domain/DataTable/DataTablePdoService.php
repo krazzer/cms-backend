@@ -9,7 +9,7 @@ readonly class DataTablePdoService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private DataTableConfigService $configService
+        private DataTableRowService $dataTableRowService,
     ) {}
 
     public function getData(DataTable $dataTable): array
@@ -23,30 +23,10 @@ readonly class DataTablePdoService
         $returnData = [];
 
         foreach ($rawData as $row) {
-            $id = $this->getId($row, $dataTable);
-
-            $headers      = array_keys($dataTable->getHeaders());
-            $filteredData = $this->filterRowData($row, $headers, $dataTable->getLangCode());
-
-            $returnData[] = ['id' => $id, 'data' => $filteredData];
+            $returnData[] = $this->dataTableRowService->getRowData($row, $dataTable);
         }
 
         return $returnData;
-    }
-
-    public function getId(array $row, DataTable $dataTable): string
-    {
-        $metaData = $this->entityManager->getClassMetadata($dataTable->getPdoModel());
-
-        $identifierFieldNames = $metaData->getIdentifierFieldNames();
-
-        $idParts = [];
-
-        foreach ($identifierFieldNames as $fieldName) {
-            $idParts[] = $row[$fieldName];
-        }
-
-        return implode(":", $idParts);
     }
 
     public function getEditData(DataTable $dataTable, string $id): ?array
@@ -153,26 +133,5 @@ readonly class DataTablePdoService
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
-    }
-
-    private function filterRowData(array $row, array $headers, string $langCode): array
-    {
-        $filteredData = [];
-
-        foreach ($headers as $header) {
-            if (array_key_exists($header, $row)) {
-                $value = $row[$header];
-            } else {
-                if (str_contains($header, '.')) {
-                    $value = $this->configService->getDataByPath($row, $header, $langCode);
-                } else {
-                    $value = '';
-                }
-            }
-
-            $filteredData[] = $value;
-        }
-
-        return $filteredData;
     }
 }

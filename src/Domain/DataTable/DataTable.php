@@ -4,8 +4,8 @@ namespace App\Domain\DataTable;
 
 class DataTable
 {
-    private string $instance;
     private SourceType $source;
+    private string $instance;
     private string $pdoModel;
     private string $cachePool;
     private array $headers;
@@ -14,7 +14,6 @@ class DataTable
     private array $form;
     private array $cells;
     private string $langCode;
-    private ?string $class;
 
     public function getInstance(): string
     {
@@ -143,12 +142,6 @@ class DataTable
 
     public function getClass(): ?string
     {
-        return $this->class;
-    }
-
-    public function setClass(?string $class): DataTable
-    {
-        $this->class = $class;
-        return $this;
+        return 'default';
     }
 }

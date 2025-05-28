@@ -52,7 +52,11 @@ readonly class DataTableConfigService
 
         $form = $this->updateFormConfig($form);
 
-        $dataTable = new DataTable;
+        $dataTable = match ($class) {
+            "pages" => new PagesDataTable,
+            default => new DataTable,
+        };
+
         $dataTable->setInstance($instance);
         $dataTable->setSource($sourceType);
         $dataTable->setPdoModel($pdoModel);
@@ -61,7 +65,6 @@ readonly class DataTableConfigService
         $dataTable->setMobileColumns($mobileColumns);
         $dataTable->setForm($form);
         $dataTable->setCells($cells);
-        $dataTable->setClass($class);
 
         return $dataTable;
     }
