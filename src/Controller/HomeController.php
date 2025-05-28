@@ -11,21 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    /** @var Security */
-    private Security $security;
-
-    /** @var DataTableService */
-    private DataTableService $dataTableService;
-
-    /**
-     * @param Security $security
-     * @param DataTableService $dataTableService
-     */
-    public function __construct(Security $security, DataTableService $dataTableService)
-    {
-        $this->security         = $security;
-        $this->dataTableService = $dataTableService;
-    }
+    public function __construct(
+        private readonly Security $security,
+        private readonly DataTableService $dataTableService
+    ) {}
 
     #[Route('/api/home')]
     public function home(): Response

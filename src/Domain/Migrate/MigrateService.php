@@ -3,26 +3,12 @@
 namespace App\Domain\Migrate;
 
 use Doctrine\DBAL\Connection;
-use Exception;
 use PDO;
 
 class MigrateService
 {
-    /** @var Connection */
-    private Connection $conn;
+    public function __construct(private Connection $conn) {}
 
-    /**
-     * @param Connection $conn
-     */
-    public function __construct(Connection $conn)
-    {
-        $this->conn = $conn;
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
     public function migratePages(): void
     {
         $rows = $this->conn->fetchAllAssociative("
@@ -81,10 +67,6 @@ class MigrateService
         }
     }
 
-    /**
-     * @return void
-     * @throws Exception
-     */
     public function migratePageLanguage(): void
     {
         $rows = $this->conn->fetchAllAssociative("SELECT * FROM cms_page_language");

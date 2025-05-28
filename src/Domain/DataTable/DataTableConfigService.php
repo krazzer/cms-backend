@@ -9,39 +9,15 @@ use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DataTableConfigService
+readonly class DataTableConfigService
 {
-    /** @var Parser */
-    private Parser $yamlParser;
+    public function __construct(
+        private Parser $yamlParser,
+        private ParameterBagInterface $params,
+        private TranslatorInterface $translator,
+        private CallableService $callableService
+    ) {}
 
-    /** @var ParameterBagInterface */
-    private ParameterBagInterface $params;
-
-    /** @var TranslatorInterface */
-    private TranslatorInterface $translator;
-
-    /** @var CallableService */
-    private CallableService $callableService;
-
-    /**
-     * @param Parser $yamlParser
-     * @param ParameterBagInterface $params
-     * @param TranslatorInterface $translator
-     * @param CallableService $callableService
-     */
-    public function __construct(Parser $yamlParser, ParameterBagInterface $params, TranslatorInterface $translator,
-        CallableService $callableService)
-    {
-        $this->yamlParser      = $yamlParser;
-        $this->params          = $params;
-        $this->translator      = $translator;
-        $this->callableService = $callableService;
-    }
-
-    /**
-     * @param string $instance
-     * @return DataTable
-     */
     public function getFromConfigByInstance(string $instance): DataTable
     {
         $configPath = $this->params->get('kernel.project_dir') . '/config/datatables.yaml';
@@ -86,10 +62,6 @@ class DataTableConfigService
         return $dataTable;
     }
 
-    /**
-     * @param array $form
-     * @return array
-     */
     public function updateFormConfig(array $form): array
     {
         if (isset($form['fields'])) {
@@ -107,17 +79,10 @@ class DataTableConfigService
         return $form;
     }
 
-    /**
-     * @param array $data
-     * @param string $path
-     * @param string $locale
-     * @return string|null
-     */
     public function getDataByPath(array $data, string $path, string $locale): ?string
     {
         $resolvedPath = str_replace('*', $locale, $path);
 
-        // Split het pad op punten
         $keys = explode('.', $resolvedPath);
 
         $value = $data;
@@ -133,10 +98,6 @@ class DataTableConfigService
         return $value;
     }
 
-    /**
-     * @param array $fields
-     * @return array
-     */
     private function resolveSelectFieldItems(array $fields): array
     {
         foreach ($fields as &$field) {

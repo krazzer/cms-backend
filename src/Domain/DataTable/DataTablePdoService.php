@@ -5,28 +5,13 @@ namespace App\Domain\DataTable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-class DataTablePdoService
+readonly class DataTablePdoService
 {
-    /** @var EntityManagerInterface */
-    private EntityManagerInterface $entityManager;
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private DataTableConfigService $configService
+    ) {}
 
-    /** @var DataTableConfigService */
-    private DataTableConfigService $configService;
-
-    /**
-     * @param EntityManagerInterface $entityManager
-     * @param DataTableConfigService $configService
-     */
-    public function __construct(EntityManagerInterface $entityManager, DataTableConfigService $configService)
-    {
-        $this->entityManager = $entityManager;
-        $this->configService = $configService;
-    }
-
-    /**
-     * @param DataTable $dataTable
-     * @return array
-     */
     public function getData(DataTable $dataTable): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
@@ -49,11 +34,6 @@ class DataTablePdoService
         return $returnData;
     }
 
-    /**
-     * @param array $row
-     * @param DataTable $dataTable
-     * @return string
-     */
     public function getId(array $row, DataTable $dataTable): string
     {
         $metaData = $this->entityManager->getClassMetadata($dataTable->getPdoModel());
@@ -69,11 +49,6 @@ class DataTablePdoService
         return implode(":", $idParts);
     }
 
-    /**
-     * @param DataTable $dataTable
-     * @param string $id
-     * @return array|null
-     */
     public function getEditData(DataTable $dataTable, string $id): ?array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
@@ -88,11 +63,6 @@ class DataTablePdoService
         return array_intersect_key($arrayData, array_flip($dataTable->getFormFields()));
     }
 
-    /**
-     * @param string $model
-     * @param object $entity
-     * @return array
-     */
     public function getEntityDataAsArray(string $model, object $entity): array
     {
         $metadata = $this->entityManager->getClassMetadata($model);
@@ -115,12 +85,6 @@ class DataTablePdoService
         return $data;
     }
 
-    /**
-     * @param object $entity
-     * @param array $data
-     * @return void
-     * @throws Exception
-     */
     public function updateEntityByArray(object $entity, array $data): void
     {
         $className = get_class($entity);
@@ -165,13 +129,6 @@ class DataTablePdoService
         }
     }
 
-    /**
-     * @param DataTable $dataTable
-     * @param string $id
-     * @param array $data
-     * @return void
-     * @throws Exception
-     */
     public function update(DataTable $dataTable, string $id, array $data): void
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
@@ -186,11 +143,6 @@ class DataTablePdoService
         $this->entityManager->flush();
     }
 
-    /**
-     * @param DataTable $dataTable
-     * @param array $data
-     * @return void
-     */
     public function create(DataTable $dataTable, array $data): void
     {
         $model = $dataTable->getPdoModel();
@@ -203,12 +155,6 @@ class DataTablePdoService
         $this->entityManager->flush();
     }
 
-    /**
-     * @param array $row
-     * @param array $headers
-     * @param string $langCode
-     * @return array
-     */
     private function filterRowData(array $row, array $headers, string $langCode): array
     {
         $filteredData = [];

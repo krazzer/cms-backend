@@ -18,33 +18,12 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class LoginController extends AbstractController
 {
-    /** @var PasswordResetService */
-    private PasswordResetService $passwordResetService;
-
-    /** @var Security */
-    private Security $security;
-
-    /** @var UserService */
-    private UserService $userService;
-
-    /** @var LoggerInterface */
-    private LoggerInterface $logger;
-
-    /**
-     * @param PasswordResetService $passwordResetService
-     * @param Security $security
-     * @param UserService $userService
-     * @param LoggerInterface $logger
-     */
-    public function __construct(PasswordResetService $passwordResetService, Security $security,
-        UserService $userService, LoggerInterface $logger
-    )
-    {
-        $this->passwordResetService = $passwordResetService;
-        $this->security             = $security;
-        $this->userService          = $userService;
-        $this->logger               = $logger;
-    }
+    public function __construct(
+        private readonly PasswordResetService $passwordResetService,
+        private readonly Security $security,
+        private readonly UserService $userService,
+        private readonly LoggerInterface $logger
+    ) {}
 
     #[Route('/api/login', name: 'login')]
     public function login(): Response

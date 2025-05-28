@@ -5,42 +5,17 @@ namespace App\Domain\Mail;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 
-class CmsMailer
+readonly class CmsMailer
 {
-    /** @var MailerInterface */
-    private MailerInterface $mailer;
+    public function __construct(
+        private MailerInterface $mailer,
+        private LoggerInterface $logger,
+        private string $defaultEmailFrom,
+        private string $companyInfoLine
+    ) {}
 
-    /** @var string */
-    private string $defaultEmailFrom;
-
-    /** @var LoggerInterface */
-    private LoggerInterface $logger;
-
-    /** @var string */
-    private string $companyInfoLine;
-
-    /**
-     * @param MailerInterface $mailer
-     * @param LoggerInterface $logger
-     * @param string $defaultEmailFrom
-     * @param string $companyInfoLine
-     */
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger, string $defaultEmailFrom, string $companyInfoLine)
-    {
-        $this->mailer           = $mailer;
-        $this->defaultEmailFrom = $defaultEmailFrom;
-        $this->logger           = $logger;
-        $this->companyInfoLine  = $companyInfoLine;
-    }
-
-    /**
-     * @param TemplatedEmail $email
-     * @return bool
-     * @throws TransportExceptionInterface
-     */
     public function send(TemplatedEmail $email): bool
     {
         if ( ! $email->getFrom()) {

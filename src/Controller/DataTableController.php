@@ -15,21 +15,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DataTableController extends AbstractController
 {
-    /** @var DataTableService */
-    private DataTableService $dataTableService;
-
-    /** @var TranslatorInterface */
-    private TranslatorInterface $translator;
-
-    /**
-     * @param DataTableService $dataTableService
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(DataTableService $dataTableService, TranslatorInterface $translator)
-    {
-        $this->dataTableService = $dataTableService;
-        $this->translator       = $translator;
-    }
+    public function __construct(
+        private readonly DataTableService $dataTableService,
+        private readonly TranslatorInterface $translator
+    ) {}
 
     #[Route('/api/datatable/edit', methods: 'POST')]
     public function edit(#[MapRequestPayload] DataTableEditDto $dto): Response
@@ -56,7 +45,7 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/save', methods: 'POST')]
     public function save(#[MapRequestPayload] DataTableSaveDto $dto): Response
     {
-        if($dto->getId()) {
+        if ($dto->getId()) {
             $this->dataTableService->update($dto->getInstance(), $dto->getId(), $dto->getData());
         } else {
             $this->dataTableService->create($dto->getInstance(), $dto->getData());

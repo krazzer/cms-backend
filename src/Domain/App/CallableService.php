@@ -5,23 +5,10 @@ namespace App\Domain\App;
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class CallableService
+readonly class CallableService
 {
-    /** @var ContainerInterface */
-    private ContainerInterface $container;
+    public function __construct(private ContainerInterface $container) {}
 
-    /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * @param string $configCallable
-     * @return callable|null
-     */
     public function getCallableByString(string $configCallable): ?callable
     {
         if ( ! str_contains($configCallable, '::')) {

@@ -10,16 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IndexController extends AbstractController
 {
-    /** @var TranslatorInterface */
-    private TranslatorInterface $translator;
-
-    /**
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
+    public function __construct(private readonly TranslatorInterface $translator) {}
 
     #[Route('/')]
     public function index(): Response

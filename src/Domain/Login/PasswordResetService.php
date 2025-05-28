@@ -13,42 +13,18 @@ use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PasswordResetService
+readonly class PasswordResetService
 {
-    private CmsMailer              $mailer;
-    private UserRepository         $userRepository;
-    private NativePasswordHasher   $passwordHasher;
-    private TagAwareCacheInterface $keyValueStore;
-    private ByteString             $byteString;
-    private UrlGeneratorInterface  $router;
-    private TranslatorInterface    $translator;
+    public function __construct(
+        private CmsMailer $mailer,
+        private UserRepository $userRepository,
+        private NativePasswordHasher $passwordHasher,
+        private TagAwareCacheInterface $keyValueStore,
+        private ByteString $byteString,
+        private UrlGeneratorInterface $router,
+        private TranslatorInterface $translator
+    ) {}
 
-    /**
-     * @param CmsMailer $mailer
-     * @param UserRepository $userRepository
-     * @param NativePasswordHasher $passwordHasher
-     * @param TagAwareCacheInterface $keyValueStore
-     * @param ByteString $byteString
-     * @param UrlGeneratorInterface $router
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(CmsMailer $mailer, UserRepository $userRepository, NativePasswordHasher $passwordHasher,
-        TagAwareCacheInterface $keyValueStore, ByteString $byteString, UrlGeneratorInterface $router,
-        TranslatorInterface $translator)
-    {
-        $this->mailer         = $mailer;
-        $this->userRepository = $userRepository;
-        $this->passwordHasher = $passwordHasher;
-        $this->keyValueStore  = $keyValueStore;
-        $this->byteString     = $byteString;
-        $this->router         = $router;
-        $this->translator     = $translator;
-    }
-
-    /**
-     * @param EmailDto $email
-     * @return bool
-     */
     public function sendResetUrl(EmailDto $email): bool
     {
         $user = $this->userRepository->findOneBy(['email' => $email->getEmail()]);
@@ -68,20 +44,11 @@ class PasswordResetService
         return $this->mailer->send($email);
     }
 
-    /**
-     * @param int $userId
-     * @param string $id
-     * @return string
-     */
     public function getCacheKey(int $userId, string $id): string
     {
         return 'user_' . $userId . '_' . $id;
     }
 
-    /**
-     * @param User $user
-     * @return string
-     */
     private function generateResetUrl(User $user): string
     {
         $id  = $this->byteString->fromRandom(4)->lower();
@@ -103,10 +70,6 @@ class PasswordResetService
         return $this->router->generate('reset', $urlParams, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
-    /**
-     * @param SetPasswordDto $dto
-     * @return string|null
-     */
     public function checkHashValidity(SetPasswordDto $dto): ?string
     {
         $userId = $dto->getUserId();
