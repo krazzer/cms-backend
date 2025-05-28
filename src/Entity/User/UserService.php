@@ -2,7 +2,7 @@
 
 namespace App\Entity\User;
 
-use App\Entity\Login\SetPasswordDto;
+use App\Domain\Login\SetPasswordDto;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;

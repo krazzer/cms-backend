@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\DataTable;
+namespace App\Domain\DataTable;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -41,7 +41,7 @@ class DataTablePdoService
             $id = $this->getId($row, $dataTable);
 
             $headers      = array_keys($dataTable->getHeaders());
-            $filteredData = $this->filterRowData($row, $headers);
+            $filteredData = $this->filterRowData($row, $headers, $dataTable->getLangCode());
 
             $returnData[] = ['id' => $id, 'data' => $filteredData];
         }
@@ -206,9 +206,10 @@ class DataTablePdoService
     /**
      * @param array $row
      * @param array $headers
+     * @param string $langCode
      * @return array
      */
-    private function filterRowData(array $row, array $headers): array
+    private function filterRowData(array $row, array $headers, string $langCode): array
     {
         $filteredData = [];
 
@@ -217,7 +218,7 @@ class DataTablePdoService
                 $filteredData[] = $row[$header];
             } else {
                 if (str_contains($header, '.')) {
-                    $filteredData[] = $this->configService->getDataByPath($row, $header, 'nl');
+                    $filteredData[] = $this->configService->getDataByPath($row, $header, $langCode);
                 } else {
                     $filteredData[] = '';
                 }

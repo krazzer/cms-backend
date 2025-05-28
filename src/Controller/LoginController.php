@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Login\EmailDto;
-use App\Entity\Login\PasswordResetService;
-use App\Entity\Login\SetPasswordDto;
+use App\Domain\Login\EmailDto;
+use App\Domain\Login\PasswordResetService;
+use App\Domain\Login\SetPasswordDto;
 use App\Entity\User\UserService;
 use Exception;
 use Psr\Log\LoggerInterface;

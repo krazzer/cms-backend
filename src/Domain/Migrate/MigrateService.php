@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Migrate;
+namespace App\Domain\Migrate;
 
 use Doctrine\DBAL\Connection;
 use Exception;

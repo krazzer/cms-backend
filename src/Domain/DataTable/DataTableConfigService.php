@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity\DataTable;
+namespace App\Domain\DataTable;
 
-use App\Entity\App\CallableService;
+use App\Domain\App\CallableService;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;

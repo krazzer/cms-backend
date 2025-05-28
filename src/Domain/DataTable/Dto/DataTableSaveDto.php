@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\DataTable\Dto;
+namespace App\Domain\DataTable\Dto;
 
 class DataTableSaveDto
 {

@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\DataTable\DataTableService;
-use App\Entity\DataTable\Dto\DataTableAddDto;
-use App\Entity\DataTable\Dto\DataTableEditDto;
-use App\Entity\DataTable\Dto\DataTableSaveDto;
+use App\Domain\DataTable\DataTableService;
+use App\Domain\DataTable\Dto\DataTableAddDto;
+use App\Domain\DataTable\Dto\DataTableEditDto;
+use App\Domain\DataTable\Dto\DataTableSaveDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

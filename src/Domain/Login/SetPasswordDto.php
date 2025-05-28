@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Login;
+namespace App\Domain\Login;
 
 class SetPasswordDto
 {

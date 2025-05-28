@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\DataTable\DataTableService;
+use App\Domain\DataTable\DataTableService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;

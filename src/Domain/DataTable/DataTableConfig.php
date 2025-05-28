@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\DataTable;
+namespace App\Domain\DataTable;
 
 class DataTableConfig
 {
@@ -8,4 +8,6 @@ class DataTableConfig
 
     const string KEY_FORM_FIELDS = 'fields';
     const string KEY_FORM_TABS   = 'tabs';
+
+    const string SESSION_KEY_LANG = 'dataTableLang';
 }

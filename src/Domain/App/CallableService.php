@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\App;
+namespace App\Domain\App;
 
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\DataTable;
+namespace App\Domain\DataTable;
 
 enum SourceType
 {

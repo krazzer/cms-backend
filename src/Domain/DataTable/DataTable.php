@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\DataTable;
+namespace App\Domain\DataTable;
 
 class DataTable
 {
@@ -27,6 +27,9 @@ class DataTable
 
     /** @var array */
     private array $form;
+
+    /** @var string */
+    private string $langCode;
 
     /**
      * @return string
@@ -187,6 +190,24 @@ class DataTable
     public function setMobileColumns(array $mobileColumns): DataTable
     {
         $this->mobileColumns = $mobileColumns;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLangCode(): string
+    {
+        return $this->langCode;
+    }
+
+    /**
+     * @param string $langCode
+     * @return $this
+     */
+    public function setLangCode(string $langCode): DataTable
+    {
+        $this->langCode = $langCode;
         return $this;
     }
 }

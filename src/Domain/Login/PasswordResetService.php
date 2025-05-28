@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity\Login;
+namespace App\Domain\Login;
 
-use App\Entity\Mail\CmsMailer;
+use App\Domain\Mail\CmsMailer;
 use App\Entity\User\User;
 use App\Entity\User\UserRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\DataTable;
+namespace App\Domain\DataTable;
 
 use Exception;
 use Symfony\Polyfill\Intl\Icu\Exception\NotImplementedException;
@@ -13,14 +13,20 @@ class DataTableService
     /** @var DataTablePdoService */
     private DataTablePdoService $dataTablePdoService;
 
+    /** @var DataTableLanguageResolver */
+    private DataTableLanguageResolver $languageResolver;
+
     /**
      * @param DataTableConfigService $configService
      * @param DataTablePdoService $dataTablePdoService
+     * @param DataTableLanguageResolver $languageResolver
      */
-    public function __construct(DataTableConfigService $configService, DataTablePdoService $dataTablePdoService)
+    public function __construct(DataTableConfigService $configService, DataTablePdoService $dataTablePdoService,
+        DataTableLanguageResolver $languageResolver)
     {
         $this->configService       = $configService;
         $this->dataTablePdoService = $dataTablePdoService;
+        $this->languageResolver    = $languageResolver;
     }
 
     /**
@@ -29,7 +35,7 @@ class DataTableService
      */
     public function getData(string $instance): array
     {
-        $dataTable = $this->configService->getFromConfigByInstance($instance);
+        $dataTable = $this->getByInstance($instance);
 
         if ($dataTable->getSource() == SourceType::Pdo) {
             return $this->dataTablePdoService->getData($dataTable);
@@ -44,16 +50,23 @@ class DataTableService
      */
     public function getHeaders(string $instance): array
     {
-        return $this->configService->getFromConfigByInstance($instance)->getHeaders();
+        return $this->getByInstance($instance)->getHeaders();
     }
 
     /**
      * @param string $instance
+     * @param string|null $langCode
      * @return DataTable
+     * @throws Exception
      */
-    public function getByInstance(string $instance): DataTable
+    public function getByInstance(string $instance, string $langCode = null): DataTable
     {
-        return $this->configService->getFromConfigByInstance($instance);
+        $dataTable    = $this->configService->getFromConfigByInstance($instance);
+        $resolvedLang = $this->languageResolver->resolve($langCode);
+
+        $dataTable->setLangCode($resolvedLang);
+
+        return $dataTable;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Mail;
+namespace App\Domain\Mail;
 
 use Exception;
 use Psr\Log\LoggerInterface;
