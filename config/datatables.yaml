@@ -32,12 +32,18 @@ users:
         model: App\Entity\User\User
 
 pages:
+    class: pages
     headersTranslate:
         name.*: general.name
         template: general.template
         slug.*: general.slug
         active.*: general.active
         id: general.id
+    cells:
+        name.*:
+            type: 'page'
+        active.*:
+            type: 'checkbox'
     mobileColumns:
         - name.*
     buttons:

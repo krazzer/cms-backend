@@ -81,6 +81,8 @@ readonly class DataTableService
             'buttons'       => $dataTable->getButtons(),
             'mobileColumns' => $dataTable->getMobileColumns(),
             'headers'       => $dataTable->getHeaders(),
+            'cells'         => $dataTable->getCells(),
+            'class'         => $dataTable->getClass(),
             'data'          => $this->getData($instance),
             'instance'      => $instance,
         ];

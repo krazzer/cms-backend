@@ -32,6 +32,8 @@ readonly class DataTableConfigService
         $headersTranslate = $dataTableConfig['headersTranslate'] ?? [];
         $buttons          = $dataTableConfig['buttons'] ?? [];
         $mobileColumns    = $dataTableConfig['mobileColumns'] ?? [];
+        $cells            = $dataTableConfig['cells'] ?? [];
+        $class            = $dataTableConfig['class'] ?? null;
 
         $sourceType = $source['type'] ?? SourceType::Pdo;
         $pdoModel   = $source['model'] ?? null;
@@ -58,6 +60,8 @@ readonly class DataTableConfigService
         $dataTable->setButtons($buttons);
         $dataTable->setMobileColumns($mobileColumns);
         $dataTable->setForm($form);
+        $dataTable->setCells($cells);
+        $dataTable->setClass($class);
 
         return $dataTable;
     }

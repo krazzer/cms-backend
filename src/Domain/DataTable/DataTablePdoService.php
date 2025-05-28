@@ -161,14 +161,16 @@ readonly class DataTablePdoService
 
         foreach ($headers as $header) {
             if (array_key_exists($header, $row)) {
-                $filteredData[] = $row[$header];
+                $value = $row[$header];
             } else {
                 if (str_contains($header, '.')) {
-                    $filteredData[] = $this->configService->getDataByPath($row, $header, $langCode);
+                    $value = $this->configService->getDataByPath($row, $header, $langCode);
                 } else {
-                    $filteredData[] = '';
+                    $value = '';
                 }
             }
+
+            $filteredData[] = $value;
         }
 
         return $filteredData;

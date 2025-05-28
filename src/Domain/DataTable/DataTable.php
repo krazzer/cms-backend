@@ -12,7 +12,9 @@ class DataTable
     private array $buttons;
     private array $mobileColumns;
     private array $form;
+    private array $cells;
     private string $langCode;
+    private ?string $class;
 
     public function getInstance(): string
     {
@@ -125,6 +127,28 @@ class DataTable
     public function setLangCode(string $langCode): DataTable
     {
         $this->langCode = $langCode;
+        return $this;
+    }
+
+    public function getCells(): array
+    {
+        return $this->cells;
+    }
+
+    public function setCells(array $cells): DataTable
+    {
+        $this->cells = $cells;
+        return $this;
+    }
+
+    public function getClass(): ?string
+    {
+        return $this->class;
+    }
+
+    public function setClass(?string $class): DataTable
+    {
+        $this->class = $class;
         return $this;
     }
 }
