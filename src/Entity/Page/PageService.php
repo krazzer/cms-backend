@@ -11,6 +11,7 @@ readonly class PageService
 
     public function modifyDataTableOutput(array $data): array
     {
-       return $this->pageTreeService->sort($data);
+        $data = $this->pageTreeService->sort($data);
+        return $this->pageTreeService->addHasChildren($data);
     }
 }

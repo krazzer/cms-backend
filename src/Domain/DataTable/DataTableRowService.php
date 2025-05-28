@@ -2,6 +2,7 @@
 
 namespace App\Domain\DataTable;
 
+use App\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class DataTableRowService
@@ -21,13 +22,9 @@ readonly class DataTableRowService
         $rowData = ['id' => $id, 'data' => $filteredData];
 
         if ($dataTable instanceof PagesDataTable) {
-            if ($row['parents'] === null) {
-                $rowData['level'] = 0;
-                $rowData['type'] = 'menu';
-                $rowData['children'] = true;
-            } else {
-                $rowData['level'] = count($row['parents']);
-            }
+            $rowData['level']    = count($row['parents'] ?? []);
+            $rowData['type']     = $row[Page::FIELD_TYPE];
+            $rowData['children'] = $row[Page::FIELD_CHILDREN];
         }
 
         return $rowData;

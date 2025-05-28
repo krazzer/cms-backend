@@ -12,6 +12,8 @@ class Page
     const string FIELD_ID            = 'id';
     const string FIELD_PARENTS       = 'parents';
     const string FIELD_DISPLAY_ORDER = 'display_order';
+    const string FIELD_CHILDREN      = 'children'; // not an actual field, but derived from other data
+    const string FIELD_TYPE          = 'type';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

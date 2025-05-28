@@ -45,4 +45,31 @@ class PageTreeService
 
         return $sorted;
     }
+
+    /**
+     * Adds a 'haschildren' boolean field to each item in the list based on the hierarchy.
+     *
+     * @param array $data List of items, each with at least 'id' and 'parents' (array).
+     * @return array The list with 'haschildren' added (true/false).
+     */
+    function addHasChildren(array $data): array
+    {
+        $parentsWithChildren = [];
+
+        foreach ($data as $item) {
+            $parents = $item[Page::FIELD_PARENTS] ?? [];
+            if (!empty($parents)) {
+                $lastParent = end($parents);
+                $parentsWithChildren[$lastParent] = true;
+            }
+        }
+
+        // Voeg 'haschildren' toe aan elk item
+        foreach ($data as &$item) {
+            $itemId = $item[Page::FIELD_ID];
+            $item[Page::FIELD_CHILDREN] = isset($parentsWithChildren[$itemId]);
+        }
+
+        return $data;
+    }
 }
