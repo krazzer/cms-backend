@@ -16,8 +16,7 @@ readonly class DataTableRowService
     {
         $id = $this->getId($row, $dataTable);
 
-        $headers      = array_keys($dataTable->getHeaders());
-        $filteredData = $this->filterRowData($row, $headers, $dataTable->getLangCode());
+        $filteredData = $this->filterRowData($row, $dataTable);
 
         $rowData = ['id' => $id, 'data' => $filteredData];
 
@@ -45,24 +44,43 @@ readonly class DataTableRowService
         return implode(":", $idParts);
     }
 
-    private function filterRowData(array $row, array $headers, string $langCode): array
+    private function filterRowData(array $row, DataTable $dataTable): array
     {
+        $langCode   = $dataTable->getLangCode();
+        $headerKeys = array_keys($dataTable->getHeaders());
+
         $filteredData = [];
 
-        foreach ($headers as $header) {
-            if (array_key_exists($header, $row)) {
-                $value = $row[$header];
-            } else {
-                if (str_contains($header, '.')) {
-                    $value = $this->configService->getDataByPath($row, $header, $langCode);
-                } else {
-                    $value = '';
-                }
-            }
+        foreach ($headerKeys as $headerKey) {
+            $cellType = $dataTable->getCells()[$headerKey]['type'] ?? null;
+
+            $value = $this->resolveCellValue($row, $headerKey, $langCode);
+            $value = $this->transformValueByType($value, $cellType);
 
             $filteredData[] = $value;
         }
 
         return $filteredData;
+    }
+
+    private function resolveCellValue(array $row, string $headerKey, string $langCode): mixed
+    {
+        if (array_key_exists($headerKey, $row)) {
+            return $row[$headerKey];
+        }
+
+        if (str_contains($headerKey, '.')) {
+            return $this->configService->getDataByPath($row, $headerKey, $langCode);
+        }
+
+        return '';
+    }
+
+    private function transformValueByType(mixed $value, ?string $cellType): mixed
+    {
+        return match ($cellType) {
+            DataTableConfig::CELL_TYPE_CHECKBOX => (bool) $value,
+            default => $value,
+        };
     }
 }

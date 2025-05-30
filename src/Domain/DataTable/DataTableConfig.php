@@ -6,6 +6,8 @@ class DataTableConfig
 {
     const string FIELD_TYPE_SELECT = 'select';
 
+    const string CELL_TYPE_CHECKBOX = 'checkbox';
+
     const string KEY_FORM_FIELDS = 'fields';
     const string KEY_FORM_TABS   = 'tabs';
 
