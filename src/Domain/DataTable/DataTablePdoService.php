@@ -12,7 +12,8 @@ readonly class DataTablePdoService
     public function __construct(
         private CallableService $callableService,
         private EntityManagerInterface $entityManager,
-        private DataTableRowService $dataTableRowService,
+        private DataTableRowService $rowService,
+        private DataTableDataService $dataService,
     ) {}
 
     public function getData(DataTable $dataTable): array
@@ -32,7 +33,7 @@ readonly class DataTablePdoService
         $returnData = [];
 
         foreach ($rawData as $row) {
-            $returnData[] = $this->dataTableRowService->getRowData($row, $dataTable);
+            $returnData[] = $this->rowService->getRowData($row, $dataTable);
         }
 
         return $returnData;
@@ -55,8 +56,18 @@ readonly class DataTablePdoService
 
         $arrayData = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
 
+        foreach ($dataTable->getFormFieldMap() as $key => $field) {
+            if($key === $field) {
+                continue;
+            }
+
+            $value = $this->dataService->resolveValue($arrayData, $field, $dataTable->getLangCode());
+
+            $arrayData[$key] = $value;
+        }
+
         // remove all fields not required in the form
-        return array_intersect_key($arrayData, array_flip($dataTable->getFormFields()));
+        return array_intersect_key($arrayData, array_flip($dataTable->getFormFieldKeys()));
     }
 
     public function getEntityDataAsArray(string $model, object $entity): array

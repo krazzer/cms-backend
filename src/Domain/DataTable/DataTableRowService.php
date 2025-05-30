@@ -9,7 +9,7 @@ readonly class DataTableRowService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private DataTableConfigService $configService,
+        private DataTableDataService $dataService,
     ) {}
 
     public function getRowData(mixed $row, DataTable $dataTable): array
@@ -54,26 +54,13 @@ readonly class DataTableRowService
         foreach ($headerKeys as $headerKey) {
             $cellType = $dataTable->getCells()[$headerKey]['type'] ?? null;
 
-            $value = $this->resolveCellValue($row, $headerKey, $langCode);
+            $value = $this->dataService->resolveValue($row, $headerKey, $langCode);
             $value = $this->transformValueByType($value, $cellType);
 
             $filteredData[] = $value;
         }
 
         return $filteredData;
-    }
-
-    private function resolveCellValue(array $row, string $headerKey, string $langCode): mixed
-    {
-        if (array_key_exists($headerKey, $row)) {
-            return $row[$headerKey];
-        }
-
-        if (str_contains($headerKey, '.')) {
-            return $this->configService->getDataByPath($row, $headerKey, $langCode);
-        }
-
-        return '';
     }
 
     private function transformValueByType(mixed $value, ?string $cellType): mixed
