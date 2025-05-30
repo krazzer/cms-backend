@@ -1,0 +1,31 @@
+headersTranslate:
+    id: general.id
+    email: general.email
+    role: general.role
+    blocked: general.blocked
+mobileColumns:
+    - id
+    - email
+buttons:
+    -   label: Add user
+        action: add
+    -   label: Delete
+        action: delete
+form:
+    fields:
+        email:
+            type: text
+            label: E-mail address
+            validator:
+                name: email
+                parameters:
+                    required: true
+        role:
+            type: select
+            items: 'App\Entity\User\UserService::getRoleMap'
+            label: Role
+        blocked:
+            type: checkbox
+            label: Blocked
+source:
+    model: App\Entity\User\User

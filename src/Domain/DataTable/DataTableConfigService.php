@@ -20,9 +20,9 @@ readonly class DataTableConfigService
 
     public function getFromConfigByInstance(string $instance): DataTable
     {
-        $configPath = $this->params->get('kernel.project_dir') . '/config/datatables.yaml';
+        $configPath = $this->params->get('kernel.project_dir') . '/config/datatables/' . $instance . '.yaml';
 
-        if ( ! $dataTableConfig = $this->yamlParser->parseFile($configPath, Yaml::PARSE_CUSTOM_TAGS)[$instance] ?? null) {
+        if ( ! $dataTableConfig = $this->yamlParser->parseFile($configPath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
             throw new Exception("No config found for DataTable '$instance'");
         }
 
