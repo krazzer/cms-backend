@@ -2,7 +2,7 @@ framework:
     cache:
         pools:
             key_value_store:
-                default_lifetime: 31536000 # One year
+                default_lifetime: 0 # Never expire
                 adapters:
                     - cache.adapter.apcu
                     - app.cms_pdo_provider

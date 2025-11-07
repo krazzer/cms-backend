@@ -3,6 +3,8 @@
 namespace App\Domain\DataTable;
 
 use App\Domain\App\CallableService;
+use App\Domain\DataTable\Tree\CollapseService;
+use App\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
@@ -14,6 +16,7 @@ readonly class DataTablePdoService
         private EntityManagerInterface $entityManager,
         private DataTableRowService $rowService,
         private DataTableDataService $dataService,
+        private CollapseService $collapseService,
     ) {}
 
     public function getData(DataTable $dataTable): array
@@ -31,9 +34,24 @@ readonly class DataTablePdoService
         }
 
         $returnData = [];
+        $rowIds     = [];
 
         foreach ($rawData as $row) {
             $returnData[] = $this->rowService->getRowData($row, $dataTable);
+
+            if ($dataTable instanceof PagesDataTable && $row[Page::FIELD_CHILDREN]) {
+                $rowIds[] = $row['id'];
+            }
+        }
+
+        if ($dataTable instanceof PagesDataTable && $rowIds) {
+            $collapsedMap = $this->collapseService->getCollapsedMap($rowIds, $dataTable->getInstance());
+
+            foreach ($returnData as &$row) {
+                if (array_key_exists($row['id'], $collapsedMap)) {
+                    $row['collapsed'] = $collapsedMap[$row['id']];
+                }
+            }
         }
 
         return $returnData;
@@ -57,7 +75,7 @@ readonly class DataTablePdoService
         $arrayData = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
 
         foreach ($dataTable->getFormFieldMap() as $key => $field) {
-            if($key === $field) {
+            if ($key === $field) {
                 continue;
             }
 
