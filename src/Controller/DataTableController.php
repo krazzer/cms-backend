@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Domain\DataTable\DataTableService;
-use App\Domain\DataTable\Dto\DataTableCollapseDto;
 use App\Domain\DataTable\Dto\DataTableDto;
 use App\Domain\DataTable\Dto\DataTableEditDto;
 use App\Domain\DataTable\Dto\DataTableSaveDto;
-use App\Domain\DataTable\Tree\CollapseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,16 +18,7 @@ class DataTableController extends AbstractController
     public function __construct(
         private readonly DataTableService $dataTableService,
         private readonly TranslatorInterface $translator,
-        private readonly CollapseService $collapseService,
     ) {}
-
-    #[Route('/api/datatable/collapse', methods: 'POST')]
-    public function collapse(#[MapRequestPayload] DataTableCollapseDto $dto): Response
-    {
-        $this->collapseService->setByDto($dto);
-
-        return new JsonResponse(['success' => true]);
-    }
 
     #[Route('/api/datatable/edit', methods: 'POST')]
     public function edit(#[MapRequestPayload] DataTableEditDto $dto): Response
