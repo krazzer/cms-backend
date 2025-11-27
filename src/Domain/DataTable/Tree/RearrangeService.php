@@ -30,15 +30,12 @@ readonly class RearrangeService
 
                 $sourceEntity->setParents($targetEntity->getParents());
                 $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder());
-
-                $this->entityManager->persist($sourceEntity);
-                $this->entityManager->flush();
             break;
 
             case RearrangeLocation::AFTER:
                 $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
 
-                if($targetEntity->getParents() == $sourceEntity->getParents()) {
+                if ($targetEntity->getParents() == $sourceEntity->getParents()) {
                     $this->nodesFromTargetPlusOne($dataTable, $targetEntity);
                     $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder());
                 } else {
@@ -47,13 +44,19 @@ readonly class RearrangeService
                 }
 
                 $sourceEntity->setParents($targetEntity->getParents());
-
-                $this->entityManager->persist($sourceEntity);
-                $this->entityManager->flush();
             break;
             case RearrangeLocation::INSIDE:
-                throw new \Exception('To be implemented');
+                $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
+
+                $parents = $this->getParentsValueInsideNode($targetEntity);
+                $order   = $this->getTargetChildMaxDisplayOrder($targetEntity);
+
+                $sourceEntity->setParents($parents);
+                $sourceEntity->setDisplayOrder($order + 1);
         }
+
+        $this->entityManager->persist($sourceEntity);
+        $this->entityManager->flush();
     }
 
     /**
@@ -95,5 +98,29 @@ readonly class RearrangeService
             ->setParameter('parents', json_encode($page->getParents()));
 
         $query->getQuery()->execute();
+    }
+
+    public function getTargetChildMaxDisplayOrder(Page $targetEntity): int
+    {
+        $parents = $this->getParentsValueInsideNode($targetEntity);
+
+        $query = $this->entityManager->createQueryBuilder()
+            ->select('MAX(e.display_order)')
+            ->from(Page::class, 'e')
+            ->where('e.parents = :parents')
+            ->setParameter('parents', json_encode($parents));
+
+        $max = (int) $query->getQuery()->getSingleScalarResult();
+
+        return $max ?: 0;
+    }
+
+    public function getParentsValueInsideNode(Page $targetEntity): array
+    {
+        if ($targetEntity->getParents()) {
+            return array_merge($targetEntity->getParents(), [$targetEntity->getId()]);
+        } else {
+            return [$targetEntity->getId()];
+        }
     }
 }
