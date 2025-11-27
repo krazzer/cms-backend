@@ -100,9 +100,15 @@ readonly class RearrangeService
         $query = $this->entityManager->createQueryBuilder()
             ->update($entityClass, 'e')
             ->set('e.display_order', 'e.display_order ' . $mod . ' 1')
-            ->where('e.parents = :parents AND e.display_order ' . $operator . ' :order')
-            ->setParameter('order', $page->getDisplayOrder())
-            ->setParameter('parents', json_encode($page->getParents()));
+            ->where('e.display_order ' . $operator . ' :order')
+            ->setParameter('order', $page->getDisplayOrder());
+
+        if ($page->getParents()) {
+            $query->andWhere('e.parents = :parents')
+                ->setParameter('parents', json_encode($page->getParents()));
+        } else {
+            $query->andWhere('e.parents IS NULL');
+        }
 
         $query->getQuery()->execute();
     }
