@@ -20,7 +20,7 @@ class Page
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $parents = null;
 
     #[ORM\Column(nullable: true)]
