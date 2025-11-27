@@ -23,6 +23,9 @@ readonly class RearrangeService
         /** @var Page $sourceEntity */
         $sourceEntity = $repository->find($sourceId);
 
+        // pre-fetch parents for updating the child nodes
+        $oldChildParents = $this->getParentsValueInsideNode($sourceEntity);
+
         switch ($location) {
             case RearrangeLocation::BEFORE:
                 $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
@@ -54,6 +57,10 @@ readonly class RearrangeService
                 $sourceEntity->setParents($parents);
                 $sourceEntity->setDisplayOrder($order + 1);
         }
+
+        $newChildParents = $this->getParentsValueInsideNode($sourceEntity);
+
+        $this->updateChildParents($dataTable, $oldChildParents, $newChildParents);
 
         $this->entityManager->persist($sourceEntity);
         $this->entityManager->flush();
@@ -122,5 +129,24 @@ readonly class RearrangeService
         } else {
             return [$targetEntity->getId()];
         }
+    }
+
+    public function updateChildParents(DataTable $dataTable, array $oldParents, array $newParents): void
+    {
+        $meta = $this->entityManager->getClassMetadata($dataTable->getPdoModel());
+
+        $search  = rtrim(json_encode($oldParents), ']');
+        $replace = rtrim(json_encode($newParents), ']');
+
+        $sql = "UPDATE " . $meta->getTableName() . " 
+            SET parents = REPLACE(parents, :search, :replace) 
+            WHERE parents LIKE :likePrefix OR parents = :match";
+
+        $this->entityManager->getConnection()->executeStatement($sql, [
+            'search'     => $search,
+            'replace'    => $replace,
+            'likePrefix' => $search . '%',
+            'match'      => $search . ']',
+        ]);
     }
 }

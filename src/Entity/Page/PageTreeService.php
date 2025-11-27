@@ -58,13 +58,14 @@ class PageTreeService
 
         foreach ($data as $item) {
             $parents = $item[Page::FIELD_PARENTS] ?? [];
-            if (!empty($parents)) {
+
+            if ( ! empty($parents)) {
                 $lastParent = end($parents);
                 $parentsWithChildren[$lastParent] = true;
             }
         }
 
-        // Voeg 'haschildren' toe aan elk item
+        // Add 'haschildren' to each item
         foreach ($data as &$item) {
             $itemId = $item[Page::FIELD_ID];
             $item[Page::FIELD_CHILDREN] = isset($parentsWithChildren[$itemId]);
