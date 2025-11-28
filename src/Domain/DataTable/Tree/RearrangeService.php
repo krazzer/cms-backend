@@ -23,6 +23,11 @@ readonly class RearrangeService
         /** @var Page $sourceEntity */
         $sourceEntity = $repository->find($sourceId);
 
+        // cannot place a parent into its own child
+        if ($targetEntity->getParents() && in_array($sourceEntity->getId(), $targetEntity->getParents())) {
+            return;
+        }
+
         // pre-fetch parents for updating the child nodes
         $oldChildParents = $this->getParentsValueInsideNode($sourceEntity);
 
@@ -148,10 +153,11 @@ readonly class RearrangeService
             SET parents = REPLACE(parents, :search, :replace) 
             WHERE parents LIKE :likePrefix OR parents = :match";
 
+        dlog([$search, $replace]);
         $this->entityManager->getConnection()->executeStatement($sql, [
             'search'     => $search,
             'replace'    => $replace,
-            'likePrefix' => $search . '%',
+            'likePrefix' => $search . ',%',
             'match'      => $search . ']',
         ]);
     }
