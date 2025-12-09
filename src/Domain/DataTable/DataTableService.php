@@ -73,6 +73,18 @@ readonly class DataTableService
         throw new NotImplementedException('Not implemented yet');
     }
 
+    public function delete(string $instance, array $ids): void
+    {
+        $dataTable = $this->getByInstance($instance);
+
+        if ($dataTable->getSource() == SourceType::Pdo) {
+            $this->dataTablePdoService->deleteList($dataTable, $ids);
+            return;
+        }
+
+        throw new NotImplementedException('Not implemented yet');
+    }
+
     public function getFullConfig(string $instance): array
     {
         $dataTable = $this->getByInstance($instance);

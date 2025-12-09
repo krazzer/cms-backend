@@ -182,4 +182,17 @@ readonly class DataTablePdoService
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
     }
+
+    public function deleteList(DataTable $dataTable, array $ids): void
+    {
+        $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+
+        foreach ($ids as $id) {
+            $entity = $repository->find($id);
+            $this->entityManager->remove($entity);
+        }
+
+        $this->entityManager->flush();
+    }
+
 }

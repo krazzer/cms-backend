@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Domain\DataTable\DataTableService;
+use App\Domain\DataTable\Dto\DataTableDeleteDto;
 use App\Domain\DataTable\Dto\DataTableDto;
 use App\Domain\DataTable\Dto\DataTableEditDto;
 use App\Domain\DataTable\Dto\DataTableSaveDto;
@@ -50,6 +51,14 @@ class DataTableController extends AbstractController
         } else {
             $this->dataTableService->create($dto->getInstance(), $dto->getData());
         }
+
+        return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
+    }
+
+    #[Route('/api/datatable/delete', methods: 'POST')]
+    public function delete(#[MapRequestPayload] DataTableDeleteDto $dto): Response
+    {
+        $this->dataTableService->delete($dto->getInstance(), $dto->getIds());
 
         return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
     }
