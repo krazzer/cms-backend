@@ -150,7 +150,7 @@ readonly class DataTablePdoService
         $this->entityManager->flush();
     }
 
-    public function create(DataTable $dataTable, array $data): void
+    public function create(DataTable $dataTable, array $data): int
     {
         $model = $dataTable->getPdoModel();
 
@@ -162,6 +162,8 @@ readonly class DataTablePdoService
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
+
+        return $entity->getId();
     }
 
     public function deleteList(DataTable $dataTable, array $ids): void
@@ -183,6 +185,7 @@ readonly class DataTablePdoService
             'integer', 'smallint', 'bigint' => (int) $value,
             'float', 'decimal' => (float) $value,
             'string' => (string) $value,
+            default => $value,
         };
     }
 }

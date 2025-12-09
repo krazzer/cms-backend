@@ -50,10 +50,13 @@ class DataTableController extends AbstractController
         if ($dto->getId()) {
             $this->dataTableService->update($dto->getInstance(), $dto->getId(), $dto->getData());
         } else {
-            $this->dataTableService->create($dto->getInstance(), $dto->getData());
+            $id = $this->dataTableService->create($dto->getInstance(), $dto->getData());
         }
 
-        return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
+        return new JsonResponse([
+            'data' => $this->dataTableService->getData($dto->getInstance()),
+            'id'   => $id ?? $dto->getId()
+        ]);
     }
 
     #[Route('/api/datatable/delete', methods: 'POST')]
@@ -61,6 +64,6 @@ class DataTableController extends AbstractController
     {
         $this->dataTableService->delete($dto->getInstance(), $dto->getIds());
 
-        return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
+        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getInstance())]);
     }
 }

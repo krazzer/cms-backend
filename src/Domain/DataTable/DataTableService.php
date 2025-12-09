@@ -75,13 +75,12 @@ readonly class DataTableService
         throw new NotImplementedException('Not implemented yet');
     }
 
-    public function create(string $instance, array $data): void
+    public function create(string $instance, array $data): int
     {
         $dataTable = $this->getByInstance($instance);
 
         if ($dataTable->getSource() == SourceType::Pdo) {
-            $this->dataTablePdoService->create($dataTable, $data);
-            return;
+            return $this->dataTablePdoService->create($dataTable, $data);
         }
 
         throw new NotImplementedException('Not implemented yet');
