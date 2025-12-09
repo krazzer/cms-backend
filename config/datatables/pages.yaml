@@ -35,7 +35,7 @@ form:
             name: Page
             fields:
                 type:
-                    type: text
+                    type: hidden
                     default: 'page'
                 title:
                     type: text
@@ -43,9 +43,13 @@ form:
                     label: Name
                     validator:
                         name: presence
+                header:
+                    type: text
+                    field: content.*.header
+                    label: Header
                 content:
                     type: textarea
-                    field: content.*
+                    field: content.*.content
                     label: Content
                     validator:
                         name: presence

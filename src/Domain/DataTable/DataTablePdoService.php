@@ -163,7 +163,9 @@ readonly class DataTablePdoService
             throw new Exception('Object with id: ' . $id . ' not found');
         }
 
-        $this->updateEntityByArray($entity, $data);
+        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $data);
+
+        $this->updateEntityByArray($entity, $dataToStore);
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();

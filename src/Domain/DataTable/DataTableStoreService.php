@@ -18,7 +18,7 @@ readonly class DataTableStoreService
         $fields = $this->fieldService->getFieldMap($dataTable);
 
         foreach ($fields as $key => $field) {
-            if( ! array_key_exists($key, $rawData)){
+            if ( ! array_key_exists($key, $rawData)) {
                 continue;
             }
 
@@ -27,7 +27,7 @@ readonly class DataTableStoreService
 
             $fieldWithValue = $this->dataTableConfigService->convertPathToArray($field, $value, $dataTable->getLangCode());
 
-            $storeData += $fieldWithValue;
+            $storeData = array_replace_recursive($storeData, $fieldWithValue);
         }
 
         return $storeData;
