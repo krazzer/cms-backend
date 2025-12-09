@@ -38,9 +38,10 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/add', methods: 'POST')]
     public function add(#[MapRequestPayload] DataTableDto $dto): Response
     {
-        $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
+        $dataTable   = $this->dataTableService->getByInstance($dto->getInstance());
+        $defaultData = $this->dataTableService->getDefaultData($dto->getInstance());
 
-        return new JsonResponse(['form' => $dataTable->getForm()]);
+        return new JsonResponse(['form' => $dataTable->getForm(), 'data' => $defaultData]);
     }
 
     #[Route('/api/datatable/save', methods: 'POST')]

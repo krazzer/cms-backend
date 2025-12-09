@@ -38,6 +38,20 @@ readonly class DataTableService
         return $dataTable;
     }
 
+    public function getDefaultData(string $instance): ?array
+    {
+        $dataTable   = $this->getByInstance($instance);
+        $defaultData = [];
+
+        foreach ($dataTable->getFormFields() as $key => $field) {
+            if ($default = $field['default'] ?? null) {
+                $defaultData[$key] = $default;
+            }
+        }
+
+        return $defaultData;
+    }
+
     public function getEditData(string $instance, string $id): ?array
     {
         $dataTable = $this->getByInstance($instance);
