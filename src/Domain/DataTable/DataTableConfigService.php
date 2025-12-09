@@ -92,10 +92,7 @@ readonly class DataTableConfigService
 
     public function getDataByPath(array $data, string $path, string $locale): ?string
     {
-        $resolvedPath = str_replace('*', $locale, $path);
-
-        $keys = explode('.', $resolvedPath);
-
+        $keys  = $this->pathToKeys($path, $locale);
         $value = $data;
 
         foreach ($keys as $key) {
@@ -107,6 +104,27 @@ readonly class DataTableConfigService
         }
 
         return $value;
+    }
+
+    public function convertPathToArray(string $path, mixed $value, string $locale): array
+    {
+        $keys = $this->pathToKeys($path, $locale);
+
+        $result = [];
+        $ref    =& $result;
+
+        foreach ($keys as $key) {
+            $ref =& $ref[$key];
+        }
+
+        $ref = $value;
+
+        return $result;
+    }
+
+    public function pathToKeys(string $path, string $locale): array
+    {
+        return explode('.', str_replace('*', $locale, $path));
     }
 
     private function resolveSelectFieldItems(array $fields): array

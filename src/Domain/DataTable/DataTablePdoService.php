@@ -16,6 +16,7 @@ readonly class DataTablePdoService
         private EntityManagerInterface $entityManager,
         private DataTableRowService $rowService,
         private DataTableDataService $dataService,
+        private DataTableStoreService $dataTableStoreService,
         private CollapseService $collapseService,
     ) {}
 
@@ -174,7 +175,9 @@ readonly class DataTablePdoService
 
         $entity = new $model();
 
-        $this->updateEntityByArray($entity, $data);
+        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $data);
+
+        $this->updateEntityByArray($entity, $dataToStore);
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();

@@ -153,7 +153,6 @@ readonly class RearrangeService
             SET parents = REPLACE(parents, :search, :replace) 
             WHERE parents LIKE :likePrefix OR parents = :match";
 
-        dlog([$search, $replace]);
         $this->entityManager->getConnection()->executeStatement($sql, [
             'search'     => $search,
             'replace'    => $replace,

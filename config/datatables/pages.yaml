@@ -34,6 +34,9 @@ form:
         -   key: page
             name: Page
             fields:
+                type:
+                    type: text
+                    default: 'page'
                 title:
                     type: text
                     field: name.*
@@ -42,6 +45,7 @@ form:
                         name: presence
                 content:
                     type: textarea
+                    field: content.*
                     label: Content
                     validator:
                         name: presence
