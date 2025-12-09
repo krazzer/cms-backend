@@ -85,6 +85,7 @@ form:
                 active:
                     type: checkbox
                     label: Active
+                    field: active.*
 
 source:
     model: App\Entity\Page\Page

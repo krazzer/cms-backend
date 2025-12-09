@@ -127,28 +127,7 @@ readonly class DataTablePdoService
             if ($metadata->hasField($field)) {
                 $fieldMapping = $metadata->getFieldMapping($field);
 
-                $type = $fieldMapping['type'];
-
-                switch ($type) {
-                    case 'boolean':
-                        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                    break;
-
-                    case 'integer':
-                    case 'smallint':
-                    case 'bigint':
-                        $value = (int) $value;
-                    break;
-
-                    case 'float':
-                    case 'decimal':
-                        $value = (float) $value;
-                    break;
-
-                    case 'string':
-                        $value = (string) $value;
-                    break;
-                }
+                $value = $this->getValueByType($fieldMapping['type'], $value);
             }
 
             $entity->$setter($value);
@@ -197,4 +176,13 @@ readonly class DataTablePdoService
         $this->entityManager->flush();
     }
 
+    private function getValueByType(mixed $type, mixed $value): mixed
+    {
+        return match ($type) {
+            'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
+            'integer', 'smallint', 'bigint' => (int) $value,
+            'float', 'decimal' => (float) $value,
+            'string' => (string) $value,
+        };
+    }
 }
