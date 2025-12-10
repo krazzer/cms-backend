@@ -101,4 +101,14 @@ readonly class DataTableService
             'instance'      => $instance,
         ];
     }
+
+    public function updateCheckbox(DataTable $dataTable, int $id, string $field, bool $value): void
+    {
+        if ($dataTable->getSource() == SourceType::Pdo) {
+            $this->dataTablePdoService->updateCheckbox($dataTable, $id, $field, $value);
+            return;
+        }
+
+        throw new NotImplementedException('Not implemented yet');
+    }
 }

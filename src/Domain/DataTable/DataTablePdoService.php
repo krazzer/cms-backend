@@ -18,6 +18,7 @@ readonly class DataTablePdoService
         private DataTableDataService $dataService,
         private DataTableStoreService $dataTableStoreService,
         private CollapseService $collapseService,
+        private DataTableConfigService $dataTableConfigService,
     ) {}
 
     public function getData(DataTable $dataTable): array
@@ -178,6 +179,22 @@ readonly class DataTablePdoService
         $this->entityManager->flush();
     }
 
+    public function updateCheckbox(DataTable $dataTable, int $id, string $field, bool $value): void
+    {
+        $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+
+        if ( ! $entity = $repository->find($id)) {
+            throw new Exception('Object with id: ' . $id . ' not found');
+        }
+
+        $dataToStore = $this->dataTableConfigService->convertPathToArray($field, $value, $dataTable->getLangCode());
+
+        $this->updateEntityByArray($entity, $dataToStore);
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+    }
+
     private function getValueByType(mixed $type, mixed $value): mixed
     {
         return match ($type) {
@@ -188,4 +205,5 @@ readonly class DataTablePdoService
             default => $value,
         };
     }
+
 }
