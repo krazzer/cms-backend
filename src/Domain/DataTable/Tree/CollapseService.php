@@ -25,7 +25,7 @@ readonly class CollapseService
 
     private function getCacheKeyByDto(DataTableCollapseDto $dto): string
     {
-        return $this->getCacheKeyByInstanceAndId($dto->getInstance(), $dto->getId());
+        return $this->getCacheKeyByInstanceAndId($dto->getDataTable()->getInstance(), $dto->getId());
     }
 
     private function getCacheKeyByInstanceAndId(string $instance, int $id): string
