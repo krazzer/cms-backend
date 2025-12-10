@@ -32,10 +32,8 @@ class DataTableTreeController extends AbstractController
     #[Route('/api/datatable/page/rearrange', methods: 'POST')]
     public function rearrange(#[MapRequestPayload] DataTableRearrangeDto $dto): Response
     {
-        $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
+        $this->rearrangeService->rearrange($dto->getDataTable(), $dto->getSource(), $dto->getTarget(), $dto->getLocation());
 
-        $this->rearrangeService->rearrange($dataTable, $dto->getSource(), $dto->getTarget(), $dto->getLocation());
-
-        return new JsonResponse($this->dataTableService->getData($dto->getInstance()));
+        return new JsonResponse($this->dataTableService->getData($dto->getDataTable()));
     }
 }

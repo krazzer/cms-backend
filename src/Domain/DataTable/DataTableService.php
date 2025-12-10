@@ -12,10 +12,8 @@ readonly class DataTableService
         private DataTableLanguageResolver $languageResolver
     ) {}
 
-    public function getData(string $instance): array
+    public function getData(DataTable $dataTable): array
     {
-        $dataTable = $this->getByInstance($instance);
-
         if ($dataTable->getSource() == SourceType::Pdo) {
             return $this->dataTablePdoService->getData($dataTable);
         }
@@ -38,9 +36,8 @@ readonly class DataTableService
         return $dataTable;
     }
 
-    public function getDefaultData(string $instance): ?array
+    public function getDefaultData(DataTable $dataTable): ?array
     {
-        $dataTable   = $this->getByInstance($instance);
         $defaultData = [];
 
         foreach ($dataTable->getFormFields() as $key => $field) {
@@ -52,10 +49,8 @@ readonly class DataTableService
         return $defaultData;
     }
 
-    public function getEditData(string $instance, string $id): ?array
+    public function getEditData(DataTable $dataTable, string $id): ?array
     {
-        $dataTable = $this->getByInstance($instance);
-
         if ($dataTable->getSource() == SourceType::Pdo) {
             return $this->dataTablePdoService->getEditData($dataTable, $id);
         }
@@ -63,10 +58,8 @@ readonly class DataTableService
         throw new NotImplementedException('Not implemented yet');
     }
 
-    public function update(string $instance, string $id, array $data): void
+    public function update(DataTable $dataTable, string $id, array $data): void
     {
-        $dataTable = $this->getByInstance($instance);
-
         if ($dataTable->getSource() == SourceType::Pdo) {
             $this->dataTablePdoService->update($dataTable, $id, $data);
             return;
@@ -75,10 +68,8 @@ readonly class DataTableService
         throw new NotImplementedException('Not implemented yet');
     }
 
-    public function create(string $instance, array $data): int
+    public function create(DataTable $dataTable, array $data): int
     {
-        $dataTable = $this->getByInstance($instance);
-
         if ($dataTable->getSource() == SourceType::Pdo) {
             return $this->dataTablePdoService->create($dataTable, $data);
         }
@@ -86,10 +77,8 @@ readonly class DataTableService
         throw new NotImplementedException('Not implemented yet');
     }
 
-    public function delete(string $instance, array $ids): void
+    public function delete(DataTable $dataTable, array $ids): void
     {
-        $dataTable = $this->getByInstance($instance);
-
         if ($dataTable->getSource() == SourceType::Pdo) {
             $this->dataTablePdoService->deleteList($dataTable, $ids);
             return;
@@ -108,7 +97,7 @@ readonly class DataTableService
             'headers'       => $dataTable->getHeaders(),
             'cells'         => $dataTable->getCells(),
             'class'         => $dataTable->getClass(),
-            'data'          => $this->getData($instance),
+            'data'          => $this->getData($dataTable),
             'instance'      => $instance,
         ];
     }

@@ -41,3 +41,7 @@ services:
         arguments:
             $defaultEmailFrom: '%app.default_email_from%'
             $companyInfoLine: '%app.company.infoLine%'
+
+    App\Domain\DataTable\Dto\DataTableDenormalizer:
+        tags:
+            - { name: 'serializer.denormalizer', priority: 100 }

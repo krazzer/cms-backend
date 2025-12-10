@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Domain\DataTable\DataTableService;
+use App\Domain\DataTable\Dto\DataTableCheckDto;
 use App\Domain\DataTable\Dto\DataTableDeleteDto;
 use App\Domain\DataTable\Dto\DataTableDto;
 use App\Domain\DataTable\Dto\DataTableEditDto;
@@ -24,37 +25,46 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/edit', methods: 'POST')]
     public function edit(#[MapRequestPayload] DataTableEditDto $dto): Response
     {
-        $dataTable = $this->dataTableService->getByInstance($dto->getInstance());
-        $editData  = $this->dataTableService->getEditData($dto->getInstance(), $dto->getId());
+        $editData  = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId());
 
         if ( ! $editData) {
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
             return new JsonResponse(['error' => $errorMessage], Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse(['form' => $dataTable->getForm(), 'data' => $editData]);
+        return new JsonResponse(['form' => $dto->getDataTable()->getForm(), 'data' => $editData]);
     }
 
     #[Route('/api/datatable/add', methods: 'POST')]
     public function add(#[MapRequestPayload] DataTableDto $dto): Response
     {
-        $dataTable   = $this->dataTableService->getByInstance($dto->getInstance());
-        $defaultData = $this->dataTableService->getDefaultData($dto->getInstance());
+        $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable());
 
-        return new JsonResponse(['form' => $dataTable->getForm(), 'data' => $defaultData]);
+        return new JsonResponse(['form' => $dto->getDataTable()->getForm(), 'data' => $defaultData]);
+    }
+
+    #[Route('/api/datatable/check', methods: 'POST')]
+    public function check(#[MapRequestPayload] DataTableCheckDto $dto): Response
+    {
+        dlog($dto->getDataTable()->getInstance());
+        dlog($dto->getField());
+        dlog($dto->getId());
+        dlog($dto->getValue());
+
+        return new JsonResponse(['success' => true]);
     }
 
     #[Route('/api/datatable/save', methods: 'POST')]
     public function save(#[MapRequestPayload] DataTableSaveDto $dto): Response
     {
         if ($dto->getId()) {
-            $this->dataTableService->update($dto->getInstance(), $dto->getId(), $dto->getData());
+            $this->dataTableService->update($dto->getDataTable(), $dto->getId(), $dto->getData());
         } else {
-            $id = $this->dataTableService->create($dto->getInstance(), $dto->getData());
+            $id = $this->dataTableService->create($dto->getDataTable(), $dto->getData());
         }
 
         return new JsonResponse([
-            'data' => $this->dataTableService->getData($dto->getInstance()),
+            'data' => $this->dataTableService->getData($dto->getDataTable()),
             'id'   => $id ?? $dto->getId()
         ]);
     }
@@ -62,8 +72,8 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/delete', methods: 'POST')]
     public function delete(#[MapRequestPayload] DataTableDeleteDto $dto): Response
     {
-        $this->dataTableService->delete($dto->getInstance(), $dto->getIds());
+        $this->dataTableService->delete($dto->getDataTable(), $dto->getIds());
 
-        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getInstance())]);
+        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable())]);
     }
 }

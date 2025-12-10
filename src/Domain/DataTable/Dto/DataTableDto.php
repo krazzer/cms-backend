@@ -2,12 +2,16 @@
 
 namespace App\Domain\DataTable\Dto;
 
+use App\Domain\DataTable\DataTable;
+use Symfony\Component\Serializer\Attribute\SerializedName;
+
 class DataTableDto
 {
-    public string $instance;
+    #[SerializedName('instance')]
+    public DataTable $dataTable;
 
-    public function getInstance(): string
+    public function getDataTable(): DataTable
     {
-        return $this->instance;
+        return $this->dataTable;
     }
 }
