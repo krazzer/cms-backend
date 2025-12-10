@@ -8,14 +8,14 @@ readonly class DataTableDataService
         private DataTableConfigService $configService
     ) {}
 
-    public function resolveValue(array $data, string $key, string $langCode): mixed
+    public function resolveValue(array $data, string $path, string $langCode): mixed
     {
-        if (array_key_exists($key, $data)) {
-            return $data[$key];
+        if (array_key_exists($path, $data)) {
+            return $data[$path];
         }
 
-        if (str_contains($key, '.')) {
-            return $this->configService->getDataByPath($data, $key, $langCode);
+        if (str_contains($path, '.')) {
+            return $this->configService->getDataByPath($data, $path, $langCode);
         }
 
         return '';

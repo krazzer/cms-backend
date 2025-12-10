@@ -90,7 +90,7 @@ readonly class DataTableConfigService
         return $form;
     }
 
-    public function getDataByPath(array $data, string $path, string $locale): ?string
+    public function getDataByPath(array $data, string $path, string $locale): mixed
     {
         $keys  = $this->pathToKeys($path, $locale);
         $value = $data;
