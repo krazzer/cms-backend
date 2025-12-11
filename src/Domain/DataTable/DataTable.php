@@ -201,4 +201,9 @@ class DataTable
         $this->searchColumns = $searchColumns;
         return $this;
     }
+
+    public function getSearch(): bool
+    {
+        return (bool) $this->searchColumns;
+    }
 }

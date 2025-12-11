@@ -99,6 +99,7 @@ readonly class DataTableService
             'headers'       => $dataTable->getHeaders(),
             'cells'         => $dataTable->getCells(),
             'class'         => $dataTable->getClass(),
+            'search'        => $dataTable->getSearch(),
             'data'          => $this->getData($dataTable),
             'instance'      => $instance,
         ];
