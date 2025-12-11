@@ -68,7 +68,7 @@ class DataTableController extends AbstractController
         }
 
         return new JsonResponse([
-            'data' => $this->dataTableService->getData($dto->getDataTable()),
+            'data' => $this->dataTableService->getData($dto->getDataTable(), $dto->getFilters()),
             'id'   => $id ?? $dto->getId()
         ]);
     }
@@ -78,6 +78,6 @@ class DataTableController extends AbstractController
     {
         $this->dataTableService->delete($dto->getDataTable(), $dto->getIds());
 
-        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable())]);
+        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable(), $dto->getFilters())]);
     }
 }

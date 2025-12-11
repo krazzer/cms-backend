@@ -18,4 +18,12 @@ class DataTableConfig
     const string PATH_LOCALE    = '*';
 
     const string DEFAULT_TABLE_ALIAS = 'e';
+
+    const string SORT_ASC  = 'ascending';
+    const string SORT_DESC = 'descending';
+
+    const array SORT_MAP_SQL = [
+        self::SORT_ASC  => 'ASC',
+        self::SORT_DESC => 'DESC',
+    ];
 }

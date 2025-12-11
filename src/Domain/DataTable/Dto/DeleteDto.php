@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DeleteDto extends Dto
+class DeleteDto extends FilterDto
 {
     public array $ids;
 
