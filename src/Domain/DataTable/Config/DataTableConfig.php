@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace App\Domain\DataTable\Config;
 
 class DataTableConfig
 {
@@ -13,4 +13,9 @@ class DataTableConfig
     const string KEY_FORM_TABS   = 'tabs';
 
     const string SESSION_KEY_LANG = 'dataTableLang';
+
+    const string PATH_SEPARATOR = '.';
+    const string PATH_LOCALE    = '*';
+
+    const string DEFAULT_TABLE_ALIAS = 'e';
 }

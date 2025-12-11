@@ -2,6 +2,8 @@
 
 namespace App\Domain\DataTable;
 
+use App\Domain\DataTable\Config\DataTableConfig;
+use App\Domain\DataTable\Filter\DataTableFilters;
 use App\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -12,7 +14,7 @@ readonly class DataTableRowService
         private DataTableDataService $dataService,
     ) {}
 
-    public function getRowData(mixed $row, DataTable $dataTable): array
+    public function getRowData(mixed $row, DataTable $dataTable, DataTableFilters $filters): array
     {
         $id = $this->getId($row, $dataTable);
 
@@ -20,7 +22,7 @@ readonly class DataTableRowService
 
         $rowData = ['id' => $id, 'data' => $filteredData];
 
-        if ($dataTable instanceof PagesDataTable) {
+        if ($dataTable instanceof PagesDataTable && ! $filters->getSearch() && ! $filters->getSort()) {
             $rowData['level']    = count($row['parents'] ?? []);
             $rowData['type']     = $row[Page::FIELD_TYPE];
             $rowData['children'] = $row[Page::FIELD_CHILDREN];

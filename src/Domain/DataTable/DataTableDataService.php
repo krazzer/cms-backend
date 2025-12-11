@@ -2,10 +2,12 @@
 
 namespace App\Domain\DataTable;
 
+use App\Domain\DataTable\Config\DataTablePathService;
+
 readonly class DataTableDataService
 {
     public function __construct(
-        private DataTableConfigService $configService
+        private DataTablePathService $pathService
     ) {}
 
     public function resolveValue(array $data, string $path, string $langCode): mixed
@@ -14,8 +16,8 @@ readonly class DataTableDataService
             return $data[$path];
         }
 
-        if (str_contains($path, '.')) {
-            return $this->configService->getDataByPath($data, $path, $langCode);
+        if ($this->pathService->isPath($path)) {
+            return $this->pathService->getDataByPath($data, $path, $langCode);
         }
 
         return '';

@@ -2,6 +2,8 @@
 
 namespace App\Domain\DataTable;
 
+use App\Domain\DataTable\Config\DataTableConfigService;
+use App\Domain\DataTable\Filter\DataTableFilters;
 use Symfony\Polyfill\Intl\Icu\Exception\NotImplementedException;
 
 readonly class DataTableService
@@ -12,10 +14,10 @@ readonly class DataTableService
         private DataTableLanguageResolver $languageResolver
     ) {}
 
-    public function getData(DataTable $dataTable): array
+    public function getData(DataTable $dataTable, DataTableFilters $filters = null): array
     {
         if ($dataTable->getSource() == SourceType::Pdo) {
-            return $this->dataTablePdoService->getData($dataTable);
+            return $this->dataTablePdoService->getData($dataTable, $filters);
         }
 
         return [];

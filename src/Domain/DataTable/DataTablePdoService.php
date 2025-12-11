@@ -3,6 +3,10 @@
 namespace App\Domain\DataTable;
 
 use App\Domain\App\CallableService;
+use App\Domain\DataTable\Config\DataTableConfig;
+use App\Domain\DataTable\Config\DataTablePathService;
+use App\Domain\DataTable\Filter\DataTableFilters;
+use App\Domain\DataTable\Filter\DataTableFilterService;
 use App\Domain\DataTable\Tree\CollapseService;
 use App\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,10 +22,11 @@ readonly class DataTablePdoService
         private DataTableDataService $dataService,
         private DataTableStoreService $dataTableStoreService,
         private CollapseService $collapseService,
-        private DataTableConfigService $dataTableConfigService,
+        private DataTableFilterService $dataTableFilterService,
+        private DataTablePathService $dataTablePathService,
     ) {}
 
-    public function getData(DataTable $dataTable): array
+    public function getData(DataTable $dataTable, DataTableFilters $filters = null): array
     {
         $queryBuilder = $this->getQueryBuilder($dataTable);
 
@@ -29,19 +34,23 @@ readonly class DataTablePdoService
             call_user_func($queryCallable, $queryBuilder);
         }
 
+        if($filters){
+            $this->dataTableFilterService->filter($dataTable, $filters, $queryBuilder);
+        }
+
         $rawData = $queryBuilder->getQuery()->getArrayResult();
 
         if ($dataModifyCallable = $this->callableService->getCallableByString($dataTable->getModify())) {
-            $rawData = call_user_func($dataModifyCallable, $rawData);
+            $rawData = call_user_func($dataModifyCallable, $rawData, $dataTable, $filters);
         }
 
         $returnData = [];
         $rowIds     = [];
 
         foreach ($rawData as $row) {
-            $returnData[] = $this->rowService->getRowData($row, $dataTable);
+            $returnData[] = $this->rowService->getRowData($row, $dataTable, $filters);
 
-            if ($dataTable instanceof PagesDataTable && $row[Page::FIELD_CHILDREN]) {
+            if ($dataTable instanceof PagesDataTable && ($row[Page::FIELD_CHILDREN] ?? false)) {
                 $rowIds[] = $row['id'];
             }
         }
@@ -63,7 +72,7 @@ readonly class DataTablePdoService
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 
-        return $repository->createQueryBuilder('e');
+        return $repository->createQueryBuilder(DataTableConfig::DEFAULT_TABLE_ALIAS);
     }
 
     public function getEditData(DataTable $dataTable, string $id): ?array
@@ -187,7 +196,7 @@ readonly class DataTablePdoService
             throw new Exception('Object with id: ' . $id . ' not found');
         }
 
-        $dataToStore = $this->dataTableConfigService->convertPathToArray($field, $value, $dataTable->getLangCode());
+        $dataToStore = $this->dataTablePathService->convertPathToArray($field, $value, $dataTable->getLangCode());
 
         $this->updateEntityByArray($entity, $dataToStore);
 

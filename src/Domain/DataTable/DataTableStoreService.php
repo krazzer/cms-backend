@@ -2,13 +2,14 @@
 
 namespace App\Domain\DataTable;
 
+use App\Domain\DataTable\Config\DataTablePathService;
 use App\Domain\DataTable\Field\FieldService;
 
 readonly class DataTableStoreService
 {
     public function __construct(
         private FieldService $fieldService,
-        private DataTableConfigService $dataTableConfigService,
+        private DataTablePathService $dataTablePathService,
     ) {}
 
     public function getDataArrayToStore(DataTable $dataTable, array $rawData): array
@@ -25,7 +26,7 @@ readonly class DataTableStoreService
             $value = $rawData[$key];
             $field = $field->getField();
 
-            $fieldWithValue = $this->dataTableConfigService->convertPathToArray($field, $value, $dataTable->getLangCode());
+            $fieldWithValue = $this->dataTablePathService->convertPathToArray($field, $value, $dataTable->getLangCode());
 
             $storeData = array_replace_recursive($storeData, $fieldWithValue);
         }

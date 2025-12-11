@@ -2,6 +2,7 @@
 
 namespace App\Domain\DataTable\Tree;
 
+use App\Domain\DataTable\Config\DataTableConfig;
 use App\Domain\DataTable\DataTable;
 use App\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
@@ -103,7 +104,7 @@ readonly class RearrangeService
         $entityClass = $dataTable->getPdoModel();
 
         $query = $this->entityManager->createQueryBuilder()
-            ->update($entityClass, 'e')
+            ->update($entityClass, DataTableConfig::DEFAULT_TABLE_ALIAS)
             ->set('e.display_order', 'e.display_order ' . $mod . ' 1')
             ->where('e.display_order ' . $operator . ' :order')
             ->setParameter('order', $page->getDisplayOrder());
@@ -124,7 +125,7 @@ readonly class RearrangeService
 
         $query = $this->entityManager->createQueryBuilder()
             ->select('MAX(e.display_order)')
-            ->from(Page::class, 'e')
+            ->from(Page::class, DataTableConfig::DEFAULT_TABLE_ALIAS)
             ->where('e.parents = :parents')
             ->setParameter('parents', json_encode($parents));
 

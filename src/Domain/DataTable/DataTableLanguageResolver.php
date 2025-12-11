@@ -2,8 +2,9 @@
 
 namespace App\Domain\DataTable;
 
-use Symfony\Component\HttpFoundation\RequestStack;
+use App\Domain\DataTable\Config\DataTableConfig;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 readonly class DataTableLanguageResolver
 {

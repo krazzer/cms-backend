@@ -26,6 +26,10 @@ doctrine:
                 alias: App
         controller_resolver:
             auto_mapping: false
+        dql:
+            string_functions:
+                JSON_EXTRACT: App\Doctrine\Dql\JsonExtract
+                JSON_UNQUOTE: App\Doctrine\Dql\JsonUnquote
 
 when@test:
     doctrine:

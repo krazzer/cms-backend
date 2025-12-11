@@ -55,8 +55,7 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/filter', methods: 'POST')]
     public function filter(#[MapRequestPayload] FilterDto $dto): Response
     {
-        // do filtering
-        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable())]);
+        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable(), $dto->getFilters())]);
     }
 
     #[Route('/api/datatable/save', methods: 'POST')]

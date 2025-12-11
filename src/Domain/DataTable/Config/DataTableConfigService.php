@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace App\Domain\DataTable\Config;
 
 use App\Domain\App\CallableService;
+use App\Domain\DataTable\DataTable;
+use App\Domain\DataTable\PagesDataTable;
+use App\Domain\DataTable\SourceType;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
@@ -34,6 +37,7 @@ readonly class DataTableConfigService
         $mobileColumns    = $dataTableConfig['mobileColumns'] ?? [];
         $cells            = $dataTableConfig['cells'] ?? [];
         $class            = $dataTableConfig['class'] ?? null;
+        $searchColumns    = $dataTableConfig['searchColumns'] ?? [];
 
         $sourceType = $source['type'] ?? SourceType::Pdo;
         $pdoModel   = $source['model'] ?? null;
@@ -69,6 +73,7 @@ readonly class DataTableConfigService
         $dataTable->setCells($cells);
         $dataTable->setQuery($query);
         $dataTable->setModify($modify);
+        $dataTable->setSearchColumns($searchColumns);
 
         return $dataTable;
     }
@@ -88,43 +93,6 @@ readonly class DataTableConfigService
         }
 
         return $form;
-    }
-
-    public function getDataByPath(array $data, string $path, string $locale): mixed
-    {
-        $keys  = $this->pathToKeys($path, $locale);
-        $value = $data;
-
-        foreach ($keys as $key) {
-            if ( ! is_array($value) || ! array_key_exists($key, $value)) {
-                return null;
-            }
-
-            $value = $value[$key];
-        }
-
-        return $value;
-    }
-
-    public function convertPathToArray(string $path, mixed $value, string $locale): array
-    {
-        $keys = $this->pathToKeys($path, $locale);
-
-        $result = [];
-        $ref    =& $result;
-
-        foreach ($keys as $key) {
-            $ref =& $ref[$key];
-        }
-
-        $ref = $value;
-
-        return $result;
-    }
-
-    public function pathToKeys(string $path, string $locale): array
-    {
-        return explode('.', str_replace('*', $locale, $path));
     }
 
     private function resolveSelectFieldItems(array $fields): array

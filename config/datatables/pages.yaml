@@ -1,4 +1,5 @@
 class: pages
+searchColumns: ['name.*']
 headersTranslate:
     name.*: general.name
     template: general.template

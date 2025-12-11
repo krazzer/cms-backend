@@ -2,6 +2,8 @@
 
 namespace App\Domain\DataTable;
 
+use App\Domain\DataTable\Config\DataTableConfig;
+
 class DataTable
 {
     private SourceType $source;
@@ -13,6 +15,7 @@ class DataTable
     private array $mobileColumns;
     private array $form;
     private array $cells;
+    private array $searchColumns;
     private string $langCode;
     private ?string $query;
     private ?string $modify;
@@ -186,5 +189,16 @@ class DataTable
         }
 
         return $fieldMap;
+    }
+
+    public function getSearchColumns(): array
+    {
+        return $this->searchColumns;
+    }
+
+    public function setSearchColumns(array $searchColumns): DataTable
+    {
+        $this->searchColumns = $searchColumns;
+        return $this;
     }
 }
