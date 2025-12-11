@@ -28,6 +28,10 @@ readonly class DataTablePdoService
 
     public function getData(DataTable $dataTable, DataTableFilters $filters = null): array
     {
+        if( ! $filters){
+            $filters = new DataTableFilters();
+        }
+
         $queryBuilder = $this->getQueryBuilder($dataTable);
 
         if ($queryCallable = $this->callableService->getCallableByString($dataTable->getQuery())) {
