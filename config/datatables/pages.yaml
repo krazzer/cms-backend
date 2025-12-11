@@ -16,8 +16,10 @@ mobileColumns:
 buttons:
     -   label: Add page
         action: add
+        icon: 'mdi-plus'
     -   label: Delete
         action: delete
+        icon: 'mdi-delete'
     -   label: 'Add new…'
         icon: 'mdi-menu'
         type: 'menu'
