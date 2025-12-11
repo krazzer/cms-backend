@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Domain\DataTable\DataTableService;
-use App\Domain\DataTable\Dto\DataTableCheckDto;
-use App\Domain\DataTable\Dto\DataTableDeleteDto;
-use App\Domain\DataTable\Dto\DataTableDto;
-use App\Domain\DataTable\Dto\DataTableEditDto;
-use App\Domain\DataTable\Dto\DataTableSaveDto;
+use App\Domain\DataTable\Dto\CheckDto;
+use App\Domain\DataTable\Dto\DeleteDto;
+use App\Domain\DataTable\Dto\Dto;
+use App\Domain\DataTable\Dto\EditDto;
+use App\Domain\DataTable\Dto\FilterDto;
+use App\Domain\DataTable\Dto\SaveDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class DataTableController extends AbstractController
     ) {}
 
     #[Route('/api/datatable/edit', methods: 'POST')]
-    public function edit(#[MapRequestPayload] DataTableEditDto $dto): Response
+    public function edit(#[MapRequestPayload] EditDto $dto): Response
     {
         $editData  = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId());
 
@@ -36,7 +37,7 @@ class DataTableController extends AbstractController
     }
 
     #[Route('/api/datatable/add', methods: 'POST')]
-    public function add(#[MapRequestPayload] DataTableDto $dto): Response
+    public function add(#[MapRequestPayload] Dto $dto): Response
     {
         $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable());
 
@@ -44,15 +45,22 @@ class DataTableController extends AbstractController
     }
 
     #[Route('/api/datatable/check', methods: 'POST')]
-    public function check(#[MapRequestPayload] DataTableCheckDto $dto): Response
+    public function check(#[MapRequestPayload] CheckDto $dto): Response
     {
         $this->dataTableService->updateCheckbox($dto->getDataTable(), $dto->getId(), $dto->getField(), $dto->getValue());
 
         return new JsonResponse(['success' => true]);
     }
 
+    #[Route('/api/datatable/filter', methods: 'POST')]
+    public function filter(#[MapRequestPayload] FilterDto $dto): Response
+    {
+        // do filtering
+        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable())]);
+    }
+
     #[Route('/api/datatable/save', methods: 'POST')]
-    public function save(#[MapRequestPayload] DataTableSaveDto $dto): Response
+    public function save(#[MapRequestPayload] SaveDto $dto): Response
     {
         if ($dto->getId()) {
             $this->dataTableService->update($dto->getDataTable(), $dto->getId(), $dto->getData());
@@ -67,7 +75,7 @@ class DataTableController extends AbstractController
     }
 
     #[Route('/api/datatable/delete', methods: 'POST')]
-    public function delete(#[MapRequestPayload] DataTableDeleteDto $dto): Response
+    public function delete(#[MapRequestPayload] DeleteDto $dto): Response
     {
         $this->dataTableService->delete($dto->getDataTable(), $dto->getIds());
 

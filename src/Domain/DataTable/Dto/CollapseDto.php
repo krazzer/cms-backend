@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableCollapseDto extends DataTableDto
+class CollapseDto extends Dto
 {
     public string $id;
     public bool $collapsed;

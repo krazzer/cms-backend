@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DataTable\Dto;
+namespace App\Domain\DataTable\Dto\Denormalizer;
 
 
 use App\Domain\DataTable\DataTable;

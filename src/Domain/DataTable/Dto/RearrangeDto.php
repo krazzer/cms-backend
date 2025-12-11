@@ -4,7 +4,7 @@ namespace App\Domain\DataTable\Dto;
 
 use App\Domain\DataTable\Tree\RearrangeLocation;
 
-class DataTableRearrangeDto extends DataTableDto
+class RearrangeDto extends Dto
 {
     public int $source;
     public int $target;

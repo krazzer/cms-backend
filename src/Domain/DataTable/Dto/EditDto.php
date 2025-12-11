@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableEditDto extends DataTableDto
+class EditDto extends Dto
 {
     public string $id;
 

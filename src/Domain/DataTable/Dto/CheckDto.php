@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableCheckDto extends DataTableDto
+class CheckDto extends Dto
 {
     public string $field;
     public int $id;

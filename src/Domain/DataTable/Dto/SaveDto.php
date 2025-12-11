@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Dto;
 
-class DataTableSaveDto extends DataTableDto
+class SaveDto extends Dto
 {
     public string|null $id;
     public array $data;

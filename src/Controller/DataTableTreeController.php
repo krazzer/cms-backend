@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Domain\DataTable\DataTableService;
-use App\Domain\DataTable\Dto\DataTableCollapseDto;
-use App\Domain\DataTable\Dto\DataTableRearrangeDto;
+use App\Domain\DataTable\Dto\CollapseDto;
+use App\Domain\DataTable\Dto\RearrangeDto;
 use App\Domain\DataTable\Tree\CollapseService;
 use App\Domain\DataTable\Tree\RearrangeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +22,7 @@ class DataTableTreeController extends AbstractController
     ) {}
 
     #[Route('/api/datatable/collapse', methods: 'POST')]
-    public function collapse(#[MapRequestPayload] DataTableCollapseDto $dto): Response
+    public function collapse(#[MapRequestPayload] CollapseDto $dto): Response
     {
         $this->collapseService->setByDto($dto);
 
@@ -30,7 +30,7 @@ class DataTableTreeController extends AbstractController
     }
 
     #[Route('/api/datatable/page/rearrange', methods: 'POST')]
-    public function rearrange(#[MapRequestPayload] DataTableRearrangeDto $dto): Response
+    public function rearrange(#[MapRequestPayload] RearrangeDto $dto): Response
     {
         $this->rearrangeService->rearrange($dto->getDataTable(), $dto->getSource(), $dto->getTarget(), $dto->getLocation());
 

@@ -5,7 +5,7 @@ namespace App\Domain\DataTable\Dto;
 use App\Domain\DataTable\DataTable;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
-class DataTableDto
+class Dto
 {
     #[SerializedName('instance')]
     public DataTable $dataTable;

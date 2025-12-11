@@ -2,7 +2,7 @@
 
 namespace App\Domain\DataTable\Tree;
 
-use App\Domain\DataTable\Dto\DataTableCollapseDto;
+use App\Domain\DataTable\Dto\CollapseDto;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -13,7 +13,7 @@ readonly class CollapseService
         private Security $security,
     ) {}
 
-    public function setByDto(DataTableCollapseDto $dto): void
+    public function setByDto(CollapseDto $dto): void
     {
         $cacheKey  = $this->getCacheKeyByDto($dto);
         $collapsed = $dto->getCollapsed();
@@ -23,7 +23,7 @@ readonly class CollapseService
         $this->keyValueStore->save($item);
     }
 
-    private function getCacheKeyByDto(DataTableCollapseDto $dto): string
+    private function getCacheKeyByDto(CollapseDto $dto): string
     {
         return $this->getCacheKeyByInstanceAndId($dto->getDataTable()->getInstance(), $dto->getId());
     }
