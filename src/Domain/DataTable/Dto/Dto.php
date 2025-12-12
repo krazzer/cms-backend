@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DataTable\Dto;
+namespace KikCMS\Domain\DataTable\Dto;
 
-use App\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\DataTable;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class Dto

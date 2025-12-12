@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DataTable\Dto;
+namespace KikCMS\Domain\DataTable\Dto;
 
-use App\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 
 class FilterDto extends Dto
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Page;
+namespace KikCMS\Entity\Page;
 
 class PageTreeService
 {

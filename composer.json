@@ -8,6 +8,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-pdo": "*",
         "doctrine/dbal": "^3.9.4",
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/doctrine-fixtures-bundle": "^4.1",
@@ -49,12 +50,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "KikCMS\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "KikCMS\\Tests\\": "tests/"
         }
     },
     "replace": {

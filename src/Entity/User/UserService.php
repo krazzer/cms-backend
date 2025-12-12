@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity\User;
+namespace KikCMS\Entity\User;
 
-use App\Domain\Login\SetPasswordDto;
+use KikCMS\Domain\Login\SetPasswordDto;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;

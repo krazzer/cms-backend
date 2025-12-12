@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DataTable\Dto;
+namespace KikCMS\Domain\DataTable\Dto;
 
-use App\Domain\DataTable\Tree\RearrangeLocation;
+use KikCMS\Domain\DataTable\Tree\RearrangeLocation;
 
 class RearrangeDto extends Dto
 {

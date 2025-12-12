@@ -91,5 +91,5 @@ form:
                     field: active.*
 
 source:
-    model: App\Entity\Page\Page
-    modify: 'App\Entity\Page\PageService::modifyDataTableOutput'
+    model: KikCMS\Entity\Page\Page
+    modify: 'KikCMS\Entity\Page\PageService::modifyDataTableOutput'

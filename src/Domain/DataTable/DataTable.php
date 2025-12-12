@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace KikCMS\Domain\DataTable;
 
-use App\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 
 class DataTable
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace KikCMS\Domain\DataTable;
 
-use App\Domain\DataTable\Config\DataTableConfigService;
-use App\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Config\DataTableConfigService;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use Symfony\Polyfill\Intl\Icu\Exception\NotImplementedException;
 
 readonly class DataTableService

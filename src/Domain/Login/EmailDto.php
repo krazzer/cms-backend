@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Login;
+namespace KikCMS\Domain\Login;
 
 class EmailDto
 {

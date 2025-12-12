@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DataTable\Tree;
+namespace KikCMS\Domain\DataTable\Tree;
 
-use App\Domain\DataTable\Dto\CollapseDto;
+use KikCMS\Domain\DataTable\Dto\CollapseDto;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Migrate;
+namespace KikCMS\Domain\Migrate;
 
 use Doctrine\DBAL\Connection;
 use PDO;

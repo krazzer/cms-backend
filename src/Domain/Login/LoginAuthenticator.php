@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Login;
+namespace KikCMS\Domain\Login;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Domain\DataTable\Config;
+namespace KikCMS\Domain\DataTable\Config;
 
-use App\Domain\App\CallableService;
-use App\Domain\DataTable\DataTable;
-use App\Domain\DataTable\PagesDataTable;
-use App\Domain\DataTable\SourceType;
+use KikCMS\Domain\App\CallableService;
+use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\PagesDataTable;
+use KikCMS\Domain\DataTable\SourceType;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;

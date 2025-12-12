@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Domain\DataTable\Filter;
+namespace KikCMS\Domain\DataTable\Filter;
 
 
-use App\Domain\DataTable\Config\DataTableConfig;
-use App\Domain\DataTable\Config\DataTablePathService;
-use App\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\DataTable\Config\DataTablePathService;
+use KikCMS\Domain\DataTable\DataTable;
 use Doctrine\ORM\QueryBuilder;
 
 readonly class DataTableFilterService

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Page;
+namespace KikCMS\Entity\Page;
 
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;

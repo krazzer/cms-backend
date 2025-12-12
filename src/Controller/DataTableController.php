@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Controller;
+namespace KikCMS\Controller;
 
-use App\Domain\DataTable\DataTableService;
-use App\Domain\DataTable\Dto\CheckDto;
-use App\Domain\DataTable\Dto\DeleteDto;
-use App\Domain\DataTable\Dto\Dto;
-use App\Domain\DataTable\Dto\EditDto;
-use App\Domain\DataTable\Dto\FilterDto;
-use App\Domain\DataTable\Dto\SaveDto;
+use KikCMS\Domain\DataTable\DataTableService;
+use KikCMS\Domain\DataTable\Dto\CheckDto;
+use KikCMS\Domain\DataTable\Dto\DeleteDto;
+use KikCMS\Domain\DataTable\Dto\Dto;
+use KikCMS\Domain\DataTable\Dto\EditDto;
+use KikCMS\Domain\DataTable\Dto\FilterDto;
+use KikCMS\Domain\DataTable\Dto\SaveDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

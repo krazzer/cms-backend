@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace KikCMS;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;

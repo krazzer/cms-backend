@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Login;
+namespace KikCMS\Domain\Login;
 
-use App\Domain\Mail\CmsMailer;
-use App\Entity\User\User;
-use App\Entity\User\UserRepository;
+use KikCMS\Domain\Mail\CmsMailer;
+use KikCMS\Entity\User\User;
+use KikCMS\Entity\User\UserRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

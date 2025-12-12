@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\DataTable\Dto\Denormalizer;
+namespace KikCMS\Domain\DataTable\Dto\Denormalizer;
 
 
-use App\Domain\DataTable\DataTable;
-use App\Domain\DataTable\DataTableService;
+use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\DataTableService;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 readonly class DataTableDenormalizer implements DenormalizerInterface

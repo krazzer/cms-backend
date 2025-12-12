@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace KikCMS\Domain\DataTable;
 
-use App\Domain\DataTable\Config\DataTablePathService;
-use App\Domain\DataTable\Field\FieldService;
+use KikCMS\Domain\DataTable\Config\DataTablePathService;
+use KikCMS\Domain\DataTable\Field\FieldService;
 
 readonly class DataTableStoreService
 {

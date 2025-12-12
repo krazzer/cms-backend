@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace KikCMS\Controller;
 
-use App\Domain\Login\EmailDto;
-use App\Domain\Login\PasswordResetService;
-use App\Domain\Login\SetPasswordDto;
-use App\Entity\User\UserService;
+use KikCMS\Domain\Login\EmailDto;
+use KikCMS\Domain\Login\PasswordResetService;
+use KikCMS\Domain\Login\SetPasswordDto;
+use KikCMS\Entity\User\UserService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

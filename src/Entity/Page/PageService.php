@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\Page;
+namespace KikCMS\Entity\Page;
 
-use App\Domain\DataTable\DataTable;
-use App\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 #[Autoconfigure(public: true)]

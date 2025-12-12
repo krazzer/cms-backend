@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\DataTable\Tree;
+namespace KikCMS\Domain\DataTable\Tree;
 
-use App\Domain\DataTable\Config\DataTableConfig;
-use App\Domain\DataTable\DataTable;
-use App\Entity\Page\Page;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class RearrangeService

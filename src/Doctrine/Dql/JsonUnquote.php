@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Doctrine\Dql;
+namespace KikCMS\Doctrine\Dql;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\Node;

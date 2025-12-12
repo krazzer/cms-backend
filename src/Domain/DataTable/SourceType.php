@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace KikCMS\Domain\DataTable;
 
 enum SourceType
 {

@@ -18,18 +18,18 @@ doctrine:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
         auto_mapping: true
         mappings:
-            App:
+            KikCMS:
                 type: attribute
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+                prefix: 'KikCMS\Entity'
+                alias: KikCMS
         controller_resolver:
             auto_mapping: false
         dql:
             string_functions:
-                JSON_EXTRACT: App\Doctrine\Dql\JsonExtract
-                JSON_UNQUOTE: App\Doctrine\Dql\JsonUnquote
+                JSON_EXTRACT: KikCMS\Doctrine\Dql\JsonExtract
+                JSON_UNQUOTE: KikCMS\Doctrine\Dql\JsonUnquote
 
 when@test:
     doctrine:

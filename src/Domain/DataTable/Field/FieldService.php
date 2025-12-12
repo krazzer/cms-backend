@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DataTable\Field;
+namespace KikCMS\Domain\DataTable\Field;
 
-use App\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\DataTable;
 
 class FieldService
 {

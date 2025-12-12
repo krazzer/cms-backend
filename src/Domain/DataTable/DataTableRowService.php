@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace KikCMS\Domain\DataTable;
 
-use App\Domain\DataTable\Config\DataTableConfig;
-use App\Domain\DataTable\Filter\DataTableFilters;
-use App\Entity\Page\Page;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class DataTableRowService

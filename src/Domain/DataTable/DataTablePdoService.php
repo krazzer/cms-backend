@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Domain\DataTable;
+namespace KikCMS\Domain\DataTable;
 
-use App\Domain\App\CallableService;
-use App\Domain\DataTable\Config\DataTableConfig;
-use App\Domain\DataTable\Config\DataTablePathService;
-use App\Domain\DataTable\Filter\DataTableFilters;
-use App\Domain\DataTable\Filter\DataTableFilterService;
-use App\Domain\DataTable\Tree\CollapseService;
-use App\Entity\Page\Page;
+use KikCMS\Domain\App\CallableService;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\DataTable\Config\DataTablePathService;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
+use KikCMS\Domain\DataTable\Tree\CollapseService;
+use KikCMS\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;

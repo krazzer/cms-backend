@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DataTable\Config;
+namespace KikCMS\Domain\DataTable\Config;
 
 class DataTablePathService
 {

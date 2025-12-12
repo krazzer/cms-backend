@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domain\DataTable\Dto\Denormalizer;
+namespace KikCMS\Domain\DataTable\Dto\Denormalizer;
 
 
-use App\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 readonly class FiltersDenormalizer implements DenormalizerInterface

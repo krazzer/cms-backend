@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace KikCMS\Controller;
 
-use App\Domain\DataTable\DataTableService;
-use App\Domain\DataTable\Dto\CollapseDto;
-use App\Domain\DataTable\Dto\RearrangeDto;
-use App\Domain\DataTable\Tree\CollapseService;
-use App\Domain\DataTable\Tree\RearrangeService;
+use KikCMS\Domain\DataTable\DataTableService;
+use KikCMS\Domain\DataTable\Dto\CollapseDto;
+use KikCMS\Domain\DataTable\Dto\RearrangeDto;
+use KikCMS\Domain\DataTable\Tree\CollapseService;
+use KikCMS\Domain\DataTable\Tree\RearrangeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

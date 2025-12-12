@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace KikCMS\Controller;
 
-use App\Domain\DataTable\DataTableService;
+use KikCMS\Domain\DataTable\DataTableService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;

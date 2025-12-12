@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DataTable\Tree;
+namespace KikCMS\Domain\DataTable\Tree;
 
 class TreeConfig
 {

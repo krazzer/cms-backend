@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Mail;
+namespace KikCMS\Domain\Mail;
 
 use Exception;
 use Psr\Log\LoggerInterface;

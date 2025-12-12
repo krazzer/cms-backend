@@ -22,10 +22,10 @@ form:
                     required: true
         role:
             type: select
-            items: 'App\Entity\User\UserService::getRoleMap'
+            items: 'KikCMS\Entity\User\UserService::getRoleMap'
             label: Role
         blocked:
             type: checkbox
             label: Blocked
 source:
-    model: App\Entity\User\User
+    model: KikCMS\Entity\User\User

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DataTable\Dto;
+namespace KikCMS\Domain\DataTable\Dto;
 
 class SaveDto extends FilterDto
 {
