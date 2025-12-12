@@ -2,7 +2,7 @@
 https://localhost:9200/cms/
 
 ### Set up site:
-`SITE_ALIAS=[ALIAS] SITE_PORT=[PORT] docker compose -f docker/docker-compose-site.yml -p [KEY] up -d`
+`SITE_ALIAS=[ALIAS] SITE_PORT=[PORT] docker compose -f vendor/kiksaus/cms-backend/docker/docker-compose-site.yml -p [KEY] up -d`
 
 ### Enable XDebug:
 `docker exec -ti cms-php-1 sh -c "echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20230831/xdebug.so" >> /usr/local/etc/php/php.ini && apachectl restart"`
