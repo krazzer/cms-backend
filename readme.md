@@ -11,4 +11,26 @@ https://localhost:9200/cms/
 `docker exec -ti cms-php-1 sh -c "sed -i \"/\b\(xdebug.so\)\b/d\" /usr/local/etc/php/php.ini && apachectl restart"`
 
 ### Enter container:
-`docker exec -it cms-php-1 /bin/bash`
+`docker exec -it <CONTAINER_NAME> /bin/bash`
+
+### Edit CMS code within project
+Create symlink (replace ../../KikCMS with where the CMS sits relative to the vendor dir) `rm -rf vendor/kiksaus && ln -s ../../KikCMS vendor/kiksaus`
+
+### How to do a composer update with updated CMS code without a commit?
+- Update composer.json with:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../KikCMS2/cms-backend",
+            "options": {
+                "symlink": true
+            }
+        }
+    ]
+}
+```
+
+- Run `composer update`

@@ -7,6 +7,7 @@ services:
       - ./../../../../:/var/www:cached
       - ./../../../../public_html/:/var/www/public_html:cached
       - ./../:/var/www/vendor/kiksaus/cms-backend:cached
+      - ./../../:/var/www/vendor/kiksaus:cached
       - ~/.docker-kikdev/logs:/var/log/apache2/:cached
     networks:
       kikdev:
