@@ -24,6 +24,7 @@ class HomeController extends AbstractController
         $menu = [
             'pages' => ['label' => "Pages", 'icon' => 'view-grid'],
             'users' => ['label' => "Users", 'icon' => 'account-multiple-outline'],
+            'media' => ['label' => "Media", 'icon' => 'image-outline'],
             'fail'  => ['label' => "Fail"],
         ];
 
@@ -54,6 +55,15 @@ class HomeController extends AbstractController
         return new JsonResponse([
             'dataTable'        => $this->dataTableService->getFullConfig('users'),
             'selectedMenuItem' => 'users',
+        ]);
+    }
+
+    #[Route('/api/module/media')]
+    public function mediaModule(): Response
+    {
+        return new JsonResponse([
+            'media'            => ['files' => ['media']],
+            'selectedMenuItem' => 'media',
         ]);
     }
 }
