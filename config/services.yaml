@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../../symfony/dependency-injection/Loader/schema/services.schema.json
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
 
@@ -5,13 +6,14 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.default_email_from: '%env(DEFAULT_EMAIL_FROM)%'
-    app.default_cms_content_language: '%env(APP_DEFAULT_CMS_CONTENT_LANGUAGE)%'
+    app.default_cms_content_language: '%env(default:app.en:APP_DEFAULT_CMS_CONTENT_LANGUAGE)%'
     app.company.name: 'Kiksaus'
     app.company.email: 'info@kiksaus.nl'
     app.company.address: 'Koningin Wilhelminaweg 16'
     app.company.city: 'Hollands Kroon'
     app.company.zip: '1774 AA'
     app.company.infoLine: '%app.company.name%, %app.company.address%, %app.company.zip%, %app.company.city%'
+    app.en: 'en'
 
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
