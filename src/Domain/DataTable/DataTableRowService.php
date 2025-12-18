@@ -6,6 +6,7 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
+use KikCMS\Entity\Page\PageDataTable;
 
 readonly class DataTableRowService
 {
@@ -22,7 +23,7 @@ readonly class DataTableRowService
 
         $rowData = ['id' => $id, 'data' => $filteredData];
 
-        if ($dataTable instanceof PagesDataTable && ! $filters->getSearch() && ! $filters->getSort()) {
+        if ($dataTable instanceof PageDataTable && ! $filters->getSearch() && ! $filters->getSort()) {
             $rowData['level']    = count($row['parents'] ?? []);
             $rowData['type']     = $row[Page::FIELD_TYPE];
             $rowData['children'] = $row[Page::FIELD_CHILDREN];

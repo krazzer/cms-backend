@@ -3,9 +3,9 @@
 namespace KikCMS\Controller;
 
 use KikCMS\Domain\DataTable\DataTableService;
+use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
-use KikCMS\Domain\DataTable\Dto\Dto;
 use KikCMS\Domain\DataTable\Dto\EditDto;
 use KikCMS\Domain\DataTable\Dto\FilterDto;
 use KikCMS\Domain\DataTable\Dto\SaveDto;
@@ -37,7 +37,7 @@ class DataTableController extends AbstractController
     }
 
     #[Route('/api/datatable/add', methods: 'POST')]
-    public function add(#[MapRequestPayload] Dto $dto): Response
+    public function add(#[MapRequestPayload] AddDto $dto): Response
     {
         $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable());
 

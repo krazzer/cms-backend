@@ -20,6 +20,10 @@ services:
     Symfony\Component\String\ByteString: ~
     Symfony\Component\Yaml\Parser: ~
 
+    _instanceof:
+        KikCMS\Domain\DataTable\Modifier\DataTableModifierInterface:
+            tags: [ 'datatable.modifier' ]
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

@@ -4,9 +4,9 @@ namespace KikCMS\Domain\DataTable\Config;
 
 use KikCMS\Domain\App\CallableService;
 use KikCMS\Domain\DataTable\DataTable;
-use KikCMS\Domain\DataTable\PagesDataTable;
 use KikCMS\Domain\DataTable\SourceType;
 use Exception;
+use KikCMS\Entity\Page\PageDataTable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -59,7 +59,7 @@ readonly class DataTableConfigService
         $form = $this->updateFormConfig($form);
 
         $dataTable = match ($class) {
-            "pages" => new PagesDataTable,
+            "pages" => new PageDataTable,
             default => new DataTable,
         };
 

@@ -7,8 +7,11 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
+use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
+use KikCMS\Domain\DataTable\Modifier\TableDataModifierInterface;
 use KikCMS\Domain\DataTable\Tree\CollapseService;
 use KikCMS\Entity\Page\Page;
+use KikCMS\Entity\Page\PageDataTable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
@@ -24,11 +27,12 @@ readonly class DataTablePdoService
         private CollapseService $collapseService,
         private DataTableFilterService $dataTableFilterService,
         private DataTablePathService $dataTablePathService,
+        private DataTableModifierService $dataTableModifierService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters = null): array
     {
-        if( ! $filters){
+        if ( ! $filters) {
             $filters = new DataTableFilters();
         }
 
@@ -38,13 +42,13 @@ readonly class DataTablePdoService
             call_user_func($queryCallable, $queryBuilder);
         }
 
-        if($filters){
+        if ($filters) {
             $this->dataTableFilterService->filter($dataTable, $filters, $queryBuilder);
         }
 
         $rawData = $queryBuilder->getQuery()->getArrayResult();
 
-        if ($dataModifyCallable = $this->callableService->getCallableByString($dataTable->getModify())) {
+        if ($dataModifyCallable = $this->dataTableModifierService->resolve($dataTable, TableDataModifierInterface::class)) {
             $rawData = call_user_func($dataModifyCallable, $rawData, $dataTable, $filters);
         }
 
@@ -54,12 +58,12 @@ readonly class DataTablePdoService
         foreach ($rawData as $row) {
             $returnData[] = $this->rowService->getRowData($row, $dataTable, $filters);
 
-            if ($dataTable instanceof PagesDataTable && ($row[Page::FIELD_CHILDREN] ?? false)) {
+            if ($dataTable instanceof PageDataTable && ($row[Page::FIELD_CHILDREN] ?? false)) {
                 $rowIds[] = $row['id'];
             }
         }
 
-        if ($dataTable instanceof PagesDataTable && $rowIds) {
+        if ($dataTable instanceof PageDataTable && $rowIds) {
             $collapsedMap = $this->collapseService->getCollapsedMap($rowIds, $dataTable->getInstance());
 
             foreach ($returnData as &$row) {

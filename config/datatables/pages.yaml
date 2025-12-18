@@ -92,4 +92,3 @@ form:
 
 source:
     model: KikCMS\Entity\Page\Page
-    modify: 'KikCMS\Entity\Page\PageService::modifyDataTableOutput'
