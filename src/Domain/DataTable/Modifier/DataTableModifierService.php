@@ -13,11 +13,11 @@ readonly class DataTableModifierService
         private iterable $modifiers
     ) {}
 
-    public function resolve(DataTable $dataTable, string $interface): ?callable
+    public function resolve(DataTable $dataTable, string $interface): ?DataTableModifierInterface
     {
         foreach ($this->modifiers as $modifier) {
             if ($modifier instanceof $interface && $this->supports($modifier, $dataTable)) {
-                return [$modifier, 'modify'];
+                return $modifier;
             }
         }
 

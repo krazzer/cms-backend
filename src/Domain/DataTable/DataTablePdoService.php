@@ -8,10 +8,7 @@ use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
-use KikCMS\Domain\DataTable\Modifier\TableDataModifierInterface;
-use KikCMS\Domain\DataTable\Tree\CollapseService;
-use KikCMS\Entity\Page\Page;
-use KikCMS\Entity\Page\PageDataTable;
+use KikCMS\Domain\DataTable\Modifier\RawTableDataModifierInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
@@ -24,7 +21,6 @@ readonly class DataTablePdoService
         private DataTableRowService $rowService,
         private DataTableDataService $dataService,
         private DataTableStoreService $dataTableStoreService,
-        private CollapseService $collapseService,
         private DataTableFilterService $dataTableFilterService,
         private DataTablePathService $dataTablePathService,
         private DataTableModifierService $dataTableModifierService,
@@ -48,32 +44,18 @@ readonly class DataTablePdoService
 
         $rawData = $queryBuilder->getQuery()->getArrayResult();
 
-        if ($dataModifyCallable = $this->dataTableModifierService->resolve($dataTable, TableDataModifierInterface::class)) {
-            $rawData = call_user_func($dataModifyCallable, $rawData, $dataTable, $filters);
+        if ($modifier = $this->dataTableModifierService->resolve($dataTable, RawTableDataModifierInterface::class)) {
+            $rawData = $modifier->modify($rawData, $dataTable, $filters);
         }
 
-        $returnData = [];
-        $rowIds     = [];
+        $viewData = [];
 
         foreach ($rawData as $row) {
-            $returnData[] = $this->rowService->getRowData($row, $dataTable, $filters);
-
-            if ($dataTable instanceof PageDataTable && ($row[Page::FIELD_CHILDREN] ?? false)) {
-                $rowIds[] = $row['id'];
-            }
+            $viewDataRow = $this->rowService->getRowView($row, $dataTable, $filters);
+            $viewData[]  = $viewDataRow->toArray();
         }
 
-        if ($dataTable instanceof PageDataTable && $rowIds) {
-            $collapsedMap = $this->collapseService->getCollapsedMap($rowIds, $dataTable->getInstance());
-
-            foreach ($returnData as &$row) {
-                if (array_key_exists($row['id'], $collapsedMap)) {
-                    $row['collapsed'] = $collapsedMap[$row['id']];
-                }
-            }
-        }
-
-        return $returnData;
+        return $viewData;
     }
 
     public function getQueryBuilder(DataTable $dataTable): QueryBuilder
@@ -103,7 +85,7 @@ readonly class DataTablePdoService
             $arrayData[$key] = $value;
         }
 
-        // remove all fields not required in the form
+        // remove all fields that are not required in the form
         return array_intersect_key($arrayData, array_flip($dataTable->getFormFieldKeys()));
     }
 

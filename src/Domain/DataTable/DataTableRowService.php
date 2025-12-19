@@ -3,33 +3,32 @@
 namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
-use KikCMS\Domain\DataTable\Filter\DataTableFilters;
-use KikCMS\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
-use KikCMS\Entity\Page\PageDataTable;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
+use KikCMS\Domain\DataTable\Modifier\ViewRowDataModifierInterface;
+use KikCMS\Domain\DataTable\TableRow\TableViewRow;
 
 readonly class DataTableRowService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private DataTableDataService $dataService,
+        private DataTableModifierService $dataTableModifierService,
     ) {}
 
-    public function getRowData(mixed $row, DataTable $dataTable, DataTableFilters $filters): array
+    public function getRowView(mixed $rawRow, DataTable $dataTable, DataTableFilters $filters): TableViewRow
     {
-        $id = $this->getId($row, $dataTable);
+        $id          = $this->getId($rawRow, $dataTable);
+        $filteredRow = $this->filterRowData($rawRow, $dataTable);
 
-        $filteredData = $this->filterRowData($row, $dataTable);
+        $viewRow = new TableViewRow($id, $rawRow, $filteredRow);
 
-        $rowData = ['id' => $id, 'data' => $filteredData];
-
-        if ($dataTable instanceof PageDataTable && ! $filters->getSearch() && ! $filters->getSort()) {
-            $rowData['level']    = count($row['parents'] ?? []);
-            $rowData['type']     = $row[Page::FIELD_TYPE];
-            $rowData['children'] = $row[Page::FIELD_CHILDREN];
+        if ($modifier = $this->dataTableModifierService->resolve($dataTable, ViewRowDataModifierInterface::class)) {
+            $viewRow = $modifier->modify($viewRow, $dataTable, $filters);
         }
 
-        return $rowData;
+        return $viewRow;
     }
 
     public function getId(array $row, DataTable $dataTable): string

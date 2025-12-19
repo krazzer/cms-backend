@@ -4,13 +4,13 @@ namespace KikCMS\Entity\Page\DataTableModifier;
 
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
-use KikCMS\Domain\DataTable\Modifier\TableDataModifierInterface;
+use KikCMS\Domain\DataTable\Modifier\RawTableDataModifierInterface;
 use KikCMS\Entity\Page\PageTreeService;
 
-readonly class PageTableDataModifier implements TableDataModifierInterface
+readonly class PageRawTableDataModifier implements RawTableDataModifierInterface
 {
     public function __construct(
-        private  PageTreeService $pageTreeService
+        private PageTreeService $pageTreeService
     ) {}
 
     public function modify(array $data, DataTable $dataTable, DataTableFilters $filters): array
