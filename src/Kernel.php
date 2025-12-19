@@ -27,6 +27,12 @@ class Kernel extends BaseKernel
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
+        // Add app namespace to autowire
+        $container->services()
+            ->load('App\\', $this->getAppDir() . '/src/*')
+            ->autowire()
+            ->autoconfigure();
+
         // Import CMS services
         $container->import(__DIR__ . '/../config/services.yaml');
         $container->import(__DIR__ . '/../config/{packages}/*.yaml');
