@@ -32,5 +32,5 @@ Create symlink (replace ../../KikCMS with where the CMS sits relative to the ven
     ]
 }
 ```
-
+- Remove existing symlink
 - Run `composer update`
