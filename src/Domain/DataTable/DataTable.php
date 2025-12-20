@@ -16,9 +16,11 @@ class DataTable
     private array $form;
     private array $cells;
     private array $searchColumns;
+    private array $typeForms;
     private string $langCode;
     private ?string $query;
     private ?string $modify;
+    private string $class = 'default';
 
     public function getInstance(): string
     {
@@ -75,17 +77,23 @@ class DataTable
         return $this;
     }
 
-    public function getForm(): array
+    public function getForm(string $type = null): array
     {
-        return $this->form;
+        if( ! $type){
+            return $this->form;
+        }
+
+        return $this->getTypeForms()[$type] ?? $this->form;
     }
 
-    public function getFormFields(): array
+    public function getFormFields(string $type = null): array
     {
-        if (isset($this->form[DataTableConfig::KEY_FORM_TABS])) {
+        $form = $this->getForm($type);
+
+        if (isset($form[DataTableConfig::KEY_FORM_TABS])) {
             $fields = [];
 
-            foreach ($this->form[DataTableConfig::KEY_FORM_TABS] as $tab) {
+            foreach ($form[DataTableConfig::KEY_FORM_TABS] as $tab) {
                 $fields = array_merge($fields, $tab[DataTableConfig::KEY_FORM_FIELDS]);
             }
 
@@ -150,9 +158,9 @@ class DataTable
         return $this;
     }
 
-    public function getClass(): ?string
+    public function getClass(): string
     {
-        return 'default';
+        return $this->class;
     }
 
     public function getQuery(): ?string
@@ -174,6 +182,12 @@ class DataTable
     public function setModify(?string $modify): DataTable
     {
         $this->modify = $modify;
+        return $this;
+    }
+
+    public function setClass(string $class): DataTable
+    {
+        $this->class = $class;
         return $this;
     }
 
@@ -205,5 +219,16 @@ class DataTable
     public function getSearch(): bool
     {
         return (bool) $this->searchColumns;
+    }
+
+    public function getTypeForms(): array
+    {
+        return $this->typeForms;
+    }
+
+    public function setTypeForms(array $typeForms): DataTable
+    {
+        $this->typeForms = $typeForms;
+        return $this;
     }
 }

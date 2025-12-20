@@ -26,7 +26,7 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/edit', methods: 'POST')]
     public function edit(#[MapRequestPayload] EditDto $dto): Response
     {
-        $editData  = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId());
+        $editData = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId());
 
         if ( ! $editData) {
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
@@ -39,9 +39,10 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/add', methods: 'POST')]
     public function add(#[MapRequestPayload] AddDto $dto): Response
     {
-        $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable());
+        $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable(), $dto->getType());
+        $form        = $this->dataTableService->getForm($dto->getDataTable(), $dto->getType());
 
-        return new JsonResponse(['form' => $dto->getDataTable()->getForm(), 'data' => $defaultData]);
+        return new JsonResponse(['form' => $form, 'data' => $defaultData]);
     }
 
     #[Route('/api/datatable/check', methods: 'POST')]

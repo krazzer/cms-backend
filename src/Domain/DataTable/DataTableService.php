@@ -38,11 +38,11 @@ readonly class DataTableService
         return $dataTable;
     }
 
-    public function getDefaultData(DataTable $dataTable): ?array
+    public function getDefaultData(DataTable $dataTable, string $type = null): ?array
     {
         $defaultData = [];
 
-        foreach ($dataTable->getFormFields() as $key => $field) {
+        foreach ($dataTable->getFormFields($type) as $key => $field) {
             if ($default = $field['default'] ?? null) {
                 $defaultData[$key] = $default;
             }
@@ -113,5 +113,10 @@ readonly class DataTableService
         }
 
         throw new NotImplementedException('Not implemented yet');
+    }
+
+    public function getForm(DataTable $dataTable, string $type = null): array
+    {
+        return $dataTable->getForm($type);
     }
 }

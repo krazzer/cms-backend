@@ -89,6 +89,46 @@ form:
                     type: checkbox
                     label: Active
                     field: active.*
-
+typeForms:
+    link:
+        fields:
+            type:
+                type: hidden
+                default: 'page'
+            title:
+                type: text
+                field: name.*
+                label: Name
+                validator:
+                    name: presence
+            link:
+                type: text
+                field: link
+                label: Url waar de pagina naar toe linkt
+            slug:
+                type: text
+                label: Slug
+                field: slug.*
+            key:
+                type: text
+                label: Key
+    menu:
+        fields:
+            type:
+                type: hidden
+                default: 'menu'
+            title:
+                type: text
+                field: name.*
+                label: Name
+                validator:
+                    name: presence
+            maxLevel:
+                type: text
+                field: maxlevel
+                label: Maximum level
+            key:
+                type: text
+                label: Key
 source:
     model: KikCMS\Entity\Page\Page

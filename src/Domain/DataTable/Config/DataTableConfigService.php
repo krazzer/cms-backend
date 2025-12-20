@@ -2,11 +2,10 @@
 
 namespace KikCMS\Domain\DataTable\Config;
 
+use Exception;
 use KikCMS\Domain\App\CallableService;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\SourceType;
-use Exception;
-use KikCMS\Entity\Page\PageDataTable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -38,6 +37,7 @@ readonly class DataTableConfigService
         $cells            = $dataTableConfig['cells'] ?? [];
         $class            = $dataTableConfig['class'] ?? null;
         $searchColumns    = $dataTableConfig['searchColumns'] ?? [];
+        $typeForms        = $dataTableConfig['typeForms'] ?? [];
 
         $sourceType = $source['type'] ?? SourceType::Pdo;
         $pdoModel   = $source['model'] ?? null;
@@ -58,24 +58,20 @@ readonly class DataTableConfigService
 
         $form = $this->updateFormConfig($form);
 
-        $dataTable = match ($class) {
-            "pages" => new PageDataTable,
-            default => new DataTable,
-        };
-
-        $dataTable->setInstance($instance);
-        $dataTable->setSource($sourceType);
-        $dataTable->setPdoModel($pdoModel);
-        $dataTable->setHeaders($headers);
-        $dataTable->setButtons($buttons);
-        $dataTable->setMobileColumns($mobileColumns);
-        $dataTable->setForm($form);
-        $dataTable->setCells($cells);
-        $dataTable->setQuery($query);
-        $dataTable->setModify($modify);
-        $dataTable->setSearchColumns($searchColumns);
-
-        return $dataTable;
+        return (new DataTable)
+            ->setInstance($instance)
+            ->setSource($sourceType)
+            ->setPdoModel($pdoModel)
+            ->setHeaders($headers)
+            ->setButtons($buttons)
+            ->setMobileColumns($mobileColumns)
+            ->setForm($form)
+            ->setCells($cells)
+            ->setQuery($query)
+            ->setModify($modify)
+            ->setSearchColumns($searchColumns)
+            ->setClass($class)
+            ->setTypeForms($typeForms);
     }
 
     public function updateFormConfig(array $form): array
