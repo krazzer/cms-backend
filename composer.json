@@ -41,6 +41,9 @@
         "twig/twig": "^2.12|^3.20"
     },
     "config": {
+        "platform": {
+            "php": "8.4"
+        },
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
