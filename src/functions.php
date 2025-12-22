@@ -9,7 +9,7 @@ if ( ! function_exists('dlog')) {
      * @param bool $once
      * @return void
      */
-    function dlog(mixed $data, string $label = null, bool $once = false): void
+    function dlog(mixed $data, ?string $label = null, bool $once = false): void
     {
         $logFile = __DIR__ . '/../var/log/dev.log';
 
