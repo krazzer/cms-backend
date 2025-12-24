@@ -38,7 +38,8 @@
         "symfony/validator": "8.0.*",
         "symfony/yaml": "8.0.*",
         "twig/extra-bundle": "^2.12|^3.20",
-        "twig/twig": "^2.12|^3.20"
+        "twig/twig": "^2.12|^3.20",
+        "nelmio/cors-bundle": "^2.6"
     },
     "config": {
         "platform": {
