@@ -1,0 +1,24 @@
+buttons:
+    -   label: Add color
+        action: add
+        icon: 'mdi-plus'
+    -   label: Delete
+        action: delete
+        icon: 'mdi-delete'
+headers:
+    id: Id
+    name: Name
+form:
+    fields:
+        name:
+            type: 'text'
+            field: 'name'
+            label: 'Color name'
+            validator:
+                name: presence
+        thought:
+            type: 'text'
+            field: 'thought'
+            label: 'What thought does this color bring to mind?'
+source:
+    type: local

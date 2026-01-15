@@ -26,7 +26,7 @@ readonly class DataTablePdoService
         private DataTableModifierService $dataTableModifierService,
     ) {}
 
-    public function getData(DataTable $dataTable, DataTableFilters $filters = null): array
+    public function getData(DataTable $dataTable, ?DataTableFilters $filters = null): array
     {
         if ( ! $filters) {
             $filters = new DataTableFilters();

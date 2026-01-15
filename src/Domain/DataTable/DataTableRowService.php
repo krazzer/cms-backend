@@ -17,9 +17,9 @@ readonly class DataTableRowService
         private DataTableModifierService $dataTableModifierService,
     ) {}
 
-    public function getRowView(mixed $rawRow, DataTable $dataTable, DataTableFilters $filters): TableViewRow
+    public function getRowView(mixed $rawRow, DataTable $dataTable, DataTableFilters $filters, string|int|null $id = null): TableViewRow
     {
-        $id          = $this->getId($rawRow, $dataTable);
+        $id          = $id ?: $this->getId($rawRow, $dataTable);
         $filteredRow = $this->filterRowData($rawRow, $dataTable);
 
         $viewRow = new TableViewRow($id, $rawRow, $filteredRow);
@@ -33,6 +33,10 @@ readonly class DataTableRowService
 
     public function getId(array $row, DataTable $dataTable): string
     {
+        if($dataTable->getSource() == SourceType::Local) {
+            return '';
+        }
+
         $metaData = $this->entityManager->getClassMetadata($dataTable->getPdoModel());
 
         $identifierFieldNames = $metaData->getIdentifierFieldNames();

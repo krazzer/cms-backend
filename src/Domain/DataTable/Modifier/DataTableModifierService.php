@@ -27,8 +27,12 @@ readonly class DataTableModifierService
 
     private function supports(object $modifier, DataTable $dataTable): bool
     {
-        $entity       = (new ReflectionClass($dataTable->getPdoModel()))->getShortName();
-        $modifierName = (new ReflectionClass($modifier))->getShortName();
+        if( ! $dataTable->getPdoModel()){
+            return false;
+        }
+
+        $entity       = new ReflectionClass($dataTable->getPdoModel())->getShortName();
+        $modifierName = new ReflectionClass($modifier)->getShortName();
 
         return str_starts_with($modifierName, $entity);
     }

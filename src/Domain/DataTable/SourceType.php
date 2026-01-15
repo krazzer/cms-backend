@@ -2,8 +2,9 @@
 
 namespace KikCMS\Domain\DataTable;
 
-enum SourceType
+enum SourceType: string
 {
-    case Pdo;
-    case Cache;
+    case Pdo = 'pdo';
+    case Cache = 'cache';
+    case Local = 'local';
 }

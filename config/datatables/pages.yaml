@@ -56,6 +56,11 @@ form:
                     label: Content
                     validator:
                         name: presence
+                colors:
+                    type: datatable
+                    field: content.colors
+                    label: Kleurenlijst
+                    instance: colors
         -   key: seo
             name: SEO
             fields:

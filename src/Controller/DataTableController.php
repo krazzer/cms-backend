@@ -2,10 +2,12 @@
 
 namespace KikCMS\Controller;
 
+use KikCMS\Domain\App\Exception\ObjectNotFoundException;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
+use KikCMS\Domain\DataTable\Dto\Dto;
 use KikCMS\Domain\DataTable\Dto\EditDto;
 use KikCMS\Domain\DataTable\Dto\FilterDto;
 use KikCMS\Domain\DataTable\Dto\SaveDto;
@@ -23,17 +25,27 @@ class DataTableController extends AbstractController
         private readonly TranslatorInterface $translator,
     ) {}
 
+    #[Route('/api/datatable', methods: 'POST')]
+    public function show(#[MapRequestPayload] Dto $dto): Response
+    {
+        $instance = $dto->getDataTable()->getInstance();
+        return new JsonResponse(['settings' => $this->dataTableService->getFullConfig($instance)]);
+    }
+
     #[Route('/api/datatable/edit', methods: 'POST')]
     public function edit(#[MapRequestPayload] EditDto $dto): Response
     {
-        $editData = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId());
-
-        if ( ! $editData) {
+        try {
+            $editData = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId(), $dto->getStoreData());
+        } catch (ObjectNotFoundException) {
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
             return new JsonResponse(['error' => $errorMessage], Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse(['form' => $dto->getDataTable()->getForm(), 'data' => $editData]);
+        return new JsonResponse([
+            'form' => $dto->getDataTable()->getForm(),
+            'data' => $editData ?? []
+        ]);
     }
 
     #[Route('/api/datatable/add', methods: 'POST')]
@@ -62,23 +74,31 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/save', methods: 'POST')]
     public function save(#[MapRequestPayload] SaveDto $dto): Response
     {
-        if ($dto->getId()) {
-            $this->dataTableService->update($dto->getDataTable(), $dto->getId(), $dto->getData());
-        } else {
-            $id = $this->dataTableService->create($dto->getDataTable(), $dto->getData());
-        }
+        $storeData = $dto->getStoreData();
+        $dataTable = $dto->getDataTable();
+
+        $id       = $this->dataTableService->save($dataTable, $dto->getFormData(), $storeData, $dto->getId());
+        $viewData = $this->dataTableService->getData($dataTable, $dto->getFilters(), $storeData);
 
         return new JsonResponse([
-            'data' => $this->dataTableService->getData($dto->getDataTable(), $dto->getFilters()),
-            'id'   => $id ?? $dto->getId()
+            'data'      => $viewData,
+            'storeData' => $storeData->getData(),
+            'editedId'  => $id,
         ]);
     }
 
     #[Route('/api/datatable/delete', methods: 'POST')]
     public function delete(#[MapRequestPayload] DeleteDto $dto): Response
     {
-        $this->dataTableService->delete($dto->getDataTable(), $dto->getIds());
+        $storeData = $dto->getStoreData();
+        $dataTable = $dto->getDataTable();
 
-        return new JsonResponse(['data' => $this->dataTableService->getData($dto->getDataTable(), $dto->getFilters())]);
+        $this->dataTableService->delete($dataTable, $dto->getIds(), $storeData);
+        $viewData = $this->dataTableService->getData($dataTable, $dto->getFilters(), $storeData);
+
+        return new JsonResponse([
+            'data'      => $viewData,
+            'storeData' => $storeData->getData(),
+        ]);
     }
 }

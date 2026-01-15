@@ -8,7 +8,7 @@ class DataTable
 {
     private SourceType $source;
     private string $instance;
-    private string $pdoModel;
+    private ?string $pdoModel = null;
     private string $cachePool;
     private array $headers;
     private array $buttons;
@@ -44,7 +44,7 @@ class DataTable
         return $this;
     }
 
-    public function getPdoModel(): string
+    public function getPdoModel(): ?string
     {
         return $this->pdoModel;
     }
@@ -77,7 +77,7 @@ class DataTable
         return $this;
     }
 
-    public function getForm(string $type = null): array
+    public function getForm(?string $type = null): array
     {
         if( ! $type){
             return $this->form;
@@ -86,7 +86,7 @@ class DataTable
         return $this->getTypeForms()[$type] ?? $this->form;
     }
 
-    public function getFormFields(string $type = null): array
+    public function getFormFields(?string $type = null): array
     {
         $form = $this->getForm($type);
 

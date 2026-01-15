@@ -2,18 +2,26 @@
 
 namespace KikCMS\Domain\DataTable\Dto;
 
+use KikCMS\Domain\DataTable\Object\DataTableStoreData;
+
 class SaveDto extends FilterDto
 {
-    public string|null $id;
-    public array $data;
+    public string|null|int $id;
+    public array $formData;
+    public DataTableStoreData $storeData;
 
-    public function getId(): ?string
+    public function getId(): string|null|int
     {
         return $this->id;
     }
 
-    public function getData(): array
+    public function getFormData(): array
     {
-        return $this->data;
+        return $this->formData;
+    }
+
+    public function getStoreData(): DataTableStoreData
+    {
+        return $this->storeData ?? new DataTableStoreData;
     }
 }

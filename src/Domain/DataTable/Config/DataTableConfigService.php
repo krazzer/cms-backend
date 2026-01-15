@@ -39,7 +39,7 @@ readonly class DataTableConfigService
         $searchColumns    = $dataTableConfig['searchColumns'] ?? [];
         $typeForms        = $dataTableConfig['typeForms'] ?? [];
 
-        $sourceType = $source['type'] ?? SourceType::Pdo;
+        $sourceType = SourceType::tryFrom($source['type'] ?? null) ?? SourceType::Pdo;
         $pdoModel   = $source['model'] ?? null;
         $query      = $source['query'] ?? null;
         $modify     = $source['modify'] ?? null;
@@ -58,10 +58,9 @@ readonly class DataTableConfigService
 
         $form = $this->updateFormConfig($form);
 
-        return (new DataTable)
+        $dataTable = (new DataTable)
             ->setInstance($instance)
             ->setSource($sourceType)
-            ->setPdoModel($pdoModel)
             ->setHeaders($headers)
             ->setButtons($buttons)
             ->setMobileColumns($mobileColumns)
@@ -70,8 +69,17 @@ readonly class DataTableConfigService
             ->setQuery($query)
             ->setModify($modify)
             ->setSearchColumns($searchColumns)
-            ->setClass($class)
             ->setTypeForms($typeForms);
+
+        if ($sourceType == SourceType::Pdo) {
+            $dataTable->setPdoModel($pdoModel);
+        }
+
+        if ($class) {
+            $dataTable->setClass($class);
+        }
+
+        return $dataTable;
     }
 
     public function updateFormConfig(array $form): array
