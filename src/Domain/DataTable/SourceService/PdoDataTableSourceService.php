@@ -1,10 +1,15 @@
 <?php
 
-namespace KikCMS\Domain\DataTable;
+namespace KikCMS\Domain\DataTable\SourceService;
 
 use KikCMS\Domain\App\CallableService;
+use KikCMS\Domain\App\Exception\ObjectNotFoundException;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
+use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\DataTableDataService;
+use KikCMS\Domain\DataTable\DataTableRowService;
+use KikCMS\Domain\DataTable\DataTableStoreService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
@@ -12,8 +17,9 @@ use KikCMS\Domain\DataTable\Modifier\RawTableDataModifierInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
+use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 
-readonly class DataTablePdoService
+readonly class PdoDataTableSourceService implements DataTableSourceServiceInterface
 {
     public function __construct(
         private CallableService $callableService,
@@ -26,7 +32,7 @@ readonly class DataTablePdoService
         private DataTableModifierService $dataTableModifierService,
     ) {}
 
-    public function getData(DataTable $dataTable, ?DataTableFilters $filters = null): array
+    public function getData(DataTable $dataTable, ?DataTableFilters $filters = null, ?StoreData $storeData = null): array
     {
         if ( ! $filters) {
             $filters = new DataTableFilters();
@@ -65,12 +71,12 @@ readonly class DataTablePdoService
         return $repository->createQueryBuilder(DataTableConfig::DEFAULT_TABLE_ALIAS);
     }
 
-    public function getEditData(DataTable $dataTable, string $id): ?array
+    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): ?array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 
         if ( ! $entity = $repository->find($id)) {
-            return null;
+            throw new ObjectNotFoundException;
         }
 
         $arrayData = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
@@ -134,7 +140,7 @@ readonly class DataTablePdoService
         }
     }
 
-    public function update(DataTable $dataTable, string $id, array $data): void
+    public function update(DataTable $dataTable, string $id, array $updateData, StoreData $storeData): void
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 
@@ -142,7 +148,7 @@ readonly class DataTablePdoService
             throw new Exception('Object with id: ' . $id . ' not found');
         }
 
-        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $data);
+        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $updateData);
 
         $this->updateEntityByArray($entity, $dataToStore);
 
@@ -150,13 +156,13 @@ readonly class DataTablePdoService
         $this->entityManager->flush();
     }
 
-    public function create(DataTable $dataTable, array $data): int
+    public function create(DataTable $dataTable, array $createData, StoreData $storeData): int
     {
         $model = $dataTable->getPdoModel();
 
         $entity = new $model();
 
-        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $data);
+        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $createData);
 
         $this->updateEntityByArray($entity, $dataToStore);
 
@@ -166,7 +172,7 @@ readonly class DataTablePdoService
         return $entity->getId();
     }
 
-    public function deleteList(DataTable $dataTable, array $ids): void
+    public function deleteList(DataTable $dataTable, array $ids, StoreData $storeData): void
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 
@@ -204,5 +210,4 @@ readonly class DataTablePdoService
             default => $value,
         };
     }
-
 }
