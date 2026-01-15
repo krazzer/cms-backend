@@ -7,10 +7,11 @@ use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
-use KikCMS\Domain\DataTable\Dto\Dto;
 use KikCMS\Domain\DataTable\Dto\EditDto;
 use KikCMS\Domain\DataTable\Dto\FilterDto;
 use KikCMS\Domain\DataTable\Dto\SaveDto;
+use KikCMS\Domain\DataTable\Dto\ShowDto;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,10 +27,15 @@ class DataTableController extends AbstractController
     ) {}
 
     #[Route('/api/datatable', methods: 'POST')]
-    public function show(#[MapRequestPayload] Dto $dto): Response
+    public function show(#[MapRequestPayload] ShowDto $dto): Response
     {
-        $instance = $dto->getDataTable()->getInstance();
-        return new JsonResponse(['settings' => $this->dataTableService->getFullConfig($instance)]);
+        $dataTable = $dto->getDataTable();
+        $instance  = $dataTable->getInstance();
+
+        return new JsonResponse([
+            'settings' => $this->dataTableService->getFullConfig($instance),
+            'data'     => $this->dataTableService->getData($dataTable, new DataTableFilters, $dto->getStoreData()),
+        ]);
     }
 
     #[Route('/api/datatable/edit', methods: 'POST')]

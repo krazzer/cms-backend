@@ -79,7 +79,8 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
             throw new ObjectNotFoundException;
         }
 
-        $arrayData = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
+        $arrayData       = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
+        $returnArrayData = $arrayData;
 
         foreach ($dataTable->getFormFieldMap() as $key => $field) {
             if ($key === $field) {
@@ -88,11 +89,11 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
 
             $value = $this->dataService->resolveValue($arrayData, $field, $dataTable->getLangCode());
 
-            $arrayData[$key] = $value;
+            $returnArrayData[$key] = $value;
         }
 
         // remove all fields that are not required in the form
-        return array_intersect_key($arrayData, array_flip($dataTable->getFormFieldKeys()));
+        return array_intersect_key($returnArrayData, array_flip($dataTable->getFormFieldKeys()));
     }
 
     public function getEntityDataAsArray(string $model, object $entity): array
