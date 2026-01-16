@@ -44,11 +44,11 @@ readonly class RearrangeService
             case RearrangeLocation::AFTER:
                 $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
 
-                if ($targetEntity->getParents() == $sourceEntity->getParents()) {
+                if ($targetEntity->getParents() == $sourceEntity->getParents() && $targetEntity->getDisplayOrder() > $sourceEntity->getDisplayOrder()) {
                     $this->nodesFromTargetPlusOne($dataTable, $targetEntity);
                     $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder());
                 } else {
-                    $this->nodesAfterTargetPlusOne($dataTable, $sourceEntity);
+                    $this->nodesAfterTargetPlusOne($dataTable, $targetEntity);
                     $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder() + 1);
                 }
 
