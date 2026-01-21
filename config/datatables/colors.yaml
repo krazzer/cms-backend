@@ -8,6 +8,8 @@ buttons:
 headers:
     id: Id
     name: Name
+mobileColumns:
+    - name
 form:
     fields:
         name:

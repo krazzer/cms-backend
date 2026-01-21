@@ -24,25 +24,26 @@ readonly class DataTableConfigService
     {
         $configPath = $this->params->get('kernel.project_dir') . '/config/datatables/' . $instance . '.yaml';
 
-        if ( ! $dataTableConfig = $this->yamlParser->parseFile($configPath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
+        if ( ! $config = $this->yamlParser->parseFile($configPath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
             throw new Exception("No config found for DataTable '$instance'");
         }
 
-        $form             = $dataTableConfig['form'] ?? [];
-        $source           = $dataTableConfig['source'];
-        $headers          = $dataTableConfig['headers'] ?? [];
-        $headersTranslate = $dataTableConfig['headersTranslate'] ?? [];
-        $buttons          = $dataTableConfig['buttons'] ?? [];
-        $mobileColumns    = $dataTableConfig['mobileColumns'] ?? [];
-        $cells            = $dataTableConfig['cells'] ?? [];
-        $class            = $dataTableConfig['class'] ?? null;
-        $searchColumns    = $dataTableConfig['searchColumns'] ?? [];
-        $typeForms        = $dataTableConfig['typeForms'] ?? [];
+        $form             = $config['form'] ?? [];
+        $source           = $config['source'];
+        $headers          = $config['headers'] ?? [];
+        $headersTranslate = $config['headersTranslate'] ?? [];
+        $buttons          = $config['buttons'] ?? [];
+        $mobileColumns    = $config['mobileColumns'] ?? [];
+        $cells            = $config['cells'] ?? [];
+        $class            = $config['class'] ?? null;
+        $searchColumns    = $config['searchColumns'] ?? [];
+        $typeForms        = $config['typeForms'] ?? [];
 
         $sourceType = SourceType::tryFrom($source['type'] ?? null) ?? SourceType::Pdo;
-        $pdoModel   = $source['model'] ?? null;
-        $query      = $source['query'] ?? null;
-        $modify     = $source['modify'] ?? null;
+
+        $pdoModel = $source['model'] ?? null;
+        $query    = $source['query'] ?? null;
+        $modify   = $source['modify'] ?? null;
 
         if ($sourceType == SourceType::Pdo && ! $pdoModel) {
             throw new Exception("No Pdo model configured for DataTable '$instance'");
@@ -84,31 +85,55 @@ readonly class DataTableConfigService
 
     public function updateFormConfig(array $form): array
     {
-        if (isset($form['fields'])) {
-            $form['fields'] = $this->resolveSelectFieldItems($form['fields']);
-        }
-
-        if (isset($form['tabs'])) {
-            foreach ($form['tabs'] as &$tab) {
-                if (isset($tab['fields'])) {
-                    $tab['fields'] = $this->resolveSelectFieldItems($tab['fields']);
-                }
+        return $this->walkFields($form, function ($field): array {
+            if ($field[DataTableConfig::KEY_FIELD_TYPE] === DataTableConfig::FIELD_TYPE_SELECT) {
+                return $this->resolveSelectFieldItems($field);
             }
-        }
 
-        return $form;
+            if ($field[DataTableConfig::KEY_FIELD_TYPE] === DataTableConfig::FIELD_TYPE_DATATABLE) {
+                return $this->resolveDataTableSettings($field);
+            }
+
+            return $field;
+        });
     }
 
-    private function resolveSelectFieldItems(array $fields): array
+    public function walkFields(array $node, callable $callback): array
     {
-        foreach ($fields as &$field) {
-            if (($field['type'] ?? null) === DataTableConfig::FIELD_TYPE_SELECT && ! empty($field['items'])) {
-                if ($callable = $this->callableService->getCallableByString($field['items'])) {
-                    $field['items'] = call_user_func($callable);
-                }
-            }
+        foreach ($node[DataTableConfig::KEY_FORM_FIELDS] ?? [] as $i => $field) {
+            $node[DataTableConfig::KEY_FORM_FIELDS][$i] = $callback($field);
         }
 
-        return $fields;
+        foreach ($node[DataTableConfig::KEY_FORM_TABS] ?? [] as $i => $tab) {
+            $node[DataTableConfig::KEY_FORM_TABS][$i] = $this->walkFields($tab, $callback);
+        }
+
+        return $node;
+    }
+
+    public function resolveSelectFieldItems(array $field): array
+    {
+        $items = $field[DataTableConfig::KEY_FIELD_ITEMS] ?? [];
+
+        if (empty($items)) {
+            return $field;
+        }
+
+        if ( ! $callable = $this->callableService->getCallableByString($items)) {
+            return $field;
+        }
+
+        $field[DataTableConfig::KEY_FIELD_ITEMS] = call_user_func($callable);
+
+        return $field;
+    }
+
+    public function resolveDataTableSettings($field): array
+    {
+        $instance = $field[DataTableConfig::KEY_FIELD_INSTANCE];
+
+        $field[DataTableConfig::KEY_FIELD_SETTINGS] = $this->getFromConfigByInstance($instance);
+
+        return $field;
     }
 }

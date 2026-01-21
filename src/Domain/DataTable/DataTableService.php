@@ -5,7 +5,6 @@ namespace KikCMS\Domain\DataTable;
 use KikCMS\Domain\App\Exception\NotImplementedException;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
-use KikCMS\Domain\DataTable\Object\DataTableStoreData;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
@@ -56,7 +55,7 @@ readonly class DataTableService
         return $this->source($dataTable)->getEditData($dataTable, $id, $storeData);
     }
 
-    public function save(DataTable $dataTable, array $updateData, DataTableStoreData $storeData, ?string $id = null): int
+    public function save(DataTable $dataTable, array $updateData, StoreData $storeData, ?string $id = null): int
     {
         if ($id) {
             $this->update($dataTable, $id, $updateData, $storeData);
@@ -67,12 +66,12 @@ readonly class DataTableService
         return $id;
     }
 
-    public function update(DataTable $dataTable, string $id, array $updateData, DataTableStoreData $storeData): void
+    public function update(DataTable $dataTable, string $id, array $updateData, StoreData $storeData): void
     {
         $this->source($dataTable)->update($dataTable, $id, $updateData, $storeData);
     }
 
-    public function create(DataTable $dataTable, array $data, DataTableStoreData $storeData): int
+    public function create(DataTable $dataTable, array $data, StoreData $storeData): int
     {
         return $this->source($dataTable)->create($dataTable, $data, $storeData);
     }

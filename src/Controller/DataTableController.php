@@ -49,7 +49,7 @@ class DataTableController extends AbstractController
         }
 
         return new JsonResponse([
-            'form' => $dto->getDataTable()->getForm(),
+            'form' => $this->dataTableService->getForm($dto->getDataTable()),
             'data' => $editData ?? []
         ]);
     }
