@@ -51,9 +51,9 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         return $viewData;
     }
 
-    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): ?array
+    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
     {
-        return $storeData->getData()[$id];
+        return $storeData->getData()[$id] ?? [];
     }
 
     public function deleteList(DataTable $dataTable, array $ids, StoreData $storeData): void

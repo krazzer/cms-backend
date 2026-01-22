@@ -3,6 +3,7 @@
 namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Domain\App\Exception\NotImplementedException;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
@@ -15,6 +16,7 @@ readonly class DataTableService
         private DataTableConfigService $configService,
         private DataTableLanguageResolver $languageResolver,
         private DataTableSourceServiceResolver $resolver,
+        private DataTableConfigService $dataTableConfigService,
     ) {}
 
     public function getData(DataTable $dataTable, ?Filters $filters = null, ?StoreData $storeData = null): array
@@ -50,9 +52,19 @@ readonly class DataTableService
         return $defaultData;
     }
 
-    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): ?array
+    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
     {
         return $this->source($dataTable)->getEditData($dataTable, $id, $storeData);
+    }
+
+    public function getPayloadByInstance(string $instance): array
+    {
+        $dataTable = $this->getByInstance($instance);
+
+        return [
+            DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($dataTable),
+            DataTableConfig::HELPER_DATA     => $this->getData($dataTable),
+        ];
     }
 
     public function save(DataTable $dataTable, array $updateData, StoreData $storeData, ?string $id = null): int
@@ -81,10 +93,8 @@ readonly class DataTableService
         $this->source($dataTable)->deleteList($dataTable, $ids, $storeData);
     }
 
-    public function getFullConfig(string $instance): array
+    public function getFullConfig(DataTable $dataTable): array
     {
-        $dataTable = $this->getByInstance($instance);
-
         return [
             'buttons'       => $dataTable->getButtons(),
             'mobileColumns' => $dataTable->getMobileColumns(),
@@ -93,9 +103,13 @@ readonly class DataTableService
             'class'         => $dataTable->getClass(),
             'search'        => $dataTable->getSearch(),
             'source'        => $dataTable->getSource(),
-            'data'          => $this->getData($dataTable),
-            'instance'      => $instance,
+            'instance'      => $dataTable->getInstance(),
         ];
+    }
+
+    public function getFullConfigByInstance(string $instance): array
+    {
+        return $this->getFullConfig($this->getByInstance($instance));
     }
 
     public function updateCheckbox(DataTable $dataTable, int $id, string $field, bool $value): void
@@ -113,8 +127,35 @@ readonly class DataTableService
         return $dataTable->getForm($type);
     }
 
+    public function getSubDataTableHelperData(DataTable $dataTable, ?array $editData = null): array
+    {
+        $subData = [];
+
+        $fields = $this->dataTableConfigService->getFields($dataTable, DataTableConfig::FIELD_TYPE_DATATABLE);
+
+        foreach ($fields as $key => $field) {
+            $subData[$key] = $this->getSubDataTableFieldHelperData($field, $editData[$key] ?? null);
+        }
+
+        return $subData;
+    }
+
+    public function getSubDataTableFieldHelperData(mixed $field, ?array $editData = null): array
+    {
+        $dataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
+
+        $helperData = [DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($dataTable)];
+
+        if ($editData !== null) {
+            $helperData[DataTableConfig::HELPER_DATA] = $this->getData($dataTable, null, new StoreData($editData));
+        }
+
+        return $helperData;
+    }
+
     private function source(DataTable $dataTable): DataTableSourceServiceInterface
     {
         return $this->resolver->resolve($dataTable->getSource());
     }
+
 }

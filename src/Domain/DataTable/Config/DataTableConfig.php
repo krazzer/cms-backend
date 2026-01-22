@@ -9,16 +9,17 @@ class DataTableConfig
 
     const string CELL_TYPE_CHECKBOX = 'checkbox';
 
-    const string KEY_FORM_FIELDS = 'fields';
-    const string KEY_FORM_FIELD  = 'field';
-    const string KEY_FORM_TABS   = 'tabs';
+    const string FORM_FIELDS = 'fields';
+    const string FORM_FIELD  = 'field';
+    const string FORM_TABS   = 'tabs';
 
-    const string KEY_FIELD_TYPE     = 'type';
-    const string KEY_FIELD_SETTINGS = 'settings';
-    const string KEY_FIELD_INSTANCE = 'instance';
-    const string KEY_FIELD_ITEMS    = 'items';
+    const string FIELD_TYPE     = 'type';
+    const string FIELD_SETTINGS = 'settings';
+    const string FIELD_INSTANCE = 'instance';
+    const string FIELD_ITEMS    = 'items';
 
-    const string DATATABLE_SETTING_DATA = 'data';
+    const string HELPER_DATA     = 'data';
+    const string HELPER_SETTINGS = 'settings';
 
     const string SESSION_KEY_LANG = 'dataTableLang';
 

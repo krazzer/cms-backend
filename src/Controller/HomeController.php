@@ -44,7 +44,7 @@ class HomeController extends AbstractController
     public function pageModule(): Response
     {
         return new JsonResponse([
-            'dataTable'        => $this->dataTableService->getFullConfig('pages'),
+            'dataTable'        => $this->dataTableService->getPayloadByInstance('pages'),
             'selectedMenuItem' => 'pages',
         ]);
     }
@@ -53,7 +53,7 @@ class HomeController extends AbstractController
     public function moduleModule(): Response
     {
         return new JsonResponse([
-            'dataTable'        => $this->dataTableService->getFullConfig('users'),
+            'dataTable'        => $this->dataTableService->getPayloadByInstance('users'),
             'selectedMenuItem' => 'users',
         ]);
     }

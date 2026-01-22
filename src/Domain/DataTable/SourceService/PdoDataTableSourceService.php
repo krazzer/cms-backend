@@ -71,7 +71,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         return $repository->createQueryBuilder(DataTableConfig::DEFAULT_TABLE_ALIAS);
     }
 
-    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): ?array
+    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 

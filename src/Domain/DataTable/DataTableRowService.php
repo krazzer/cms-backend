@@ -4,7 +4,7 @@ namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use Doctrine\ORM\EntityManagerInterface;
-use KikCMS\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
 use KikCMS\Domain\DataTable\Modifier\ViewRowDataModifierInterface;
 use KikCMS\Domain\DataTable\TableRow\TableViewRow;
@@ -17,12 +17,13 @@ readonly class DataTableRowService
         private DataTableModifierService $dataTableModifierService,
     ) {}
 
-    public function getRowView(mixed $rawRow, DataTable $dataTable, DataTableFilters $filters, string|int|null $id = null): TableViewRow
+    public function getRowView(mixed $rawRow, DataTable $dataTable, ?Filters $filters = null, string|int|null $id = null): TableViewRow
     {
         $id          = $id ?: $this->getId($rawRow, $dataTable);
         $filteredRow = $this->filterRowData($rawRow, $dataTable);
 
         $viewRow = new TableViewRow($id, $rawRow, $filteredRow);
+        $filters = $filters ?? new Filters();
 
         if ($modifier = $this->dataTableModifierService->resolve($dataTable, ViewRowDataModifierInterface::class)) {
             $viewRow = $modifier->modify($viewRow, $dataTable, $filters);
@@ -33,7 +34,7 @@ readonly class DataTableRowService
 
     public function getId(array $row, DataTable $dataTable): string
     {
-        if($dataTable->getSource() == SourceType::Local) {
+        if ($dataTable->getSource() == SourceType::Local) {
             return '';
         }
 

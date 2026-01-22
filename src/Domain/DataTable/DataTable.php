@@ -90,17 +90,17 @@ class DataTable
     {
         $form = $this->getForm($type);
 
-        if (isset($form[DataTableConfig::KEY_FORM_TABS])) {
+        if (isset($form[DataTableConfig::FORM_TABS])) {
             $fields = [];
 
-            foreach ($form[DataTableConfig::KEY_FORM_TABS] as $tab) {
-                $fields = array_merge($fields, $tab[DataTableConfig::KEY_FORM_FIELDS]);
+            foreach ($form[DataTableConfig::FORM_TABS] as $tab) {
+                $fields = array_merge($fields, $tab[DataTableConfig::FORM_FIELDS]);
             }
 
             return $fields;
         }
 
-        return $this->form[DataTableConfig::KEY_FORM_FIELDS] ?? [];
+        return $this->form[DataTableConfig::FORM_FIELDS] ?? [];
     }
 
     public function getFormFieldKeys(): array
@@ -199,7 +199,7 @@ class DataTable
         $fieldMap = [];
 
         foreach ($this->getFormFields() as $key => $field) {
-            $fieldMap[$key] = $field[DataTableConfig::KEY_FORM_FIELD] ?? $key;
+            $fieldMap[$key] = $field[DataTableConfig::FORM_FIELD] ?? $key;
         }
 
         return $fieldMap;

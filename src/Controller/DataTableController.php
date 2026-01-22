@@ -30,10 +30,9 @@ class DataTableController extends AbstractController
     public function show(#[MapRequestPayload] ShowDto $dto): Response
     {
         $dataTable = $dto->getDataTable();
-        $instance  = $dataTable->getInstance();
 
         return new JsonResponse([
-            'settings' => $this->dataTableService->getFullConfig($instance),
+            'settings' => $this->dataTableService->getFullConfig($dataTable),
             'data'     => $this->dataTableService->getData($dataTable, new DataTableFilters, $dto->getStoreData()),
         ]);
     }
@@ -42,15 +41,17 @@ class DataTableController extends AbstractController
     public function edit(#[MapRequestPayload] EditDto $dto): Response
     {
         try {
-            $editData = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId(), $dto->getStoreData());
+            $editData   = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId(), $dto->getStoreData());
+            $helperData = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable(), $editData);
         } catch (ObjectNotFoundException) {
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
             return new JsonResponse(['error' => $errorMessage], Response::HTTP_NOT_FOUND);
         }
 
         return new JsonResponse([
-            'form' => $this->dataTableService->getForm($dto->getDataTable()),
-            'data' => $editData ?? []
+            'form'       => $dto->getDataTable()->getForm(),
+            'data'       => $editData,
+            'helperData' => $helperData,
         ]);
     }
 
@@ -59,8 +60,13 @@ class DataTableController extends AbstractController
     {
         $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable(), $dto->getType());
         $form        = $this->dataTableService->getForm($dto->getDataTable(), $dto->getType());
+        $helperData  = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable());
 
-        return new JsonResponse(['form' => $form, 'data' => $defaultData]);
+        return new JsonResponse([
+            'form'       => $form,
+            'data'       => $defaultData,
+            'helperData' => $helperData,
+        ]);
     }
 
     #[Route('/api/datatable/check', methods: 'POST')]
