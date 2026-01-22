@@ -86,28 +86,6 @@ class DataTable
         return $this->getTypeForms()[$type] ?? $this->form;
     }
 
-    public function getFormFields(?string $type = null): array
-    {
-        $form = $this->getForm($type);
-
-        if (isset($form[DataTableConfig::FORM_TABS])) {
-            $fields = [];
-
-            foreach ($form[DataTableConfig::FORM_TABS] as $tab) {
-                $fields = array_merge($fields, $tab[DataTableConfig::FORM_FIELDS]);
-            }
-
-            return $fields;
-        }
-
-        return $this->form[DataTableConfig::FORM_FIELDS] ?? [];
-    }
-
-    public function getFormFieldKeys(): array
-    {
-        return array_keys($this->getFormFields());
-    }
-
     public function setForm(array $form): DataTable
     {
         $this->form = $form;
@@ -189,20 +167,6 @@ class DataTable
     {
         $this->class = $class;
         return $this;
-    }
-
-    /**
-     * Returns a map of form field keys with the corresponding field
-     */
-    public function getFormFieldMap(): array
-    {
-        $fieldMap = [];
-
-        foreach ($this->getFormFields() as $key => $field) {
-            $fieldMap[$key] = $field[DataTableConfig::FORM_FIELD] ?? $key;
-        }
-
-        return $fieldMap;
     }
 
     public function getSearchColumns(): array

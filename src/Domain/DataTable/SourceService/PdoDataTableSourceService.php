@@ -5,11 +5,13 @@ namespace KikCMS\Domain\DataTable\SourceService;
 use KikCMS\Domain\App\CallableService;
 use KikCMS\Domain\App\Exception\ObjectNotFoundException;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableDataService;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
+use KikCMS\Domain\DataTable\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
@@ -30,6 +32,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private DataTableFilterService $dataTableFilterService,
         private DataTablePathService $dataTablePathService,
         private DataTableModifierService $dataTableModifierService,
+        private FieldService $fieldService,
     ) {}
 
     public function getData(DataTable $dataTable, ?DataTableFilters $filters = null, ?StoreData $storeData = null): array
@@ -74,26 +77,27 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
     public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+        $fieldMap   = $this->fieldService->getFieldMap($dataTable);
 
         if ( ! $entity = $repository->find($id)) {
             throw new ObjectNotFoundException;
         }
 
-        $arrayData       = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
-        $returnArrayData = $arrayData;
+        $arrayData  = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
+        $returnData = $arrayData;
 
-        foreach ($dataTable->getFormFieldMap() as $key => $field) {
-            if ($key === $field) {
+        foreach ($fieldMap as $key => $field) {
+            if ($key === $field->getField()) {
                 continue;
             }
 
-            $value = $this->dataService->resolveValue($arrayData, $field, $dataTable->getLangCode());
+            $value = $this->dataService->resolveValue($arrayData, $field->getField(), $dataTable->getLangCode());
 
-            $returnArrayData[$key] = $value;
+            $returnData[$key] = $value;
         }
 
         // remove all fields that are not required in the form
-        return array_intersect_key($returnArrayData, array_flip($dataTable->getFormFieldKeys()));
+        return array_intersect_key($returnData, array_flip(array_keys($fieldMap)));
     }
 
     public function getEntityDataAsArray(string $model, object $entity): array

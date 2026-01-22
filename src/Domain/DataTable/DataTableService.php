@@ -43,7 +43,9 @@ readonly class DataTableService
     {
         $defaultData = [];
 
-        foreach ($dataTable->getFormFields($type) as $key => $field) {
+        $fields = $this->dataTableConfigService->getFieldsByForm($dataTable->getForm($type));
+
+        foreach ($fields as $key => $field) {
             if ($default = $field['default'] ?? null) {
                 $defaultData[$key] = $default;
             }
@@ -131,16 +133,16 @@ readonly class DataTableService
     {
         $subData = [];
 
-        $fields = $this->dataTableConfigService->getFields($dataTable, DataTableConfig::FIELD_TYPE_DATATABLE);
+        $fieldMap = $this->dataTableConfigService->getFields($dataTable, DataTableConfig::FIELD_TYPE_DATATABLE);
 
-        foreach ($fields as $key => $field) {
+        foreach ($fieldMap as $key => $field) {
             $subData[$key] = $this->getSubDataTableFieldHelperData($field, $editData[$key] ?? null);
         }
 
         return $subData;
     }
 
-    public function getSubDataTableFieldHelperData(mixed $field, ?array $editData = null): array
+    public function getSubDataTableFieldHelperData(array $field, ?array $editData = null): array
     {
         $dataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
 

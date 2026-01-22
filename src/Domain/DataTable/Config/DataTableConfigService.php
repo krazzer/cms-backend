@@ -22,9 +22,14 @@ readonly class DataTableConfigService
 
     public function getFields(DataTable $dataTable, ?string $filterType = null): array
     {
+        return $this->getFieldsByForm($dataTable->getForm(), $filterType);
+    }
+
+    public function getFieldsByForm(array $form, ?string $filterType = null): array
+    {
         $fields = [];
 
-        $this->walkFields($dataTable->getForm(), function ($field, $key) use (&$fields, $filterType) {
+        $this->walkFields($form, function ($field, $key) use (&$fields, $filterType) {
             if ($filterType && $field[DataTableConfig::FIELD_TYPE] !== $filterType) {
                 return;
             }

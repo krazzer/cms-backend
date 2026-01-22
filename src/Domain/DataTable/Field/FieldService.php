@@ -2,16 +2,22 @@
 
 namespace KikCMS\Domain\DataTable\Field;
 
+use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\DataTable;
 
-class FieldService
+readonly class FieldService
 {
+    public function __construct(
+        private DataTableConfigService $dataTableConfigService
+    ) {}
+
     /**
      * @return Field[]
      */
-    public function getFieldMap(DataTable $dataTable): array
+    public function getFieldMap(DataTable $dataTable, ?string $filterType = null): array
     {
-        $fieldsArrayData = $dataTable->getFormFields();
+        $fieldsArrayData = $this->dataTableConfigService->getFields($dataTable, $filterType);
+
         $fields = [];
 
         foreach ($fieldsArrayData as $key => $fieldArray) {
@@ -21,7 +27,7 @@ class FieldService
             $field->setField($fieldArray['field'] ?? $key);
             $field->setType($fieldArray['type']);
 
-            if($fieldArray['label'] ?? null){
+            if ($fieldArray['label'] ?? null) {
                 $field->setLabel($fieldArray['label']);
             }
 
