@@ -16,6 +16,6 @@ class DeleteDto extends FilterDto
 
     public function getStoreData(): DataTableStoreData
     {
-        return $this->storeData;
+        return $this->storeData ?? new DataTableStoreData;
     }
 }
