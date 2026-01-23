@@ -13,7 +13,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         private DataTableRowService $rowService,
     ) {}
 
-    public function update(DataTable $dataTable, string $id, array $updateData, StoreData $storeData): void
+    public function update(DataTable $dataTable, Filters $filters, string $id, array $updateData, StoreData $storeData): void
     {
         $data = $storeData->getData();
 
@@ -22,7 +22,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         $storeData->setData($data);
     }
 
-    public function create(DataTable $dataTable, array $createData, StoreData $storeData): int
+    public function create(DataTable $dataTable, Filters $filters, array $createData, StoreData $storeData): int
     {
         $data = $storeData->getData();
 
@@ -35,7 +35,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         return $newId;
     }
 
-    public function getData(DataTable $dataTable, ?Filters $filters = null, ?StoreData $storeData = null): array
+    public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
     {
         $viewData = [];
 
@@ -51,7 +51,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         return $viewData;
     }
 
-    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
     {
         return $storeData->getData()[$id] ?? [];
     }
@@ -67,7 +67,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         $storeData->setData($data);
     }
 
-    public function updateCheckbox(DataTable $dataTable, int $id, string $field, bool $value): void
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
     {
         // TODO: Implement updateCheckbox() method.
     }

@@ -2,10 +2,10 @@
 
 namespace KikCMS\Domain\DataTable;
 
-use KikCMS\Domain\App\Exception\NotImplementedException;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
+use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
@@ -14,12 +14,11 @@ readonly class DataTableService
 {
     public function __construct(
         private DataTableConfigService $configService,
-        private DataTableLanguageResolver $languageResolver,
         private DataTableSourceServiceResolver $resolver,
-        private DataTableConfigService $dataTableConfigService,
+        private DataTableConfigService $dataTableConfigService, private DataTableFilterService $dataTableFilterService,
     ) {}
 
-    public function getData(DataTable $dataTable, ?Filters $filters = null, ?StoreData $storeData = null): array
+    public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
     {
         return $this->source($dataTable)->getData($dataTable, $filters, $storeData);
     }
@@ -29,14 +28,9 @@ readonly class DataTableService
         return $this->getByInstance($instance)->getHeaders();
     }
 
-    public function getByInstance(string $instance, ?string $langCode = null): DataTable
+    public function getByInstance(string $instance): DataTable
     {
-        $dataTable    = $this->configService->getFromConfigByInstance($instance);
-        $resolvedLang = $this->languageResolver->resolve($langCode);
-
-        $dataTable->setLangCode($resolvedLang);
-
-        return $dataTable;
+        return $this->configService->getFromConfigByInstance($instance);
     }
 
     public function getDefaultData(DataTable $dataTable, ?string $type = null): ?array
@@ -54,40 +48,41 @@ readonly class DataTableService
         return $defaultData;
     }
 
-    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
     {
-        return $this->source($dataTable)->getEditData($dataTable, $id, $storeData);
+        return $this->source($dataTable)->getEditData($dataTable, $filters, $id, $storeData);
     }
 
-    public function getPayloadByInstance(string $instance): array
+    public function getPayloadByInstance(string $instance, ?Filters $filters = null): array
     {
         $dataTable = $this->getByInstance($instance);
+        $filters   = $filters ?? $this->dataTableFilterService->getDefault();
 
         return [
             DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($dataTable),
-            DataTableConfig::HELPER_DATA     => $this->getData($dataTable),
+            DataTableConfig::HELPER_DATA     => $this->getData($dataTable, $filters),
         ];
     }
 
-    public function save(DataTable $dataTable, array $updateData, StoreData $storeData, ?string $id = null): int
+    public function save(DataTable $dataTable, Filters $filters, array $updateData, StoreData $storeData, ?string $id = null): int
     {
         if ($id) {
-            $this->update($dataTable, $id, $updateData, $storeData);
+            $this->update($dataTable, $filters, $id, $updateData, $storeData);
         } else {
-            $id = $this->create($dataTable, $updateData, $storeData);
+            $id = $this->create($dataTable, $filters, $updateData, $storeData);
         }
 
         return $id;
     }
 
-    public function update(DataTable $dataTable, string $id, array $updateData, StoreData $storeData): void
+    public function update(DataTable $dataTable, Filters $filters, string $id, array $updateData, StoreData $storeData): void
     {
-        $this->source($dataTable)->update($dataTable, $id, $updateData, $storeData);
+        $this->source($dataTable)->update($dataTable, $filters, $id, $updateData, $storeData);
     }
 
-    public function create(DataTable $dataTable, array $data, StoreData $storeData): int
+    public function create(DataTable $dataTable, Filters $filters, array $data, StoreData $storeData): int
     {
-        return $this->source($dataTable)->create($dataTable, $data, $storeData);
+        return $this->source($dataTable)->create($dataTable, $filters, $data, $storeData);
     }
 
     public function delete(DataTable $dataTable, array $ids, StoreData $storeData): void
@@ -114,14 +109,9 @@ readonly class DataTableService
         return $this->getFullConfig($this->getByInstance($instance));
     }
 
-    public function updateCheckbox(DataTable $dataTable, int $id, string $field, bool $value): void
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
     {
-        if ($dataTable->getSource() == SourceType::Pdo) {
-            $this->dataTablePdoService->updateCheckbox($dataTable, $id, $field, $value);
-            return;
-        }
-
-        throw new NotImplementedException;
+        $this->source($dataTable)->updateCheckbox($dataTable, $filters, $id, $field, $value);
     }
 
     public function getForm(DataTable $dataTable, ?string $type = null): array
@@ -145,11 +135,12 @@ readonly class DataTableService
     public function getSubDataTableFieldHelperData(array $field, ?array $editData = null): array
     {
         $dataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
+        $filters   = $this->dataTableFilterService->getDefault();
 
         $helperData = [DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($dataTable)];
 
         if ($editData !== null) {
-            $helperData[DataTableConfig::HELPER_DATA] = $this->getData($dataTable, null, new StoreData($editData));
+            $helperData[DataTableConfig::HELPER_DATA] = $this->getData($dataTable, $filters, new StoreData($editData));
         }
 
         return $helperData;

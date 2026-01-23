@@ -7,6 +7,7 @@ class DataTableFilters
     public ?string $search = null;
     public ?string $sort = null;
     public ?string $sortDirection = null;
+    public string $langCode;
     public int $page = 1;
     public array $filters = [];
 
@@ -62,6 +63,17 @@ class DataTableFilters
     public function setFilters(array $filters): DataTableFilters
     {
         $this->filters = $filters;
+        return $this;
+    }
+
+    public function getLangCode(): string
+    {
+        return $this->langCode;
+    }
+
+    public function setLangCode(string $langCode): DataTableFilters
+    {
+        $this->langCode = $langCode;
         return $this;
     }
 }

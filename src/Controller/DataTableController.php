@@ -41,7 +41,7 @@ class DataTableController extends AbstractController
     public function edit(#[MapRequestPayload] EditDto $dto): Response
     {
         try {
-            $editData   = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getId(), $dto->getStoreData());
+            $editData   = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getFilters(), $dto->getId(), $dto->getStoreData());
             $helperData = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable(), $editData);
         } catch (ObjectNotFoundException) {
             $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
@@ -72,7 +72,7 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/check', methods: 'POST')]
     public function check(#[MapRequestPayload] CheckDto $dto): Response
     {
-        $this->dataTableService->updateCheckbox($dto->getDataTable(), $dto->getId(), $dto->getField(), $dto->getValue());
+        $this->dataTableService->updateCheckbox($dto->getDataTable(), $dto->getFilters(), $dto->getId(), $dto->getField(), $dto->getValue());
 
         return new JsonResponse(['success' => true]);
     }
@@ -89,7 +89,7 @@ class DataTableController extends AbstractController
         $storeData = $dto->getStoreData();
         $dataTable = $dto->getDataTable();
 
-        $id       = $this->dataTableService->save($dataTable, $dto->getFormData(), $storeData, $dto->getId());
+        $id       = $this->dataTableService->save($dataTable, $dto->getFilters(), $dto->getFormData(), $storeData, $dto->getId());
         $viewData = $this->dataTableService->getData($dataTable, $dto->getFilters(), $storeData);
 
         return new JsonResponse([

@@ -2,8 +2,6 @@
 
 namespace KikCMS\Domain\DataTable;
 
-use KikCMS\Domain\DataTable\Config\DataTableConfig;
-
 class DataTable
 {
     private SourceType $source;
@@ -17,7 +15,6 @@ class DataTable
     private array $cells;
     private array $searchColumns;
     private array $typeForms;
-    private string $langCode;
     private ?string $query;
     private ?string $modify;
     private string $class = 'default';
@@ -111,17 +108,6 @@ class DataTable
     public function setMobileColumns(array $mobileColumns): DataTable
     {
         $this->mobileColumns = $mobileColumns;
-        return $this;
-    }
-
-    public function getLangCode(): string
-    {
-        return $this->langCode;
-    }
-
-    public function setLangCode(string $langCode): DataTable
-    {
-        $this->langCode = $langCode;
         return $this;
     }
 

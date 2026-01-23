@@ -5,7 +5,6 @@ namespace KikCMS\Domain\DataTable\SourceService;
 use KikCMS\Domain\App\CallableService;
 use KikCMS\Domain\App\Exception\ObjectNotFoundException;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
-use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableDataService;
@@ -13,6 +12,7 @@ use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
 use KikCMS\Domain\DataTable\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
 use KikCMS\Domain\DataTable\Modifier\RawTableDataModifierInterface;
@@ -35,21 +35,15 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private FieldService $fieldService,
     ) {}
 
-    public function getData(DataTable $dataTable, ?DataTableFilters $filters = null, ?StoreData $storeData = null): array
+    public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
     {
-        if ( ! $filters) {
-            $filters = new DataTableFilters();
-        }
-
         $queryBuilder = $this->getQueryBuilder($dataTable);
 
         if ($queryCallable = $this->callableService->getCallableByString($dataTable->getQuery())) {
             call_user_func($queryCallable, $queryBuilder);
         }
 
-        if ($filters) {
-            $this->dataTableFilterService->filter($dataTable, $filters, $queryBuilder);
-        }
+        $this->dataTableFilterService->filter($dataTable, $filters, $queryBuilder);
 
         $rawData = $queryBuilder->getQuery()->getArrayResult();
 
@@ -74,7 +68,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         return $repository->createQueryBuilder(DataTableConfig::DEFAULT_TABLE_ALIAS);
     }
 
-    public function getEditData(DataTable $dataTable, string $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
         $fieldMap   = $this->fieldService->getFieldMap($dataTable);
@@ -91,7 +85,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
                 continue;
             }
 
-            $value = $this->dataService->resolveValue($arrayData, $field->getField(), $dataTable->getLangCode());
+            $value = $this->dataService->resolveValue($arrayData, $field->getField(), $filters->getLangCode());
 
             $returnData[$key] = $value;
         }
@@ -145,7 +139,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         }
     }
 
-    public function update(DataTable $dataTable, string $id, array $updateData, StoreData $storeData): void
+    public function update(DataTable $dataTable, Filters $filters, string $id, array $updateData, StoreData $storeData): void
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 
@@ -153,7 +147,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
             throw new Exception('Object with id: ' . $id . ' not found');
         }
 
-        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $updateData);
+        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $filters, $updateData);
 
         $this->updateEntityByArray($entity, $dataToStore);
 
@@ -161,13 +155,13 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $this->entityManager->flush();
     }
 
-    public function create(DataTable $dataTable, array $createData, StoreData $storeData): int
+    public function create(DataTable $dataTable, Filters $filters, array $createData, StoreData $storeData): int
     {
         $model = $dataTable->getPdoModel();
 
         $entity = new $model();
 
-        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $createData);
+        $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $filters, $createData);
 
         $this->updateEntityByArray($entity, $dataToStore);
 
@@ -189,7 +183,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $this->entityManager->flush();
     }
 
-    public function updateCheckbox(DataTable $dataTable, int $id, string $field, bool $value): void
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 
@@ -197,7 +191,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
             throw new Exception('Object with id: ' . $id . ' not found');
         }
 
-        $dataToStore = $this->dataTablePathService->convertPathToArray($field, $value, $dataTable->getLangCode());
+        $dataToStore = $this->dataTablePathService->convertPathToArray($field, $value, $filters->getLangCode());
 
         $this->updateEntityByArray($entity, $dataToStore);
 

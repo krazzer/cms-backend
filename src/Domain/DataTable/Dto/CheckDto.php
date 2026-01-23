@@ -2,7 +2,7 @@
 
 namespace KikCMS\Domain\DataTable\Dto;
 
-class CheckDto extends Dto
+class CheckDto extends FilterDto
 {
     public string $field;
     public int $id;

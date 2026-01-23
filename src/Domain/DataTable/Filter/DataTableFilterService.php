@@ -7,29 +7,35 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
 use Doctrine\ORM\QueryBuilder;
+use KikCMS\Domain\DataTable\DataTableLanguageResolver;
 
 readonly class DataTableFilterService
 {
     public function __construct(
-        private DataTablePathService $pathService
+        private DataTablePathService $pathService, private DataTableLanguageResolver $dataTableLanguageResolver
     ) {}
+
+    public function getDefault(): DataTableFilters
+    {
+        return (new DataTableFilters)->setLangCode($this->dataTableLanguageResolver->resolve());
+    }
 
     public function filter(DataTable $dataTable, DataTableFilters $filters, QueryBuilder $builder): void
     {
-        if ($search = $filters->getSearch()) {
-            $this->filterSearch($dataTable, $search, $builder);
+        if ($filters->getSearch()) {
+            $this->filterSearch($dataTable, $filters, $builder);
         }
 
         if ($filters->getSort() && $filters->getSortDirection()) {
-            $this->sort($dataTable, $builder, $filters->getSort(), $filters->getSortDirection());
+            $this->sort($builder, $filters);
         }
     }
 
-    public function filterSearch(DataTable $dataTable, string $search, QueryBuilder $builder): void
+    public function filterSearch(DataTable $dataTable, DataTableFilters $filters, QueryBuilder $builder): void
     {
         foreach ($dataTable->getSearchColumns() as $column) {
             if ($this->pathService->isPath($column)) {
-                list($column, $extract) = $this->pathService->toJson($column, $dataTable->getLangCode());
+                list($column, $extract) = $this->pathService->toJson($column, $filters->getLangCode());
 
                 $builder->andWhere("LOWER(JSON_UNQUOTE(JSON_EXTRACT(e.$column, '$extract'))) LIKE :search");
             } else {
@@ -37,19 +43,20 @@ readonly class DataTableFilterService
             }
         }
 
-        $builder->setParameter('search', '%' . strtolower($search) . '%');
+        $builder->setParameter('search', '%' . strtolower($filters->getSearch()) . '%');
     }
 
-    private function sort(DataTable $dataTable, QueryBuilder $builder, string $column, string $sortDirection): void
+    private function sort(QueryBuilder $builder, DataTableFilters $filters): void
     {
-        $sortDirection = DataTableConfig::SORT_MAP_SQL[$sortDirection];
+        $column = $filters->getSort();
+        $order  = DataTableConfig::SORT_MAP_SQL[$filters->getSortDirection()];
 
         if ($this->pathService->isPath($column)) {
-            list($column, $extract) = $this->pathService->toJson($column, $dataTable->getLangCode());
+            list($column, $extract) = $this->pathService->toJson($column, $filters->getLangCode());
 
-            $builder->orderBy("JSON_UNQUOTE(JSON_EXTRACT(e.$column, '$extract'))", $sortDirection);
+            $builder->orderBy("JSON_UNQUOTE(JSON_EXTRACT(e.$column, '$extract'))", $order);
         } else {
-            $builder->orderBy("e.$column", $sortDirection);
+            $builder->orderBy("e.$column", $order);
         }
     }
 

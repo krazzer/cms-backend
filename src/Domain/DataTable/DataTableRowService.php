@@ -17,13 +17,12 @@ readonly class DataTableRowService
         private DataTableModifierService $dataTableModifierService,
     ) {}
 
-    public function getRowView(mixed $rawRow, DataTable $dataTable, ?Filters $filters = null, string|int|null $id = null): TableViewRow
+    public function getRowView(mixed $rawRow, DataTable $dataTable, Filters $filters, string|int|null $id = null): TableViewRow
     {
         $id          = $id ?: $this->getId($rawRow, $dataTable);
-        $filteredRow = $this->filterRowData($rawRow, $dataTable);
+        $filteredRow = $this->filterRowData($rawRow, $dataTable, $filters);
 
         $viewRow = new TableViewRow($id, $rawRow, $filteredRow);
-        $filters = $filters ?? new Filters();
 
         if ($modifier = $this->dataTableModifierService->resolve($dataTable, ViewRowDataModifierInterface::class)) {
             $viewRow = $modifier->modify($viewRow, $dataTable, $filters);
@@ -51,9 +50,8 @@ readonly class DataTableRowService
         return implode(":", $idParts);
     }
 
-    private function filterRowData(array $row, DataTable $dataTable): array
+    private function filterRowData(array $row, DataTable $dataTable, Filters $filters): array
     {
-        $langCode   = $dataTable->getLangCode();
         $headerKeys = array_keys($dataTable->getHeaders());
 
         $filteredData = [];
@@ -61,7 +59,7 @@ readonly class DataTableRowService
         foreach ($headerKeys as $headerKey) {
             $cellType = $dataTable->getCells()[$headerKey]['type'] ?? null;
 
-            $value = $this->dataService->resolveValue($row, $headerKey, $langCode);
+            $value = $this->dataService->resolveValue($row, $headerKey, $filters->getLangCode());
             $value = $this->transformValueByType($value, $cellType);
 
             $filteredData[] = $value;

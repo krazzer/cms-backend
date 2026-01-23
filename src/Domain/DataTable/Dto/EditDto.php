@@ -4,7 +4,7 @@ namespace KikCMS\Domain\DataTable\Dto;
 
 use KikCMS\Domain\DataTable\Object\DataTableStoreData;
 
-class EditDto extends Dto
+class EditDto extends FilterDto
 {
     public string $id;
     public DataTableStoreData $storeData;

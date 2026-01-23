@@ -4,6 +4,7 @@ namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Field\FieldService;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 
 readonly class DataTableStoreService
 {
@@ -12,7 +13,7 @@ readonly class DataTableStoreService
         private DataTablePathService $dataTablePathService,
     ) {}
 
-    public function getDataArrayToStore(DataTable $dataTable, array $rawData): array
+    public function getDataArrayToStore(DataTable $dataTable, DataTableFilters $filters, array $rawData): array
     {
         $storeData = [];
 
@@ -26,7 +27,7 @@ readonly class DataTableStoreService
             $value = $rawData[$key];
             $field = $field->getField();
 
-            $fieldWithValue = $this->dataTablePathService->convertPathToArray($field, $value, $dataTable->getLangCode());
+            $fieldWithValue = $this->dataTablePathService->convertPathToArray($field, $value, $filters->getLangCode());
 
             $storeData = array_replace_recursive($storeData, $fieldWithValue);
         }
