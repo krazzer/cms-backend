@@ -4,7 +4,7 @@ namespace KikCMS\Domain\DataTable\Dto;
 
 use KikCMS\Domain\DataTable\Tree\RearrangeLocation;
 
-class RearrangeDto extends Dto
+class RearrangeDto extends FilterDto
 {
     public int $source;
     public int $target;

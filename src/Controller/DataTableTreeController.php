@@ -34,6 +34,6 @@ class DataTableTreeController extends AbstractController
     {
         $this->rearrangeService->rearrange($dto->getDataTable(), $dto->getSource(), $dto->getTarget(), $dto->getLocation());
 
-        return new JsonResponse($this->dataTableService->getData($dto->getDataTable()));
+        return new JsonResponse($this->dataTableService->getData($dto->getDataTable(), $dto->getFilters()));
     }
 }
