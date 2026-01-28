@@ -30,6 +30,5 @@ form:
 actions:
     -   key: 'rearrange'
         type: 'rearrange'
-        icon: 'mdi-drag-horizontal-variant'
 source:
     type: local
