@@ -7,6 +7,7 @@ use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
 
@@ -101,6 +102,7 @@ readonly class DataTableService
             'search'        => $dataTable->getSearch(),
             'source'        => $dataTable->getSource(),
             'instance'      => $dataTable->getInstance(),
+            'actions'       => $dataTable->getActions(),
         ];
     }
 
@@ -146,9 +148,13 @@ readonly class DataTableService
         return $helperData;
     }
 
+    public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
+    {
+        $this->source($dataTable)->rearrange($dataTable, $source, $target, $location, $storeData);
+    }
+
     private function source(DataTable $dataTable): DataTableSourceServiceInterface
     {
         return $this->resolver->resolve($dataTable->getSource());
     }
-
 }

@@ -2,12 +2,15 @@
 
 namespace KikCMS\Domain\DataTable;
 
+use KikCMS\Domain\DataTable\Config\SourceType;
+
 class DataTable
 {
     private SourceType $source;
     private string $instance;
     private ?string $pdoModel = null;
     private string $cachePool;
+    private array $actions;
     private array $headers;
     private array $buttons;
     private array $mobileColumns;
@@ -179,6 +182,17 @@ class DataTable
     public function setTypeForms(array $typeForms): DataTable
     {
         $this->typeForms = $typeForms;
+        return $this;
+    }
+
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
+    public function setActions(array $actions): DataTable
+    {
+        $this->actions = $actions;
         return $this;
     }
 }

@@ -2,13 +2,15 @@
 
 namespace KikCMS\Domain\DataTable\Dto;
 
-use KikCMS\Domain\DataTable\Tree\RearrangeLocation;
+use KikCMS\Domain\DataTable\Object\DataTableStoreData;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation;
 
 class RearrangeDto extends FilterDto
 {
     public int $source;
     public int $target;
     public RearrangeLocation $location;
+    public DataTableStoreData $storeData;
 
     public function getSource(): int
     {
@@ -23,5 +25,10 @@ class RearrangeDto extends FilterDto
     public function getLocation(): RearrangeLocation
     {
         return $this->location;
+    }
+
+    public function getStoreData(): DataTableStoreData
+    {
+        return $this->storeData;
     }
 }

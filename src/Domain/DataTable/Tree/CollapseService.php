@@ -23,23 +23,6 @@ readonly class CollapseService
         $this->keyValueStore->save($item);
     }
 
-    private function getCacheKeyByDto(CollapseDto $dto): string
-    {
-        return $this->getCacheKeyByInstanceAndId($dto->getDataTable()->getInstance(), $dto->getId());
-    }
-
-    private function getCacheKeyByInstanceAndId(string $instance, int $id): string
-    {
-        $userId = $this->security->getUser()->getId();
-
-        return $this->getCacheKeyPrefixByInstanceAndUserId($instance, $userId) . '_' . $id;
-    }
-
-    private function getCacheKeyPrefixByInstanceAndUserId(string $instance, int $userId): string
-    {
-        return 'datatable_collapse_' . $instance . '_user_' . $userId;
-    }
-
     public function isCollapsed(string $id, string $instance): bool
     {
         $cacheKey = $this->getCacheKeyByInstanceAndId($instance, $id);
@@ -71,4 +54,20 @@ readonly class CollapseService
         return $collapsedMap;
     }
 
+    private function getCacheKeyByDto(CollapseDto $dto): string
+    {
+        return $this->getCacheKeyByInstanceAndId($dto->getDataTable()->getInstance(), $dto->getId());
+    }
+
+    private function getCacheKeyByInstanceAndId(string $instance, int $id): string
+    {
+        $userId = $this->security->getUser()->getId();
+
+        return $this->getCacheKeyPrefixByInstanceAndUserId($instance, $userId) . '_' . $id;
+    }
+
+    private function getCacheKeyPrefixByInstanceAndUserId(string $instance, int $userId): string
+    {
+        return 'datatable_collapse_' . $instance . '_user_' . $userId;
+    }
 }

@@ -20,6 +20,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
 
 readonly class PdoDataTableSourceService implements DataTableSourceServiceInterface
 {
@@ -32,7 +34,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private DataTableFilterService $dataTableFilterService,
         private DataTablePathService $dataTablePathService,
         private DataTableModifierService $dataTableModifierService,
-        private FieldService $fieldService,
+        private FieldService $fieldService, private RearrangeService $rearrangeService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -208,5 +210,10 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
             'string' => (string) $value,
             default => $value,
         };
+    }
+
+    public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
+    {
+        $this->rearrangeService->rearrange($dataTable, $source, $target, $location);
     }
 }

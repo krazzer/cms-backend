@@ -2,10 +2,12 @@
 
 namespace KikCMS\Domain\DataTable\SourceService;
 
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 
 readonly class LocalDataTableSourceService implements DataTableSourceServiceInterface
 {
@@ -17,7 +19,11 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
     {
         $data = $storeData->getData();
 
-        $data[$id] = $updateData;
+        foreach ($data as &$row) {
+            if ($row[DataTableConfig::ID] == $id) {
+                $row = $updateData;
+            }
+        }
 
         $storeData->setData($data);
     }
@@ -39,12 +45,12 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
     {
         $viewData = [];
 
-        if( ! $storeData){
+        if ( ! $storeData) {
             return $viewData;
         }
 
-        foreach ($storeData->getData() as $id => $row) {
-            $viewDataRow = $this->rowService->getRowView($row + ['id' => $id], $dataTable, $filters, $id);
+        foreach ($storeData->getData() as $row) {
+            $viewDataRow = $this->rowService->getRowView($row, $dataTable, $filters, $row[DataTableConfig::ID]);
             $viewData[]  = $viewDataRow->toArray();
         }
 
@@ -53,7 +59,13 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
 
     public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
     {
-        return $storeData->getData()[$id] ?? [];
+        foreach ($storeData->getData() as $row) {
+            if ($row[DataTableConfig::ID] == $id) {
+                return $row;
+            }
+        }
+
+        return [];
     }
 
     public function deleteList(DataTable $dataTable, array $ids, StoreData $storeData): void
@@ -70,5 +82,25 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
     public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
     {
         // TODO: Implement updateCheckbox() method.
+    }
+
+    public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
+    {
+        $data = $storeData->getData();
+
+        $ids = array_column($data, DataTableConfig::ID);
+
+        $from = array_search($source, $ids);
+        $to   = array_search($target, $ids);
+
+        $item = $data[$from];
+
+        unset($data[$from]);
+
+        $data = array_values($data);
+
+        array_splice($data, $to, 0, [$item]);
+
+        $storeData->setData($data);
     }
 }

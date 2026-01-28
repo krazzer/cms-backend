@@ -22,5 +22,9 @@ form:
             type: 'text'
             field: 'thought'
             label: 'What thought does this color bring to mind?'
+actions:
+    -   key: 'rearrange'
+        type: 'rearrange'
+        icon: 'mdi-drag-horizontal-variant'
 source:
     type: local

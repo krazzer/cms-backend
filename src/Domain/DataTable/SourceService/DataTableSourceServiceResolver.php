@@ -3,7 +3,7 @@
 namespace KikCMS\Domain\DataTable\SourceService;
 
 use KikCMS\Domain\App\Exception\NotImplementedException;
-use KikCMS\Domain\DataTable\SourceType;
+use KikCMS\Domain\DataTable\Config\SourceType;
 
 readonly class DataTableSourceServiceResolver
 {

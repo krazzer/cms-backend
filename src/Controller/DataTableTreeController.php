@@ -6,7 +6,7 @@ use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Dto\CollapseDto;
 use KikCMS\Domain\DataTable\Dto\RearrangeDto;
 use KikCMS\Domain\DataTable\Tree\CollapseService;
-use KikCMS\Domain\DataTable\Tree\RearrangeService;
+use KikCMS\Domain\DataTable\Tree\TreeRearrangeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ class DataTableTreeController extends AbstractController
 {
     public function __construct(
         private readonly CollapseService $collapseService,
-        private readonly RearrangeService $rearrangeService,
+        private readonly TreeRearrangeService $rearrangeService,
         private readonly DataTableService $dataTableService,
     ) {}
 

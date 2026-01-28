@@ -4,16 +4,19 @@ namespace KikCMS\Domain\DataTable\Tree;
 
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
 use KikCMS\Entity\Page\Page;
 use Doctrine\ORM\EntityManagerInterface;
 
-readonly class RearrangeService
+readonly class TreeRearrangeService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private RearrangeService $rearrangeService
     ) {}
 
-    public function rearrange(DataTable $dataTable, int $sourceId, int $targetId, RearrangeLocation $location): void
+    public function rearrange(DataTable $dataTable, int $sourceId, int $targetId, Location $location): void
     {
         $entityClass = $dataTable->getPdoModel();
         $repository  = $this->entityManager->getRepository($entityClass);
@@ -33,7 +36,7 @@ readonly class RearrangeService
         $oldChildParents = $this->getParentsValueInsideNode($sourceEntity);
 
         switch ($location) {
-            case RearrangeLocation::BEFORE:
+            case Location::BEFORE:
                 $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
                 $this->nodesFromTargetPlusOne($dataTable, $targetEntity);
 
@@ -41,7 +44,7 @@ readonly class RearrangeService
                 $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder());
             break;
 
-            case RearrangeLocation::AFTER:
+            case Location::AFTER:
                 $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
 
                 if ($targetEntity->getParents() == $sourceEntity->getParents() && $targetEntity->getDisplayOrder() > $sourceEntity->getDisplayOrder()) {
@@ -54,7 +57,7 @@ readonly class RearrangeService
 
                 $sourceEntity->setParents($targetEntity->getParents());
             break;
-            case RearrangeLocation::INSIDE:
+            case Location::INSIDE:
                 $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
 
                 $parents = $this->getParentsValueInsideNode($targetEntity);
@@ -101,13 +104,7 @@ readonly class RearrangeService
      */
     public function bulkModifyOrder(DataTable $dataTable, Page $page, string $mod, string $operator): void
     {
-        $entityClass = $dataTable->getPdoModel();
-
-        $query = $this->entityManager->createQueryBuilder()
-            ->update($entityClass, DataTableConfig::DEFAULT_TABLE_ALIAS)
-            ->set('e.display_order', 'e.display_order ' . $mod . ' 1')
-            ->where('e.display_order ' . $operator . ' :order')
-            ->setParameter('order', $page->getDisplayOrder());
+        $query = $this->rearrangeService->getBulkModifyOrderQuery($dataTable, $page, $mod, $operator);
 
         if ($page->getParents()) {
             $query->andWhere('e.parents = :parents')

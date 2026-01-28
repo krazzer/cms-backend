@@ -9,6 +9,7 @@ use KikCMS\Domain\DataTable\Dto\CheckDto;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
 use KikCMS\Domain\DataTable\Dto\EditDto;
 use KikCMS\Domain\DataTable\Dto\FilterDto;
+use KikCMS\Domain\DataTable\Dto\RearrangeDto;
 use KikCMS\Domain\DataTable\Dto\SaveDto;
 use KikCMS\Domain\DataTable\Dto\ShowDto;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
@@ -106,10 +107,27 @@ class DataTableController extends AbstractController
         $dataTable = $dto->getDataTable();
 
         $this->dataTableService->delete($dataTable, $dto->getIds(), $storeData);
-        $viewData = $this->dataTableService->getData($dataTable, $dto->getFilters(), $storeData);
 
         return new JsonResponse([
-            'data'      => $viewData,
+            'data'      => $this->dataTableService->getData($dataTable, $dto->getFilters(), $storeData),
+            'storeData' => $storeData->getData(),
+        ]);
+    }
+
+    #[Route('/api/datatable/rearrange', methods: 'POST')]
+    public function rearrange(#[MapRequestPayload] RearrangeDto $dto): Response
+    {
+        $storeData = $dto->getStoreData();
+        $dataTable = $dto->getDataTable();
+        $source    = $dto->getSource();
+        $target    = $dto->getTarget();
+        $location  = $dto->getLocation();
+        $filters   = $dto->getFilters();
+
+        $this->dataTableService->rearrange($dataTable, $source, $target, $location, $storeData);
+
+        return new JsonResponse([
+            'data'      => $this->dataTableService->getData($dataTable, $filters, $storeData),
             'storeData' => $storeData->getData(),
         ]);
     }

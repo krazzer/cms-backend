@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Domain\DataTable\Tree;
+namespace KikCMS\Domain\DataTable\Rearrange;
 
 enum RearrangeLocation: int
 {

@@ -5,6 +5,7 @@ namespace KikCMS\Domain\DataTable\SourceService;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 
 interface DataTableSourceServiceInterface
 {
@@ -19,4 +20,6 @@ interface DataTableSourceServiceInterface
     public function deleteList(DataTable $dataTable, array $ids, StoreData $storeData): void;
 
     public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void;
+
+    public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData);
 }

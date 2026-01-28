@@ -5,7 +5,6 @@ namespace KikCMS\Domain\DataTable\Config;
 use Exception;
 use KikCMS\Domain\App\CallableService;
 use KikCMS\Domain\DataTable\DataTable;
-use KikCMS\Domain\DataTable\SourceType;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -49,6 +48,7 @@ readonly class DataTableConfigService
         }
 
         $form             = $config['form'] ?? [];
+        $actions          = $config['actions'] ?? [];
         $source           = $config['source'];
         $headers          = $config['headers'] ?? [];
         $headersTranslate = $config['headersTranslate'] ?? [];
@@ -82,6 +82,7 @@ readonly class DataTableConfigService
         $dataTable = (new DataTable)
             ->setInstance($instance)
             ->setSource($sourceType)
+            ->setActions($actions)
             ->setHeaders($headers)
             ->setButtons($buttons)
             ->setMobileColumns($mobileColumns)
