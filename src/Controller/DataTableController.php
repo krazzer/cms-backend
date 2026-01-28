@@ -2,7 +2,6 @@
 
 namespace KikCMS\Controller;
 
-use KikCMS\Domain\App\Exception\ObjectNotFoundException;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
@@ -18,13 +17,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DataTableController extends AbstractController
 {
     public function __construct(
         private readonly DataTableService $dataTableService,
-        private readonly TranslatorInterface $translator,
     ) {}
 
     #[Route('/api/datatable', methods: 'POST')]
@@ -41,16 +38,14 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/edit', methods: 'POST')]
     public function edit(#[MapRequestPayload] EditDto $dto): Response
     {
-        try {
-            $editData   = $this->dataTableService->getEditData($dto->getDataTable(), $dto->getFilters(), $dto->getId(), $dto->getStoreData());
-            $helperData = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable(), $editData);
-        } catch (ObjectNotFoundException) {
-            $errorMessage = $this->translator->trans('dataTable.objectNotFound', ['id' => $dto->getId()]);
-            return new JsonResponse(['error' => $errorMessage], Response::HTTP_NOT_FOUND);
-        }
+        $dataTable = $dto->getDataTable();
+        $storeData = $dto->getStoreData();
+
+        $editData   = $this->dataTableService->getEditData($dataTable, $dto->getFilters(), $dto->getId(), $storeData);
+        $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $editData);
 
         return new JsonResponse([
-            'form'       => $dto->getDataTable()->getForm(),
+            'form'       => $dataTable->getForm(),
             'data'       => $editData,
             'helperData' => $helperData,
         ]);
@@ -99,9 +94,11 @@ class DataTableController extends AbstractController
     {
         $storeData = $dto->getStoreData();
         $dataTable = $dto->getDataTable();
+        $formData  = $dto->getFormData();
+        $filters   = $dto->getFilters();
 
-        $id       = $this->dataTableService->save($dataTable, $dto->getFilters(), $dto->getFormData(), $storeData, $dto->getId());
-        $viewData = $this->dataTableService->getData($dataTable, $dto->getFilters(), $storeData);
+        $id       = $this->dataTableService->save($dataTable, $filters, $formData, $storeData, $dto->getId());
+        $viewData = $this->dataTableService->getData($dataTable, $filters, $storeData);
 
         return new JsonResponse([
             'data'      => $viewData,

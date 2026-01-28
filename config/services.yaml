@@ -47,3 +47,7 @@ services:
         arguments:
             $defaultEmailFrom: '%app.default_email_from%'
             $companyInfoLine: '%app.company.infoLine%'
+
+    KikCMS\Domain\App\ExceptionSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }

@@ -3,7 +3,7 @@
 namespace KikCMS\Domain\DataTable\SourceService;
 
 use KikCMS\Domain\App\CallableService;
-use KikCMS\Domain\App\Exception\ObjectNotFoundException;
+use KikCMS\Domain\App\Exception\ObjectNotFoundHttpException;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
@@ -76,7 +76,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $fieldMap   = $this->fieldService->getFieldMap($dataTable);
 
         if ( ! $entity = $repository->find($id)) {
-            throw new ObjectNotFoundException;
+            throw new ObjectNotFoundHttpException("Object with id: $id not found");
         }
 
         $arrayData  = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
