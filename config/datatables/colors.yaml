@@ -8,20 +8,25 @@ buttons:
 headers:
     id: Id
     name: Name
+    active: Active
+cells:
+    active:
+        type: 'checkbox'
 mobileColumns:
     - name
 form:
     fields:
         name:
             type: 'text'
-            field: 'name'
             label: 'Color name'
             validator:
                 name: presence
         thought:
             type: 'text'
-            field: 'thought'
             label: 'What thought does this color bring to mind?'
+        active:
+            type: 'checkbox'
+            label: 'Active'
 actions:
     -   key: 'rearrange'
         type: 'rearrange'

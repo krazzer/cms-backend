@@ -73,9 +73,19 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/check', methods: 'POST')]
     public function check(#[MapRequestPayload] CheckDto $dto): Response
     {
-        $this->dataTableService->updateCheckbox($dto->getDataTable(), $dto->getFilters(), $dto->getId(), $dto->getField(), $dto->getValue());
+        $storeData = $dto->getStoreData();
+        $dataTable = $dto->getDataTable();
+        $filters   = $dto->getFilters();
+        $field     = $dto->getField();
+        $value     = $dto->getValue();
+        $id        = $dto->getId();
 
-        return new JsonResponse(['success' => true]);
+        $this->dataTableService->updateCheckbox($dataTable, $filters, $id, $field, $value, $storeData);
+
+        return new JsonResponse([
+            'success'   => true,
+            'storeData' => $storeData->getData(),
+        ]);
     }
 
     #[Route('/api/datatable/filter', methods: 'POST')]

@@ -19,7 +19,7 @@ interface DataTableSourceServiceInterface
 
     public function deleteList(DataTable $dataTable, array $ids, StoreData $storeData): void;
 
-    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void;
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value, StoreData $storeData): void;
 
     public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData);
 }

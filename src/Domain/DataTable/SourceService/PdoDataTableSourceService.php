@@ -185,7 +185,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $this->entityManager->flush();
     }
 
-    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value, StoreData $storeData): void
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
 

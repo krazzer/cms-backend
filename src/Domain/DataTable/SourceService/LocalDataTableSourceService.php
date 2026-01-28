@@ -79,9 +79,17 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         $storeData->setData($data);
     }
 
-    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value, StoreData $storeData): void
     {
-        // TODO: Implement updateCheckbox() method.
+        $data = $storeData->getData();
+
+        foreach ($data as $i => $row) {
+            if ($row[DataTableConfig::ID] == $id) {
+                $data[$i][$field] = $value;
+            }
+        }
+
+        $storeData->setData($data);
     }
 
     public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void

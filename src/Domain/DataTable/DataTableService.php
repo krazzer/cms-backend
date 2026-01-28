@@ -111,9 +111,9 @@ readonly class DataTableService
         return $this->getFullConfig($this->getByInstance($instance));
     }
 
-    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value): void
+    public function updateCheckbox(DataTable $dataTable, Filters $filters, int $id, string $field, bool $value, StoreData $storeData): void
     {
-        $this->source($dataTable)->updateCheckbox($dataTable, $filters, $id, $field, $value);
+        $this->source($dataTable)->updateCheckbox($dataTable, $filters, $id, $field, $value, $storeData);
     }
 
     public function getForm(DataTable $dataTable, ?string $type = null): array
