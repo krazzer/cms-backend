@@ -35,7 +35,7 @@ class Page
     #[ORM\Column(nullable: true)]
     private ?array $seo = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json_pretty', nullable: true)]
     private ?array $content = null;
 
     #[ORM\Column(nullable: true)]
