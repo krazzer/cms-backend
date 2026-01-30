@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../../../../../symfony/dependency-injection/Loader/schema/services.schema.json
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    KikCMS\Command\Development\UpCommand:
+        arguments:
+            $id: '%project.id%'
+            $name: '%project.name%'
+            $portBase: '%project.portBase%'
+
+    KikCMS\Command\Development\DownCommand:
+        arguments:
+            $id: '%project.id%'
+            $name: '%project.name%'
+            $portBase: '%project.portBase%'
+
+    KikCMS\Command\Development\AttachCommand:
+        arguments:
+            $name: '%project.name%'

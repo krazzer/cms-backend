@@ -44,4 +44,14 @@ readonly class DockerService
             echo $buffer;
         });
     }
+
+    public function getContainerName(string $name): string
+    {
+        $dockerFile = $this->dockerConfigService->getDockerFile();
+
+        $check = new Process(['docker', 'compose', '-f', $dockerFile, '-p', $name, 'ps', '--status', 'running', '--format', '{{.Name}}']);
+        $check->run();
+
+        return trim($check->getOutput());
+    }
 }

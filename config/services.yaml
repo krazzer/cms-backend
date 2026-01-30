@@ -55,15 +55,3 @@ services:
     KikCMS\Domain\App\ExceptionSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
-
-    KikCMS\Command\Development\UpCommand:
-        arguments:
-            $id: '%project.id%'
-            $name: '%project.name%'
-            $portBase: '%project.portBase%'
-
-    KikCMS\Command\Development\DownCommand:
-        arguments:
-            $id: '%project.id%'
-            $name: '%project.name%'
-            $portBase: '%project.portBase%'

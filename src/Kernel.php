@@ -14,6 +14,8 @@ class Kernel extends BaseKernel
 
     const string DIR_DOCKER = 'docker';
     const string DIR_VENDOR = 'vendor';
+    const string DIR_SRC    = 'src';
+    const string DIR_CONFIG = 'config';
 
     const string DIR_VENDOR_KIKSAUS = self::DIR_VENDOR . '/kiksaus';
 
@@ -36,13 +38,17 @@ class Kernel extends BaseKernel
     {
         // Add app namespace to autowire
         $container->services()
-            ->load('App\\', $this->getAppDir() . '/src/*')
+            ->load('App\\', $this->getAppDir(self::DIR_SRC) . '/*')
             ->autowire()
             ->autoconfigure();
 
+        $cmsConfigDir = $this->getCmsDir(self::DIR_CONFIG);
+
         // Import CMS services
-        $container->import(__DIR__ . '/../config/services.yaml');
-        $container->import(__DIR__ . '/../config/{packages}/*.yaml');
+        $container->import($cmsConfigDir . '/services.yaml');
+        $container->import($cmsConfigDir . '/services/*.yaml');
+        $container->import($cmsConfigDir . '/services/**/*.yaml');
+        $container->import($cmsConfigDir . '/{packages}/*.yaml');
 
         // Import project services
         $projectServices = $this->getAppDir() . '/config/services.yaml';
