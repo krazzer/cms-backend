@@ -12,6 +12,13 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    const string DIR_DOCKER = 'docker';
+    const string DIR_VENDOR = 'vendor';
+
+    const string DIR_VENDOR_KIKSAUS = self::DIR_VENDOR . '/kiksaus';
+
+    const string FILE_DOCKER_COMPOSE_SITE = self::DIR_DOCKER . '/docker-compose-site.yml';
+
     public function boot(): void
     {
         parent::boot();
@@ -59,8 +66,27 @@ class Kernel extends BaseKernel
         }
     }
 
-    public function getAppDir(): string
+    public function getAppDir(?string $path = null): string
     {
-        return $_ENV['PROJECT_ROOT'];
+        $projectRoot = $_ENV['PROJECT_ROOT'];
+
+        if ($path) {
+            return $projectRoot . DIRECTORY_SEPARATOR . $path;
+        }
+
+        return $projectRoot;
+    }
+
+    public function getCmsDir(?string $path = null): string
+    {
+        $packageDirName = basename($this->getProjectDir());
+
+        $cmsRoot = $this->getAppDir(self::DIR_VENDOR_KIKSAUS . DIRECTORY_SEPARATOR . $packageDirName);
+
+        if ($path) {
+            return $cmsRoot . DIRECTORY_SEPARATOR . $path;
+        }
+
+        return $cmsRoot;
     }
 }

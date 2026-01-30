@@ -15,6 +15,10 @@ parameters:
     app.company.infoLine: '%app.company.name%, %app.company.address%, %app.company.zip%, %app.company.city%'
     app.en: 'en'
 
+    project.id: '%env(PROJECT_ID)%'
+    project.name: '%env(PROJECT_NAME)%'
+    project.portBase: '%env(PROJECT_PORT_BASE)%'
+
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
     Symfony\Component\String\ByteString: ~
@@ -51,3 +55,15 @@ services:
     KikCMS\Domain\App\ExceptionSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
+
+    KikCMS\Command\Development\UpCommand:
+        arguments:
+            $id: '%project.id%'
+            $name: '%project.name%'
+            $portBase: '%project.portBase%'
+
+    KikCMS\Command\Development\DownCommand:
+        arguments:
+            $id: '%project.id%'
+            $name: '%project.name%'
+            $portBase: '%project.portBase%'
