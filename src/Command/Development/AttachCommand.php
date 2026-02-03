@@ -32,6 +32,7 @@ class AttachCommand extends Command
 
         $process = new Process(['docker', 'exec', '-it', $container, '/bin/bash']);
         $process->setTty(Process::isTtySupported());
+        $process->setTimeout(null);
         $process->run();
 
         return Command::SUCCESS;

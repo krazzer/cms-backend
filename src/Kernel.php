@@ -12,14 +12,23 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    const string DIR_DOCKER = 'docker';
-    const string DIR_VENDOR = 'vendor';
-    const string DIR_SRC    = 'src';
-    const string DIR_CONFIG = 'config';
+    const string DIR_DOCKER    = 'docker';
+    const string DIR_VENDOR    = 'vendor';
+    const string DIR_SRC       = 'src';
+    const string DIR_CONFIG    = 'config';
+    const string DIR_RESOURCES = 'resources';
+    const string DIR_CERTS     = 'certs';
 
-    const string DIR_VENDOR_KIKSAUS = self::DIR_VENDOR . '/kiksaus';
+    const string DIR_RESOURCES_CERTS = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS;
+    const string DIR_VENDOR_KIKSAUS  = self::DIR_VENDOR . DIRECTORY_SEPARATOR . 'kiksaus';
 
     const string FILE_DOCKER_COMPOSE_SITE = self::DIR_DOCKER . '/docker-compose-site.yml';
+
+    const string FILE_CERT     = self::DIR_CERTS . '/cert.crt';
+    const string FILE_CERT_KEY = self::DIR_CERTS . '/cert.key';
+
+    const string FILE_SNAKE_CERT     = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS . '/snakeoil.crt';
+    const string FILE_SNAKE_CERT_KEY = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS . '/snakeoil.key';
 
     public function boot(): void
     {
