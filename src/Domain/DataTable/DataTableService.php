@@ -121,29 +121,30 @@ readonly class DataTableService
         return $dataTable->getForm($type);
     }
 
-    public function getSubDataTableHelperData(DataTable $dataTable, ?array $editData = null): array
+    public function getSubDataTableHelperData(DataTable $dataTable, ?string $id = null, ?array $editData = null): array
     {
         $subData = [];
 
         $fieldMap = $this->dataTableConfigService->getFields($dataTable, DataTableConfig::FIELD_TYPE_DATATABLE);
 
         foreach ($fieldMap as $key => $field) {
-            $subData[$key] = $this->getSubDataTableFieldHelperData($field, $editData[$key] ?? null);
+            $subData[$key] = $this->getSubDataTableFieldHelperData($dataTable, $field, $id, $editData[$key] ?? []);
         }
 
         return $subData;
     }
 
-    public function getSubDataTableFieldHelperData(array $field, ?array $editData = null): array
+    public function getSubDataTableFieldHelperData(DataTable $dataTable, array $field, ?string $id, array $editData): array
     {
-        $dataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
-        $filters   = $this->dataTableFilterService->getDefault();
+        $subDataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
 
-        $helperData = [DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($dataTable)];
+        $filters = $this->dataTableFilterService->getDefault()
+            ->setParentDataTable($dataTable)
+            ->setParentId($id);
 
-        if ($editData !== null) {
-            $helperData[DataTableConfig::HELPER_DATA] = $this->getData($dataTable, $filters, new StoreData($editData));
-        }
+        $helperData = [DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($subDataTable)];
+
+        $helperData[DataTableConfig::HELPER_DATA] = $this->getData($subDataTable, $filters, new StoreData($editData));
 
         return $helperData;
     }

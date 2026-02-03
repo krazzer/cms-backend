@@ -42,7 +42,7 @@ class DataTableController extends AbstractController
         $storeData = $dto->getStoreData();
 
         $editData   = $this->dataTableService->getEditData($dataTable, $dto->getFilters(), $dto->getId(), $storeData);
-        $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $editData);
+        $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $dto->getId(), $editData);
 
         return new JsonResponse([
             'form'       => $dataTable->getForm(),

@@ -52,7 +52,7 @@ class PageTreeService
      * @param array $data List of items, each with at least 'id' and 'parents' (array).
      * @return array The list with 'haschildren' added (true/false).
      */
-    function addHasChildren(array $data): array
+    public function addHasChildren(array $data): array
     {
         $parentsWithChildren = [];
 

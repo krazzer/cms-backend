@@ -3,7 +3,10 @@
 namespace KikCMS\Entity\Page;
 
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use KikCMS\Entity\PageImage\PageImage;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 #[ORM\Table(name: 'cms_page')]
@@ -12,8 +15,8 @@ class Page
     const string FIELD_ID            = 'id';
     const string FIELD_PARENTS       = 'parents';
     const string FIELD_DISPLAY_ORDER = 'display_order';
-    const string FIELD_CHILDREN      = 'children'; // not an actual field, but derived from other data
     const string FIELD_TYPE          = 'type';
+    const string FIELD_CHILDREN      = 'children'; // not an actual field, but derived from other data
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -61,6 +64,14 @@ class Page
 
     #[ORM\Column(insertable: false)]
     private ?DateTimeImmutable $updated_at = null;
+
+    #[ORM\OneToMany(targetEntity: PageImage::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $pageImages;
+
+    public function __construct()
+    {
+        $this->pageImages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -234,5 +245,10 @@ class Page
     {
         $this->menu_max_level = $menu_max_level;
         return $this;
+    }
+
+    public function getPageImages(): Collection
+    {
+        return $this->pageImages;
     }
 }

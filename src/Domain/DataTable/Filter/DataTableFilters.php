@@ -2,6 +2,8 @@
 
 namespace KikCMS\Domain\DataTable\Filter;
 
+use KikCMS\Domain\DataTable\DataTable;
+
 class DataTableFilters
 {
     public ?string $search = null;
@@ -10,6 +12,8 @@ class DataTableFilters
     public string $langCode;
     public int $page = 1;
     public array $filters = [];
+    public ?int $parentId = null;
+    public ?DataTable $parentDataTable = null;
 
     public function getSearch(): ?string
     {
@@ -74,6 +78,28 @@ class DataTableFilters
     public function setLangCode(string $langCode): DataTableFilters
     {
         $this->langCode = $langCode;
+        return $this;
+    }
+
+    public function getParentId(): ?int
+    {
+        return $this->parentId;
+    }
+
+    public function setParentId(?int $parentId): DataTableFilters
+    {
+        $this->parentId = $parentId;
+        return $this;
+    }
+
+    public function getParentDataTable(): ?DataTable
+    {
+        return $this->parentDataTable;
+    }
+
+    public function setParentDataTable(?DataTable $parentDataTable): DataTableFilters
+    {
+        $this->parentDataTable = $parentDataTable;
         return $this;
     }
 }

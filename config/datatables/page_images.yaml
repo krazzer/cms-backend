@@ -1,0 +1,32 @@
+buttons:
+    -   label: Add image
+        action: add
+        icon: 'mdi-plus'
+    -   label: Delete
+        action: delete
+        icon: 'mdi-delete'
+headers:
+    id: Id
+    name: Name
+    image_id: Afbeelding
+cells:
+    active:
+        image_id: 'image'
+mobileColumns:
+    - image_id
+form:
+    fields:
+        name:
+            type: 'text'
+            label: 'Naam'
+            validator:
+                name: presence
+        image_id:
+            type: 'text'
+            label: 'Afbeelding'
+actions:
+    -   key: 'rearrange'
+        type: 'rearrange'
+source:
+    type: pdo
+    model: KikCMS\Entity\PageImage\PageImage

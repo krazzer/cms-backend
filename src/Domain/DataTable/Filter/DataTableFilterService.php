@@ -3,6 +3,7 @@
 namespace KikCMS\Domain\DataTable\Filter;
 
 
+use KikCMS\Doctrine\Service\RelationService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
@@ -12,7 +13,7 @@ use KikCMS\Domain\DataTable\DataTableLanguageResolver;
 readonly class DataTableFilterService
 {
     public function __construct(
-        private DataTablePathService $pathService, private DataTableLanguageResolver $dataTableLanguageResolver
+        private DataTablePathService $pathService, private DataTableLanguageResolver $dataTableLanguageResolver, private RelationService $relationService
     ) {}
 
     public function getDefault(): DataTableFilters
@@ -28,6 +29,10 @@ readonly class DataTableFilterService
 
         if ($filters->getSort() && $filters->getSortDirection()) {
             $this->sort($builder, $filters);
+        }
+
+        if ($filters->getParentId()) {
+            $this->filterParent($dataTable, $filters, $builder);
         }
     }
 
@@ -60,4 +65,14 @@ readonly class DataTableFilterService
         }
     }
 
+    private function filterParent(DataTable $dataTable, DataTableFilters $filters, QueryBuilder $builder): void
+    {
+        $parentModel = $filters->getParentDataTable()->getPdoModel();
+        $childModel  = $dataTable->getPdoModel();
+
+        $field = $this->relationService->getOneToManyRelatedField($parentModel, $childModel);
+
+        $builder->andWhere("e.$field = :parentId")
+            ->setParameter('parentId', $filters->getParentId());
+    }
 }
