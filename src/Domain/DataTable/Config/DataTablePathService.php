@@ -4,11 +4,6 @@ namespace KikCMS\Domain\DataTable\Config;
 
 class DataTablePathService
 {
-    public function replaceLocale(string $path, string $locale): string
-    {
-        return str_replace(DataTableConfig::PATH_LOCALE, $locale, $path);
-    }
-
     public function isPath(string $path): bool
     {
         return str_contains($path, DataTableConfig::PATH_SEPARATOR);
@@ -46,15 +41,20 @@ class DataTablePathService
         return $result;
     }
 
-    public function pathToKeys(string $path, string $locale): array
-    {
-        return explode(DataTableConfig::PATH_SEPARATOR, $this->replaceLocale($path, $locale));
-    }
-
     public function toJson(mixed $column, string $locale): array
     {
         $parts = $this->pathToKeys($column, $locale);
 
         return [$parts[0], '$.' . implode('.', array_slice($parts, 1))];
+    }
+
+    private function pathToKeys(string $path, string $locale): array
+    {
+        return explode(DataTableConfig::PATH_SEPARATOR, $this->replaceLocale($path, $locale));
+    }
+
+    private function replaceLocale(string $path, string $locale): string
+    {
+        return str_replace(DataTableConfig::PATH_LOCALE, $locale, $path);
     }
 }
