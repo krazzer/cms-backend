@@ -11,7 +11,7 @@ interface DataTableSourceServiceInterface
 {
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array;
 
-    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array;
+    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array;
 
     public function create(DataTable $dataTable, Filters $filters, array $createData, StoreData $storeData): int;
 

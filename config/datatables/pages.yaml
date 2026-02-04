@@ -56,7 +56,7 @@ form:
                     label: Content
                     validator:
                         name: presence
-                images:
+                pageImages:
                     type: datatable
                     label: Afbeeldingen
                     instance: page_images

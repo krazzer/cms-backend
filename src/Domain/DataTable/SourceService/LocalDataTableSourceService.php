@@ -30,13 +30,12 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
 
     public function create(DataTable $dataTable, Filters $filters, array $createData, StoreData $storeData): int
     {
-        $data = $storeData->getData();
+        $data  = $storeData->getData();
+        $newId = $data ? max(array_column($data, DataTableConfig::ID)) + 1 : 1;
 
-        $newId = $data ? max(array_keys($data)) + 1 : 1;
+        $createData[DataTableConfig::ID] = $newId;
 
-        $data[$newId] = $createData;
-
-        $storeData->setData($data);
+        $storeData->setData(array_merge($data, [$createData]));
 
         return $newId;
     }
@@ -57,7 +56,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         return $viewData;
     }
 
-    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
     {
         foreach ($storeData->getData() as $row) {
             if ($row[DataTableConfig::ID] == $id) {
@@ -72,8 +71,10 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
     {
         $data = $storeData->getData();
 
-        foreach ($ids as $id) {
-            unset($data[$id]);
+        foreach ($data as $i => $row) {
+            if (in_array($row[DataTableConfig::ID], $ids)) {
+                unset($data[$i]);
+            }
         }
 
         $storeData->setData($data);

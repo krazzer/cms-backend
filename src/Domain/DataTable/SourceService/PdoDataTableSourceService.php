@@ -2,8 +2,10 @@
 
 namespace KikCMS\Domain\DataTable\SourceService;
 
-use KikCMS\Domain\App\CallableService;
+use KikCMS\Doctrine\Service\RelationService;
+use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\App\Exception\ObjectNotFoundHttpException;
+use KikCMS\Domain\App\Service\StringService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
@@ -34,7 +36,10 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private DataTableFilterService $dataTableFilterService,
         private DataTablePathService $dataTablePathService,
         private DataTableModifierService $dataTableModifierService,
-        private FieldService $fieldService, private RearrangeService $rearrangeService,
+        private FieldService $fieldService,
+        private RearrangeService $rearrangeService,
+        private StringService $stringService,
+        private RelationService $relationService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -70,7 +75,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         return $repository->createQueryBuilder(DataTableConfig::DEFAULT_TABLE_ALIAS);
     }
 
-    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
         $fieldMap   = $this->fieldService->getFieldMap($dataTable);
@@ -103,8 +108,8 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $data = [];
 
         foreach ($metadata->getFieldNames() as $field) {
-            $getter   = 'get' . ucfirst($field);
-            $isGetter = 'is' . ucfirst($field);
+            $getter   = $this->stringService->getGetter($field);
+            $isGetter = $this->stringService->getIsGetter($field);
 
             if (method_exists($entity, $isGetter)) {
                 $data[$field] = $entity->$isGetter();
@@ -124,17 +129,22 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $metadata  = $this->entityManager->getClassMetadata($className);
 
         foreach ($data as $field => $value) {
-            $setter = 'set' . ucfirst($field);
+            $setter = $this->stringService->getSetter($field);
 
             if ( ! method_exists($entity, $setter)) {
                 throw new Exception("Setter method $setter does not exist on " . $className);
             }
 
-            // Check if $field een mapped field is in Doctrine
-            if ($metadata->hasField($field)) {
-                $fieldMapping = $metadata->getFieldMapping($field);
+            // Check if $field is a relation in Doctrine
+            if ($metadata->hasAssociation($field)) {
+                if( ! $value = $this->getValueByAssociation($entity, $field, $value)){
+                    continue;
+                }
+            }
 
-                $value = $this->getValueByType($fieldMapping['type'], $value);
+            // Check if $field is a mapped field in Doctrine
+            if ($metadata->hasField($field)) {
+                $value = $this->getValueByType($metadata->getFieldMapping($field)['type'], $value);
             }
 
             $entity->$setter($value);
@@ -166,6 +176,10 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $filters, $createData);
 
         $this->updateEntityByArray($entity, $dataToStore);
+
+        if ($parentId = $filters->getParentId()) {
+            $this->updateEntityWithParent($entity, $dataTable, $filters, $parentId);
+        }
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
@@ -215,5 +229,44 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
     public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
     {
         $this->rearrangeService->rearrange($dataTable, $source, $target, $location);
+    }
+
+    private function updateEntityWithParent(object $entity, DataTable $dataTable, Filters $filters, int $parentId): void
+    {
+        $parentModel = $filters->getParentDataTable()->getPdoModel();
+        $childModel  = $dataTable->getPdoModel();
+
+        if ( ! $field = $this->relationService->getOneToManyRelationField($parentModel, $childModel)) {
+            return;
+        }
+
+        $parentEntity = $this->entityManager->getReference($parentModel, $parentId);
+        $fieldSetter  = $this->stringService->getSetter($field);
+
+        $entity->$fieldSetter($parentEntity);
+    }
+
+    private function getValueByAssociation(object $entity, string $field, mixed $value): ?array
+    {
+        $metadata = $this->entityManager->getClassMetadata(get_class($entity));
+        $class    = $metadata->getAssociationTargetClass($field);
+
+        if ($metadata->isCollectionValuedAssociation($field)) {
+            // the parent already exists, so child-data is already up to date
+            if ($this->entityManager->contains($entity)) {
+                return null;
+            }
+
+            return array_map(function ($row) use ($class) {
+                unset($row[DataTableConfig::ID]);
+
+                $subEntity = new $class();
+                $this->updateEntityByArray($subEntity, $row);
+
+                return $subEntity;
+            }, $value);
+        }
+
+        return null;
     }
 }

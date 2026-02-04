@@ -251,4 +251,16 @@ class Page
     {
         return $this->pageImages;
     }
+
+    public function setPageImages(iterable $pageImages): Page
+    {
+        $this->pageImages = new ArrayCollection();
+
+        foreach ($pageImages as $pageImage) {
+            $pageImage->setPage($this);
+            $this->pageImages->add($pageImage);
+        }
+
+        return $this;
+    }
 }

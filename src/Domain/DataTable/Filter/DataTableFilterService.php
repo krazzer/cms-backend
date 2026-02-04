@@ -70,9 +70,9 @@ readonly class DataTableFilterService
         $parentModel = $filters->getParentDataTable()->getPdoModel();
         $childModel  = $dataTable->getPdoModel();
 
-        $field = $this->relationService->getOneToManyRelatedField($parentModel, $childModel);
-
-        $builder->andWhere("e.$field = :parentId")
-            ->setParameter('parentId', $filters->getParentId());
+        if ($field = $this->relationService->getOneToManyRelationField($parentModel, $childModel)) {
+            $builder->andWhere("e.$field = :parentId")
+                ->setParameter('parentId', $filters->getParentId());
+        }
     }
 }

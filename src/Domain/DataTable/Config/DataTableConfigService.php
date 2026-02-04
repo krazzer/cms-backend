@@ -3,7 +3,7 @@
 namespace KikCMS\Domain\DataTable\Config;
 
 use Exception;
-use KikCMS\Domain\App\CallableService;
+use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\DataTable\DataTable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;

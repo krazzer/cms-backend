@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Domain\App;
+namespace KikCMS\Domain\App\Service;
 
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface;

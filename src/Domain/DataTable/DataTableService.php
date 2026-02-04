@@ -2,8 +2,10 @@
 
 namespace KikCMS\Domain\DataTable;
 
+use KikCMS\Doctrine\Service\RelationService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
+use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
@@ -16,12 +18,14 @@ readonly class DataTableService
     public function __construct(
         private DataTableConfigService $configService,
         private DataTableSourceServiceResolver $resolver,
-        private DataTableConfigService $dataTableConfigService, private DataTableFilterService $dataTableFilterService,
+        private DataTableConfigService $dataTableConfigService,
+        private DataTableFilterService $dataTableFilterService,
+        private RelationService $relationService,
     ) {}
 
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
     {
-        return $this->source($dataTable)->getData($dataTable, $filters, $storeData);
+        return $this->source($dataTable, $filters)->getData($dataTable, $filters, $storeData);
     }
 
     public function getHeaders(string $instance): array
@@ -49,9 +53,9 @@ readonly class DataTableService
         return $defaultData;
     }
 
-    public function getEditData(DataTable $dataTable, Filters $filters, string $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
     {
-        return $this->source($dataTable)->getEditData($dataTable, $filters, $id, $storeData);
+        return $this->source($dataTable, $filters)->getEditData($dataTable, $filters, $id, $storeData);
     }
 
     public function getPayloadByInstance(string $instance, ?Filters $filters = null): array
@@ -78,17 +82,17 @@ readonly class DataTableService
 
     public function update(DataTable $dataTable, Filters $filters, string $id, array $updateData, StoreData $storeData): void
     {
-        $this->source($dataTable)->update($dataTable, $filters, $id, $updateData, $storeData);
+        $this->source($dataTable, $filters)->update($dataTable, $filters, $id, $updateData, $storeData);
     }
 
     public function create(DataTable $dataTable, Filters $filters, array $data, StoreData $storeData): int
     {
-        return $this->source($dataTable)->create($dataTable, $filters, $data, $storeData);
+        return $this->source($dataTable, $filters)->create($dataTable, $filters, $data, $storeData);
     }
 
-    public function delete(DataTable $dataTable, array $ids, StoreData $storeData): void
+    public function delete(DataTable $dataTable, Filters $filters, array $ids, StoreData $storeData): void
     {
-        $this->source($dataTable)->deleteList($dataTable, $ids, $storeData);
+        $this->source($dataTable, $filters)->deleteList($dataTable, $ids, $storeData);
     }
 
     public function getFullConfig(DataTable $dataTable): array
@@ -154,8 +158,14 @@ readonly class DataTableService
         $this->source($dataTable)->rearrange($dataTable, $source, $target, $location, $storeData);
     }
 
-    private function source(DataTable $dataTable): DataTableSourceServiceInterface
+    private function source(DataTable $dataTable, ?Filters $filters = null): DataTableSourceServiceInterface
     {
-        return $this->resolver->resolve($dataTable->getSource());
+        $sourceType = $dataTable->getSource();
+
+        if ($this->relationService->hasUnSavedParentDataTable($dataTable, $filters)) {
+            $sourceType = SourceType::Local;
+        }
+
+        return $this->resolver->resolve($sourceType);
     }
 }
