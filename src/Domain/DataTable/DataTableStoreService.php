@@ -3,7 +3,7 @@
 namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
-use KikCMS\Domain\DataTable\Field\FieldService;
+use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 
 readonly class DataTableStoreService

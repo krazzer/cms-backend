@@ -13,7 +13,7 @@ use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableDataService;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
-use KikCMS\Domain\DataTable\Field\FieldService;
+use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilterService;

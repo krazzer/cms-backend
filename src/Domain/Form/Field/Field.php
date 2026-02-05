@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Domain\DataTable\Field;
+namespace KikCMS\Domain\Form\Field;
 
 class Field
 {
