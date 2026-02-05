@@ -14,5 +14,14 @@ roles:
     user: User
     client: Client
 
+entityName:
+    PageImage: Page image
+
 dataTable:
     objectNotFound: Object for ID {id} not found
+    deleteRelations: |
+        Deleting this item will also remove the following:
+        
+        {relations}
+        
+        Are you sure you want to continue?

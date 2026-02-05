@@ -3,6 +3,8 @@
 namespace KikCMS\Controller;
 
 use KikCMS\Domain\DataTable\DataTableService;
+use KikCMS\Domain\DataTable\Delete\DeleteImpactCalculator;
+use KikCMS\Domain\DataTable\Delete\DeleteImpactMessageBuilder;
 use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
@@ -22,6 +24,7 @@ class DataTableController extends AbstractController
 {
     public function __construct(
         private readonly DataTableService $dataTableService,
+        private readonly DeleteImpactCalculator $deleteImpactCalculator, private readonly DeleteImpactMessageBuilder $deleteImpactMessageBuilder,
     ) {}
 
     #[Route('/api/datatable', methods: 'POST')]
@@ -114,6 +117,12 @@ class DataTableController extends AbstractController
     {
         $storeData = $dto->getStoreData();
         $dataTable = $dto->getDataTable();
+
+        $deletePlan = $this->deleteImpactCalculator->inspect($dataTable, $dto->getIds());
+
+        if ($deletePlan && ! $dto->isConfirmed()) {
+            return new JsonResponse(['confirm' => $this->deleteImpactMessageBuilder->build($deletePlan)]);
+        }
 
         $this->dataTableService->delete($dataTable, $dto->getFilters(), $dto->getIds(), $storeData);
 

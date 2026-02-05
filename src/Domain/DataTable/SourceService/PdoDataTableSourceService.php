@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\DataTable\SourceService;
 
+use KikCMS\Doctrine\Service\EntityService;
 use KikCMS\Doctrine\Service\RelationService;
 use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\App\Exception\ObjectNotFoundHttpException;
@@ -40,6 +41,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private RearrangeService $rearrangeService,
         private StringService $stringService,
         private RelationService $relationService,
+        private EntityService $entityService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -137,7 +139,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
 
             // Check if $field is a relation in Doctrine
             if ($metadata->hasAssociation($field)) {
-                if( ! $value = $this->getValueByAssociation($entity, $field, $value)){
+                if ( ! $value = $this->getValueByAssociation($entity, $field, $value)) {
                     continue;
                 }
             }
@@ -189,10 +191,9 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
 
     public function deleteList(DataTable $dataTable, array $ids, StoreData $storeData): void
     {
-        $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
+        $entities = $this->entityService->getByIds($dataTable->getPdoModel(), $ids);
 
-        foreach ($ids as $id) {
-            $entity = $repository->find($id);
+        foreach ($entities as $entity) {
             $this->entityManager->remove($entity);
         }
 
