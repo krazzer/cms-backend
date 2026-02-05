@@ -31,7 +31,8 @@ class DataTableConfig
     const string SORT_ASC  = 'ascending';
     const string SORT_DESC = 'descending';
 
-    const string ID = 'id';
+    const string ID            = 'id';
+    const string DISPLAY_ORDER = 'display_order';
 
     const array SORT_MAP_SQL = [
         self::SORT_ASC  => 'ASC',

@@ -97,6 +97,12 @@ readonly class DataTableService
 
     public function getFullConfig(DataTable $dataTable): array
     {
+        $actions = $dataTable->getActions();
+
+        if ($dataTable->isRearrange()) {
+            $actions[] = ['key' => 'rearrange', 'type' => 'rearrange'];
+        }
+
         return [
             'buttons'       => $dataTable->getButtons(),
             'mobileColumns' => $dataTable->getMobileColumns(),
@@ -106,7 +112,7 @@ readonly class DataTableService
             'search'        => $dataTable->getSearch(),
             'source'        => $dataTable->getSource(),
             'instance'      => $dataTable->getInstance(),
-            'actions'       => $dataTable->getActions(),
+            'actions'       => $actions,
         ];
     }
 

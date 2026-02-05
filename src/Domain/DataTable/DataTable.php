@@ -21,6 +21,7 @@ class DataTable
     private ?string $query;
     private ?string $modify;
     private string $class = 'default';
+    private bool $rearrange = false;
 
     public function getInstance(): string
     {
@@ -193,6 +194,17 @@ class DataTable
     public function setActions(array $actions): DataTable
     {
         $this->actions = $actions;
+        return $this;
+    }
+
+    public function isRearrange(): bool
+    {
+        return $this->rearrange;
+    }
+
+    public function setRearrange(bool $rearrange): DataTable
+    {
+        $this->rearrange = $rearrange;
         return $this;
     }
 }

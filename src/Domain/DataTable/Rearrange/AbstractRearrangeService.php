@@ -22,8 +22,8 @@ readonly class AbstractRearrangeService
 
         return $this->entityManager->createQueryBuilder()
             ->update($entityClass, DataTableConfig::DEFAULT_TABLE_ALIAS)
-            ->set('e.display_order', 'e.display_order ' . $mod . ' 1')
-            ->where('e.display_order ' . $operator . ' :order')
+            ->set('e.' . DataTableConfig::DISPLAY_ORDER, 'e.' . DataTableConfig::DISPLAY_ORDER . ' ' . $mod . ' 1')
+            ->where('e.' . DataTableConfig::DISPLAY_ORDER . ' ' . $operator . ' :order')
             ->setParameter('order', $entity->getDisplayOrder());
     }
 

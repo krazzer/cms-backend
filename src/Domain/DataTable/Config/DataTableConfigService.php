@@ -58,6 +58,7 @@ readonly class DataTableConfigService
         $class            = $config['class'] ?? null;
         $searchColumns    = $config['searchColumns'] ?? [];
         $typeForms        = $config['typeForms'] ?? [];
+        $rearrange        = $config['rearrange'] ?? false;
 
         $sourceType = SourceType::tryFrom($source['type'] ?? null) ?? SourceType::Pdo;
 
@@ -91,7 +92,8 @@ readonly class DataTableConfigService
             ->setQuery($query)
             ->setModify($modify)
             ->setSearchColumns($searchColumns)
-            ->setTypeForms($typeForms);
+            ->setTypeForms($typeForms)
+            ->setRearrange($rearrange);
 
         if ($sourceType == SourceType::Pdo) {
             $dataTable->setPdoModel($pdoModel);

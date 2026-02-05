@@ -24,9 +24,7 @@ form:
         image_id:
             type: 'text'
             label: 'Afbeelding'
-actions:
-    -   key: 'rearrange'
-        type: 'rearrange'
+rearrange: true
 source:
     type: pdo
     model: KikCMS\Entity\PageImage\PageImage

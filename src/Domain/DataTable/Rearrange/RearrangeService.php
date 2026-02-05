@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\DataTable\Rearrange;
 
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 
@@ -23,6 +24,15 @@ readonly class RearrangeService extends AbstractRearrangeService
 
         $this->entityManager->persist($sourceEntity);
         $this->entityManager->flush();
+    }
+
+    public function getMaxDisplayOrder(string $model): int
+    {
+        $query = $this->entityManager->createQueryBuilder()
+            ->select('MAX(e.' . DataTableConfig::DISPLAY_ORDER . ')')
+            ->from($model, 'e');
+
+        return (int) $query->getQuery()->getSingleScalarResult();
     }
 
     private function rearrangeBefore(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void

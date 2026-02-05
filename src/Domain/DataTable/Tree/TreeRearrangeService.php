@@ -64,7 +64,7 @@ readonly class TreeRearrangeService extends AbstractRearrangeService
         $parents = $this->getParentsValueInsideNode($targetEntity);
 
         $query = $this->entityManager->createQueryBuilder()
-            ->select('MAX(e.display_order)')
+            ->select('MAX(e.' . DataTableConfig::DISPLAY_ORDER . ')')
             ->from(Page::class, DataTableConfig::DEFAULT_TABLE_ALIAS)
             ->where('e.parents = :parents')
             ->setParameter('parents', json_encode($parents));

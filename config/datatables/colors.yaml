@@ -27,8 +27,6 @@ form:
         active:
             type: 'checkbox'
             label: 'Active'
-actions:
-    -   key: 'rearrange'
-        type: 'rearrange'
+rearrange: true
 source:
     type: local
