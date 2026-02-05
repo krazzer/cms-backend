@@ -142,7 +142,7 @@ class DataTableController extends AbstractController
         $location  = $dto->getLocation();
         $filters   = $dto->getFilters();
 
-        $this->dataTableService->rearrange($dataTable, $source, $target, $location, $storeData);
+        $this->dataTableService->rearrange($dataTable, $filters, $source, $target, $location, $storeData);
 
         return new JsonResponse([
             'data'      => $this->dataTableService->getData($dataTable, $filters, $storeData),

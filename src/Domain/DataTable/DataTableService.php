@@ -153,9 +153,10 @@ readonly class DataTableService
         return $helperData;
     }
 
-    public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
+    public function rearrange(DataTable $dataTable, Filters $filters, int $source, int $target, Location $location,
+        StoreData $storeData): void
     {
-        $this->source($dataTable)->rearrange($dataTable, $source, $target, $location, $storeData);
+        $this->source($dataTable, $filters)->rearrange($dataTable, $source, $target, $location, $storeData);
     }
 
     private function source(DataTable $dataTable, ?Filters $filters = null): DataTableSourceServiceInterface
