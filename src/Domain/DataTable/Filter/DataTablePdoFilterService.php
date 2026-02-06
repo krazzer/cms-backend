@@ -10,10 +10,12 @@ use KikCMS\Domain\DataTable\DataTable;
 use Doctrine\ORM\QueryBuilder;
 use KikCMS\Domain\DataTable\DataTableLanguageResolver;
 
-readonly class DataTableFilterService
+readonly class DataTablePdoFilterService
 {
     public function __construct(
-        private DataTablePathService $pathService, private DataTableLanguageResolver $dataTableLanguageResolver, private RelationService $relationService
+        private DataTablePathService $pathService,
+        private DataTableLanguageResolver $dataTableLanguageResolver,
+        private RelationService $relationService
     ) {}
 
     public function getDefault(): DataTableFilters

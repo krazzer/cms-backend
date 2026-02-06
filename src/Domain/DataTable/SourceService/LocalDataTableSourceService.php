@@ -5,6 +5,7 @@ namespace KikCMS\Domain\DataTable\SourceService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableRowService;
+use KikCMS\Domain\DataTable\Filter\DataTableLocalFilterService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
@@ -13,6 +14,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
 {
     public function __construct(
         private DataTableRowService $rowService,
+        private DataTableLocalFilterService $filterService,
     ) {}
 
     public function update(DataTable $dataTable, Filters $filters, string $id, array $updateData, StoreData $storeData): void
@@ -48,7 +50,9 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
             return $viewData;
         }
 
-        foreach ($storeData->getData() as $row) {
+        $filteredStoreData = $this->filterService->filter($storeData, $filters);
+
+        foreach ($filteredStoreData as $row) {
             $viewDataRow = $this->rowService->getRowView($row, $dataTable, $filters, $row[DataTableConfig::ID]);
             $viewData[]  = $viewDataRow->toArray();
         }

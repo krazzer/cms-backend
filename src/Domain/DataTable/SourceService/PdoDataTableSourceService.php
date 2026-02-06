@@ -16,7 +16,7 @@ use KikCMS\Domain\DataTable\DataTableStoreService;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
-use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
+use KikCMS\Domain\DataTable\Filter\DataTablePdoFilterService;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
 use KikCMS\Domain\DataTable\Modifier\RawTableDataModifierInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +34,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private DataTableRowService $rowService,
         private DataTableDataService $dataService,
         private DataTableStoreService $dataTableStoreService,
-        private DataTableFilterService $dataTableFilterService,
+        private DataTablePdoFilterService $dataTablePdoFilterService,
         private DataTablePathService $dataTablePathService,
         private DataTableModifierService $dataTableModifierService,
         private FieldService $fieldService,
@@ -52,7 +52,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
             call_user_func($queryCallable, $queryBuilder);
         }
 
-        $this->dataTableFilterService->filter($dataTable, $filters, $queryBuilder);
+        $this->dataTablePdoFilterService->filter($dataTable, $filters, $queryBuilder);
 
         $rawData = $queryBuilder->getQuery()->getArrayResult();
 

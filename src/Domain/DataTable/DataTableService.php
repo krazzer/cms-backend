@@ -7,7 +7,7 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
-use KikCMS\Domain\DataTable\Filter\DataTableFilterService;
+use KikCMS\Domain\DataTable\Filter\DataTablePdoFilterService;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
@@ -19,7 +19,7 @@ readonly class DataTableService
         private DataTableConfigService $configService,
         private DataTableSourceServiceResolver $resolver,
         private DataTableConfigService $dataTableConfigService,
-        private DataTableFilterService $dataTableFilterService,
+        private DataTablePdoFilterService $dataTableFilterService,
         private RelationService $relationService,
     ) {}
 
