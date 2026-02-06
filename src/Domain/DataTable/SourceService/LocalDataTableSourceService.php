@@ -50,7 +50,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
             return $viewData;
         }
 
-        $filteredStoreData = $this->filterService->filter($storeData, $filters);
+        $filteredStoreData = $this->filterService->filter($storeData, $dataTable, $filters);
 
         foreach ($filteredStoreData as $row) {
             $viewDataRow = $this->rowService->getRowView($row, $dataTable, $filters, $row[DataTableConfig::ID]);

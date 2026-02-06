@@ -5,6 +5,7 @@ namespace KikCMS\Domain\DataTable;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
+use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
 use KikCMS\Domain\Form\Field\Field;
 use KikCMS\Domain\Form\Field\FieldService;
@@ -47,7 +48,7 @@ readonly class DataTableStoreService
         if ($field instanceof DatatableField) {
             $dataTable = $this->dataTableConfigService->getFromConfigByInstance($field->getInstance());
 
-            if ($dataTable->isRearrange()) {
+            if ($dataTable->isRearrange() && $dataTable->getSource() === SourceType::Pdo) {
                 $maxDisplayOrder = $this->rearrangeService->getMaxDisplayOrder($dataTable->getPdoModel());
 
                 foreach ($value as $index => $row) {

@@ -1,3 +1,4 @@
+searchColumns: ['name']
 buttons:
     -   label: Add color
         action: add
