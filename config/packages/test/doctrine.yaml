@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=../../../../../symfony/dependency-injection/Loader/schema/services.schema.json
+doctrine:
+    dbal:
+        driver: 'pdo_sqlite'
+        url: 'sqlite:///:memory:'

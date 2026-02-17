@@ -4,12 +4,12 @@ namespace KikCMS\Domain\DataTable\Modifier;
 
 use KikCMS\Domain\DataTable\DataTable;
 use ReflectionClass;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 readonly class DataTableModifierService
 {
     public function __construct(
-        #[TaggedIterator('datatable.modifier')]
+        #[AutowireIterator('datatable.modifier')]
         private iterable $modifiers
     ) {}
 

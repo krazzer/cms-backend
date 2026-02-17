@@ -34,11 +34,3 @@ Create symlink (replace ../../KikCMS with where the CMS sits relative to the ven
 ```
 - Remove existing symlink
 - Run `composer update`
-
-### Prompt for asking questions about this project
-
-```text
-Ik heb een symfony 8 project, waarbij de hoofd symfony code via een composer package wordt ingeladen. Het project zelf
-bevat ook code, maar de index.php wordt naar het pakket verwezen. Het pakket checkt dan op bestanden in de project root
-folder. De package noem ik het CMS.
-```

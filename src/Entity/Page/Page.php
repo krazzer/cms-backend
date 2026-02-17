@@ -59,10 +59,10 @@ class Page
     #[ORM\Column(nullable: true)]
     private ?int $menu_max_level = null;
 
-    #[ORM\Column(insertable: false)]
+    #[ORM\Column]
     private ?DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(insertable: false)]
+    #[ORM\Column]
     private ?DateTimeImmutable $updated_at = null;
 
     #[ORM\OneToMany(targetEntity: PageImage::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]

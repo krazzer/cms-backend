@@ -12,12 +12,13 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    const string DIR_DOCKER    = 'docker';
-    const string DIR_VENDOR    = 'vendor';
-    const string DIR_SRC       = 'src';
-    const string DIR_CONFIG    = 'config';
-    const string DIR_RESOURCES = 'resources';
-    const string DIR_CERTS     = 'certs';
+    const string DIR_DOCKER          = 'docker';
+    const string DIR_VENDOR          = 'vendor';
+    const string DIR_SRC             = 'src';
+    const string DIR_CONFIG          = 'config';
+    const string DIR_RESOURCES       = 'resources';
+    const string DIR_CERTS           = 'certs';
+    const string DIR_CONFIG_PACKAGES = 'config/packages';
 
     const string DIR_RESOURCES_CERTS = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS;
     const string DIR_VENDOR_KIKSAUS  = self::DIR_VENDOR . DIRECTORY_SEPARATOR . 'kiksaus';
@@ -38,6 +39,11 @@ class Kernel extends BaseKernel
             throw new RuntimeException('Required DEFAULT_EMAIL_FROM $_ENV variable is missing');
         }
 
+        // Tests don't need project root variable
+        if ($this->getEnvironment() == 'test') {
+            return;
+        }
+
         if (empty($_ENV['PROJECT_ROOT'])) {
             throw new RuntimeException('Required PROJECT_ROOT $_ENV variable is missing');
         }
@@ -45,12 +51,6 @@ class Kernel extends BaseKernel
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
-        // Add app namespace to autowire
-        $container->services()
-            ->load('App\\', $this->getAppDir(self::DIR_SRC) . '/*')
-            ->autowire()
-            ->autoconfigure();
-
         $cmsConfigDir = $this->getCmsDir(self::DIR_CONFIG);
 
         // Import CMS services
@@ -58,6 +58,25 @@ class Kernel extends BaseKernel
         $container->import($cmsConfigDir . '/services/*.yaml');
         $container->import($cmsConfigDir . '/services/**/*.yaml');
         $container->import($cmsConfigDir . '/{packages}/*.yaml');
+
+        // Load environment-specific config
+        $envPackagesDir = $this->getCmsDir(self::DIR_CONFIG_PACKAGES . DIRECTORY_SEPARATOR . $this->getEnvironment());
+
+        if(is_dir($envPackagesDir)) {
+            $container->import($envPackagesDir . '/*.yaml');
+            $container->import($envPackagesDir . '/**/*.yaml');
+        }
+
+        // Tests don't need project files
+        if ($this->getEnvironment() == 'test') {
+            return;
+        }
+
+        // Add app namespace to autowire
+        $container->services()
+            ->load('App\\', $this->getAppDir(self::DIR_SRC) . '/*')
+            ->autowire()
+            ->autoconfigure();
 
         // Import project services
         $projectServices = $this->getAppDir() . '/config/services.yaml';
@@ -72,6 +91,11 @@ class Kernel extends BaseKernel
         // CMS routes
         $routes->import(__DIR__ . '/../config/routes.yaml');
         $routes->import(__DIR__ . '/../config/routes/*.yaml');
+
+        // Tests don't need project files
+        if ($this->getEnvironment() == 'test') {
+            return;
+        }
 
         // Import project routes
         $projectRoutes = $this->getAppDir() . '/config/routes.yaml';
@@ -94,9 +118,13 @@ class Kernel extends BaseKernel
 
     public function getCmsDir(?string $path = null): string
     {
-        $packageDirName = basename($this->getProjectDir());
-
-        $cmsRoot = $this->getAppDir(self::DIR_VENDOR_KIKSAUS . DIRECTORY_SEPARATOR . $packageDirName);
+        // Tests don't need project files
+        if ($this->getEnvironment() == 'test') {
+            $cmsRoot = $this->getProjectDir();
+        } else {
+            $package = basename($this->getProjectDir());
+            $cmsRoot = $this->getAppDir(self::DIR_VENDOR_KIKSAUS . DIRECTORY_SEPARATOR . $package);
+        }
 
         if ($path) {
             return $cmsRoot . DIRECTORY_SEPARATOR . $path;

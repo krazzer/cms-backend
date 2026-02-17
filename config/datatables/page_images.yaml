@@ -9,6 +9,7 @@ headers:
     id: Id
     name: Name
     image_id: Afbeelding
+    display_order: Order
 cells:
     active:
         image_id: 'image'
