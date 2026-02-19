@@ -25,7 +25,7 @@ readonly class PageViewRowDataModifier implements ViewRowDataModifierInterface
         $rawRow = $viewRow->getRawRow();
         $level  = count($rawRow[Page::FIELD_PARENTS] ?? []);
 
-        $viewRow = (new PageTableViewRow($viewRow))
+        $viewRow = new PageTableViewRow($viewRow)
             ->setLevel($level)
             ->setChildren($rawRow[Page::FIELD_CHILDREN])
             ->setType($rawRow[Page::FIELD_TYPE]);

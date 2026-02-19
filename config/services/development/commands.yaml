@@ -4,18 +4,32 @@ services:
         autowire: true
         autoconfigure: true
 
-    KikCMS\Command\Development\UpCommand:
+    KikCMS\Command\App\UpCommand:
         arguments:
-            $id: '%project.id%'
-            $name: '%project.name%'
-            $portBase: '%project.portBase%'
+            $id: '%app.id%'
+            $name: '%app.name%'
+            $portBase: '%app.portBase%'
 
-    KikCMS\Command\Development\DownCommand:
+    KikCMS\Command\App\DownCommand:
         arguments:
-            $id: '%project.id%'
-            $name: '%project.name%'
-            $portBase: '%project.portBase%'
+            $id: '%app.id%'
+            $name: '%app.name%'
+            $portBase: '%app.portBase%'
 
-    KikCMS\Command\Development\AttachCommand:
+    KikCMS\Command\App\AttachCommand:
         arguments:
-            $name: '%project.name%'
+            $name: '%app.name%'
+
+    KikCMS\Command\Cms\UpCommand:
+        arguments:
+            $name: '%cms.name%'
+            $port: '%cms.port%'
+
+    KikCMS\Command\Cms\DownCommand:
+        arguments:
+            $name: '%cms.name%'
+            $port: '%cms.port%'
+
+    KikCMS\Command\Cms\AttachCommand:
+        arguments:
+            $name: '%cms.name%'

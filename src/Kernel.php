@@ -12,24 +12,25 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    const string DIR_DOCKER          = 'docker';
-    const string DIR_VENDOR          = 'vendor';
+    private bool $project = false;
+
+    const string DIR_VENDOR_KIKSAUS  = 'vendor/kiksaus';
     const string DIR_SRC             = 'src';
     const string DIR_CONFIG          = 'config';
-    const string DIR_RESOURCES       = 'resources';
     const string DIR_CERTS           = 'certs';
+    const string DIR_CMS_CERTS       = 'var/certs';
     const string DIR_CONFIG_PACKAGES = 'config/packages';
 
-    const string DIR_RESOURCES_CERTS = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS;
-    const string DIR_VENDOR_KIKSAUS  = self::DIR_VENDOR . DIRECTORY_SEPARATOR . 'kiksaus';
+    const string FILE_DOCKER_COMPOSE_SITE = 'docker/docker-compose-site.yml';
+    const string FILE_DOCKER_COMPOSE      = 'docker/docker-compose.yml';
 
-    const string FILE_DOCKER_COMPOSE_SITE = self::DIR_DOCKER . '/docker-compose-site.yml';
+    const string FILE_CERT         = 'certs/cert.crt';
+    const string FILE_CERT_KEY     = 'certs/cert.key';
+    const string FILE_CMS_CERT     = 'var/certs/cert.crt';
+    const string FILE_CMS_CERT_KEY = 'var/certs/cert.key';
 
-    const string FILE_CERT     = self::DIR_CERTS . '/cert.crt';
-    const string FILE_CERT_KEY = self::DIR_CERTS . '/cert.key';
-
-    const string FILE_SNAKE_CERT     = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS . '/snakeoil.crt';
-    const string FILE_SNAKE_CERT_KEY = self::DIR_RESOURCES . DIRECTORY_SEPARATOR . self::DIR_CERTS . '/snakeoil.key';
+    const string FILE_SNAKE_CERT     = 'resources/certs/snakeoil.crt';
+    const string FILE_SNAKE_CERT_KEY = 'resources/certs/snakeoil.key';
 
     public function boot(): void
     {
@@ -39,14 +40,8 @@ class Kernel extends BaseKernel
             throw new RuntimeException('Required DEFAULT_EMAIL_FROM $_ENV variable is missing');
         }
 
-        // Tests don't need project root variable
-        if ($this->getEnvironment() == 'test') {
-            return;
-        }
-
-        if (empty($_ENV['PROJECT_ROOT'])) {
-            throw new RuntimeException('Required PROJECT_ROOT $_ENV variable is missing');
-        }
+        // If the ENV variable is set, we're running in a project context, if not, we're running the CMS standalone
+        $this->project = isset($_ENV['PROJECT_ROOT']);
     }
 
     protected function configureContainer(ContainerConfigurator $container): void
@@ -62,13 +57,12 @@ class Kernel extends BaseKernel
         // Load environment-specific config
         $envPackagesDir = $this->getCmsDir(self::DIR_CONFIG_PACKAGES . DIRECTORY_SEPARATOR . $this->getEnvironment());
 
-        if(is_dir($envPackagesDir)) {
+        if (is_dir($envPackagesDir)) {
             $container->import($envPackagesDir . '/*.yaml');
             $container->import($envPackagesDir . '/**/*.yaml');
         }
 
-        // Tests don't need project files
-        if ($this->getEnvironment() == 'test') {
+        if ( ! $this->isProject()) {
             return;
         }
 
@@ -92,8 +86,7 @@ class Kernel extends BaseKernel
         $routes->import(__DIR__ . '/../config/routes.yaml');
         $routes->import(__DIR__ . '/../config/routes/*.yaml');
 
-        // Tests don't need project files
-        if ($this->getEnvironment() == 'test') {
+        if ( ! $this->isProject()) {
             return;
         }
 
@@ -119,11 +112,11 @@ class Kernel extends BaseKernel
     public function getCmsDir(?string $path = null): string
     {
         // Tests don't need project files
-        if ($this->getEnvironment() == 'test') {
-            $cmsRoot = $this->getProjectDir();
-        } else {
+        if ($this->isProject()) {
             $package = basename($this->getProjectDir());
             $cmsRoot = $this->getAppDir(self::DIR_VENDOR_KIKSAUS . DIRECTORY_SEPARATOR . $package);
+        } else {
+            $cmsRoot = $this->getProjectDir();
         }
 
         if ($path) {
@@ -131,5 +124,10 @@ class Kernel extends BaseKernel
         }
 
         return $cmsRoot;
+    }
+
+    public function isProject(): bool
+    {
+        return $this->project;
     }
 }

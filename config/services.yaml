@@ -15,9 +15,12 @@ parameters:
     app.company.infoLine: '%app.company.name%, %app.company.address%, %app.company.zip%, %app.company.city%'
     app.en: 'en'
 
-    project.id: '%env(PROJECT_ID)%'
-    project.name: '%env(PROJECT_NAME)%'
-    project.portBase: '%env(PROJECT_PORT_BASE)%'
+    app.id: '%env(PROJECT_ID)%'
+    app.name: '%env(PROJECT_NAME)%'
+    app.portBase: '%env(PROJECT_PORT_BASE)%'
+
+    cms.port: '%env(PORT)%'
+    cms.name: '%env(ALIAS)%'
 
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~

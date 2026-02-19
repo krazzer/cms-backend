@@ -2,56 +2,45 @@
 
 namespace KikCMS\Domain\App\Development\Docker;
 
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
 readonly class DockerService
 {
-    public function __construct(
-        private DockerConfigService $dockerConfigService
-    ) {}
+    public function __construct(private DockerComposeService $dockerComposeService) {}
 
-    public function down(string $name, int $port): void
+    public function up(string $dockerFile, string $name, int $port, SymfonyStyle $io): int
     {
-        $dockerFile = $this->dockerConfigService->getDockerFile();
+        if ($this->dockerComposeService->isRunning($dockerFile, $name)) {
+            $io->success("Docker container $name is already running");
+            $isRunning = true;
+        } else {
+            $this->dockerComposeService->up($dockerFile, $name, $port);
+            $isRunning = $this->dockerComposeService->isRunning($dockerFile, $name);
+        }
 
-        $process = new Process(['docker', 'compose', '-f', $dockerFile, '-p', $name, 'down']);
+        if ( ! $isRunning) {
+            return Command::FAILURE;
+        }
 
-        $process->setEnv(['SITE_ALIAS' => $name, 'SITE_PORT' => $port]);
+        $uri1 = 'https://localhost:' . $port;
+        $uri2 = 'https://' . $name . '.test:' . $port;
 
-        $process->setTty(Process::isTtySupported())->run(function ($type, $buffer) {
-            echo $buffer;
-        });
+        $io->success("You can visit the website at:\n$uri1\nor, if the domain is pointing to localhost:\n" . $uri2);
+
+        return Command::SUCCESS;
     }
 
-    public function isRunning(string $name): bool
+    public function attach(string $dockerFile, string $name): int
     {
-        $dockerFile = $this->dockerConfigService->getDockerFile();
+        $container  = $this->dockerComposeService->getContainerName($dockerFile, $name);
 
-        $check = new Process(['docker', 'compose', '-f', $dockerFile, '-p', $name, 'ps', '--status', 'running', '-q']);
-        $check->run();
+        $process = new Process(['docker', 'exec', '-it', $container, '/bin/bash']);
+        $process->setTty(Process::isTtySupported());
+        $process->setTimeout(null);
+        $process->run();
 
-        return (bool) $check->getOutput();
-    }
-
-    public function up(string $name, int $port): void
-    {
-        $dockerFile = $this->dockerConfigService->getDockerFile();
-
-        $command = ['docker', 'compose', '-f', $dockerFile, '-p', $name, 'up', '-d'];
-        $process = new Process($command)->setEnv(['SITE_ALIAS' => $name, 'SITE_PORT' => $port]);
-
-        $process->setTty(Process::isTtySupported())->run(function ($type, $buffer) {
-            echo $buffer;
-        });
-    }
-
-    public function getContainerName(string $name): string
-    {
-        $dockerFile = $this->dockerConfigService->getDockerFile();
-
-        $check = new Process(['docker', 'compose', '-f', $dockerFile, '-p', $name, 'ps', '--status', 'running', '--format', '{{.Name}}']);
-        $check->run();
-
-        return trim($check->getOutput());
+        return Command::SUCCESS;
     }
 }

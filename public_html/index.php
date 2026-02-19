@@ -1,0 +1,3 @@
+<?php
+require_once dirname(__DIR__) . '/vendor/autoload_runtime.php';
+return include dirname(__DIR__) . '/boot/kernel.php';

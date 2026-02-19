@@ -3,21 +3,19 @@
 namespace KikCMS\Domain\App\Development\Cert;
 
 use KikCMS\Kernel;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
 
-readonly class CertService
+abstract readonly class AbstractCertService
 {
     public function __construct(
-        private KernelInterface $kernel
+        protected KernelInterface $kernel
     ) {}
 
     public function certsAreInPlace(string $name): bool
     {
-        $certsDir = $this->kernel->getAppDir(Kernel::DIR_CERTS);
-
-        $certFile    = $this->kernel->getAppDir(Kernel::FILE_CERT);
-        $certKeyFile = $this->kernel->getAppDir(Kernel::FILE_CERT_KEY);
+        list($certsDir, $certFile, $certKeyFile) = $this->getPaths();
 
         $certSnakeFile    = $this->kernel->getCmsDir(Kernel::FILE_SNAKE_CERT);
         $certSnakeKeyFile = $this->kernel->getCmsDir(Kernel::FILE_SNAKE_CERT_KEY);
@@ -45,4 +43,16 @@ readonly class CertService
 
         return false;
     }
+
+    public function showCertWarning(SymfonyStyle $io, string $name): void
+    {
+        list($location) = $this->getPaths();
+
+        $command = "mkcert -cert-file cert.crt -key-file cert.key localhost $name.test";
+
+        $io->warning("Certificate files are missing, now using fake files. Generate them using:\n$command, " .
+            "overwrite the files in: $location, and then restart the container.");
+    }
+
+    abstract protected function getPaths(): array;
 }
