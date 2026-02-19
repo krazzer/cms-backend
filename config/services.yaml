@@ -22,6 +22,8 @@ parameters:
     cms.port: '%env(PORT)%'
     cms.name: '%env(ALIAS)%'
 
+    admin.dist.latest: '%env(LATEST_ADMIN_DIST)%'
+
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
     Symfony\Component\String\ByteString: ~

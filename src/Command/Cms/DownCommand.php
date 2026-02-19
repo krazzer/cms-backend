@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
     name: 'kikcms:cms:down',
-    description: 'Shut down development environment for this app',
+    description: 'Shut down development environment for the CMS (standalone)',
 )]
 class DownCommand extends Command
 {

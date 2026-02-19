@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
     name: 'kikcms:cms:attach',
-    description: 'Get inside the docker container',
+    description: 'Get inside the docker container for the CMS (standalone)',
 )]
 class AttachCommand extends Command
 {

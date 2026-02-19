@@ -29,9 +29,14 @@ class UpCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $dockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE);
+        $adminDir   = $this->kernel->getCmsDir(Kernel::DIR_ADMIN);
 
         if ( ! $this->certService->certsAreInPlace($this->name)) {
             $this->certService->showCertWarning($io, $this->name);
+        }
+
+        if ( ! is_dir($adminDir)) {
+            $this->adminService->update($adminDir, $io);
         }
 
         return $this->dockerService->up($dockerFile, $this->name, $this->port, $io);

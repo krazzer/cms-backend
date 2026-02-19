@@ -27,12 +27,17 @@ class UpCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $port       = $this->portBase + $this->id;
-        $dockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SITE);
+        $dockerFile = $this->kernel->getAppDir(Kernel::FILE_DOCKER_COMPOSE_SITE);
+        $adminDir   = $this->kernel->getAppDir(Kernel::DIR_ADMIN);
 
         $io = new SymfonyStyle($input, $output);
 
         if ( ! $this->certService->certsAreInPlace($this->name)) {
             $this->certService->showCertWarning($io, $this->name);
+        }
+
+        if( ! is_dir($adminDir)) {
+            $this->adminService->update($adminDir, $io);
         }
 
         return $this->dockerService->up($dockerFile, $this->name, $port, $io);
