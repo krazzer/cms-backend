@@ -2,6 +2,7 @@
 
 namespace KikCMS\Command\Cms;
 
+use KikCMS\Domain\App\Admin\AdminService;
 use KikCMS\Domain\App\Development\Cert\CmsCertService;
 use KikCMS\Domain\App\Development\Docker\DockerService;
 use KikCMS\Kernel;
@@ -18,8 +19,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 )]
 class UpCommand extends Command
 {
-    public function __construct(readonly string $name, readonly int $port, readonly DockerService $dockerService,
-        readonly CmsCertService $certService, readonly KernelInterface $kernel)
+    public function __construct(readonly string $name, readonly int $port,
+        private readonly DockerService $dockerService,
+        private readonly CmsCertService $certService,
+        private readonly KernelInterface $kernel,
+        private readonly AdminService $adminService)
     {
         parent::__construct();
     }

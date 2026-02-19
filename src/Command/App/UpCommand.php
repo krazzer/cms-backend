@@ -2,6 +2,7 @@
 
 namespace KikCMS\Command\App;
 
+use KikCMS\Domain\App\Admin\AdminService;
 use KikCMS\Domain\App\Development\Cert\AppCertService;
 use KikCMS\Domain\App\Development\Docker\DockerService;
 use KikCMS\Kernel;
@@ -19,7 +20,10 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class UpCommand extends Command
 {
     public function __construct(readonly int $id, readonly string $name, readonly int $portBase,
-        readonly DockerService $dockerService, readonly AppCertService $certService, readonly KernelInterface $kernel)
+        private readonly DockerService $dockerService,
+        private readonly AppCertService $certService,
+        private readonly KernelInterface $kernel,
+        private readonly AdminService $adminService)
     {
         parent::__construct();
     }
@@ -36,7 +40,7 @@ class UpCommand extends Command
             $this->certService->showCertWarning($io, $this->name);
         }
 
-        if( ! is_dir($adminDir)) {
+        if ( ! is_dir($adminDir)) {
             $this->adminService->update($adminDir, $io);
         }
 
