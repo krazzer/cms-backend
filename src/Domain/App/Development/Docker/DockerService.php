@@ -24,7 +24,7 @@ readonly class DockerService
             $io->success("Docker container $name is already running");
             $isRunning = true;
         } else {
-            $this->dockerComposeService->up($dockerFile, $name, [Config::ENV_PORT => $port]);
+            $this->dockerComposeService->up($dockerFile, $name, [Config::ENV_PORT => $port, Config::ENV_ALIAS => $name]);
             $isRunning = $this->dockerComposeService->isRunning($dockerFile, $name);
         }
 

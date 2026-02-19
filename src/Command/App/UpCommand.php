@@ -31,7 +31,7 @@ class UpCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $port       = $this->portBase + $this->id;
-        $dockerFile = $this->kernel->getAppDir(Kernel::FILE_DOCKER_COMPOSE_SITE);
+        $dockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SITE);
         $adminDir   = $this->kernel->getAppDir(Kernel::DIR_ADMIN);
 
         $io = new SymfonyStyle($input, $output);

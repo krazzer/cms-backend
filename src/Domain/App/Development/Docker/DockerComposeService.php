@@ -13,7 +13,7 @@ readonly class DockerComposeService
 
     public function down(string $dockerFile, string $name, int $port): void
     {
-        $this->runCompose($dockerFile, $name, ['down'], [Config::ENV_PORT => $port]);
+        $this->runCompose($dockerFile, $name, ['down'], [Config::ENV_PORT => $port, Config::ENV_ALIAS => $name]);
     }
 
     public function isRunning(string $dockerFile, string $name): bool
