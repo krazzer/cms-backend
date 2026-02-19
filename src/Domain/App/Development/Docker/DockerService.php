@@ -2,21 +2,29 @@
 
 namespace KikCMS\Domain\App\Development\Docker;
 
+use KikCMS\Kernel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
 
 readonly class DockerService
 {
-    public function __construct(private DockerComposeService $dockerComposeService) {}
+    public function __construct(private DockerComposeService $dockerComposeService, private KernelInterface $kernel) {}
 
     public function up(string $dockerFile, string $name, int $port, SymfonyStyle $io): int
     {
+        $servicesDockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SERVICES);
+
+        if ( ! $this->dockerComposeService->isRunning($servicesDockerFile, Config::SERVICES)) {
+            $this->setUpServices($io);
+        }
+
         if ($this->dockerComposeService->isRunning($dockerFile, $name)) {
             $io->success("Docker container $name is already running");
             $isRunning = true;
         } else {
-            $this->dockerComposeService->up($dockerFile, $name, $port);
+            $this->dockerComposeService->up($dockerFile, $name, [Config::ENV_PORT => $port]);
             $isRunning = $this->dockerComposeService->isRunning($dockerFile, $name);
         }
 
@@ -34,7 +42,7 @@ readonly class DockerService
 
     public function attach(string $dockerFile, string $name): int
     {
-        $container  = $this->dockerComposeService->getContainerName($dockerFile, $name);
+        $container = $this->dockerComposeService->getContainerName($dockerFile, $name);
 
         $process = new Process(['docker', 'exec', '-it', $container, '/bin/bash']);
         $process->setTty(Process::isTtySupported());
@@ -42,5 +50,21 @@ readonly class DockerService
         $process->run();
 
         return Command::SUCCESS;
+    }
+
+    public function setUpServices(SymfonyStyle $io): void
+    {
+        $requiredDirectories = ['~/.docker-kikdev', '~/.docker-kikdev/mysql', '~/.docker-kikdev/logs'];
+
+        foreach ($requiredDirectories as $directory) {
+            if ( ! file_exists($directory)) {
+                mkdir($directory);
+            }
+        }
+
+        $servicesDockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SERVICES);
+
+        $password = $io->askHidden('Enter the desired password for the local DB: ');
+        $this->dockerComposeService->up($servicesDockerFile, Config::SERVICES, [Config::ENV_PASS => $password]);
     }
 }

@@ -21,8 +21,9 @@ class Kernel extends BaseKernel
     const string DIR_CMS_CERTS       = 'var/certs';
     const string DIR_CONFIG_PACKAGES = 'config/packages';
 
-    const string FILE_DOCKER_COMPOSE_SITE = 'docker/docker-compose-site.yml';
-    const string FILE_DOCKER_COMPOSE      = 'docker/docker-compose.yml';
+    const string FILE_DOCKER_COMPOSE_SERVICES = 'docker/docker-compose-services.yml';
+    const string FILE_DOCKER_COMPOSE_SITE     = 'docker/docker-compose-site.yml';
+    const string FILE_DOCKER_COMPOSE          = 'docker/docker-compose.yml';
 
     const string FILE_CERT         = 'certs/cert.crt';
     const string FILE_CERT_KEY     = 'certs/cert.key';

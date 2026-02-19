@@ -1,11 +1,18 @@
+# CMS standalone setup
+
+Use this guide to set up the CMS as standalone. This can be useful for development on the CMS itself without needing to
+set up a full project.
+
+## Set up CMS
+
+1. Clone this repo
+2. Run `composer install`
+3. Run `php bin/console kikcms:cms:up`
+
+# Useful commands
+
 ### Set up site:
 `ALIAS=[ALIAS] PORT=[PORT] docker compose -f vendor/kiksaus/cms-backend/docker/docker-compose-site.yml -p [KEY] up -d`
-
-### Set up CMS standalone:
-`ALIAS=kikcms PORT=9200 docker compose -f docker/docker-compose.yml -p cms up -d`
-
-### Open (CMS standalone):
-https://localhost:9200/cms/
 
 ### Enable XDebug:
 `docker exec -ti cms-php-1 sh -c "echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20240924/xdebug.so" >> /usr/local/etc/php/php.ini && apachectl restart"`

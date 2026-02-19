@@ -11,14 +11,15 @@ if ( ! function_exists('dlog')) {
      */
     function dlog(mixed $data, ?string $label = null, bool $once = false): void
     {
-        $logFile = __DIR__ . '/../var/log/dev.log';
+        $logFile = dirname(__DIR__) . '/var/log/dev.log';
 
         if (is_bool($data)) $data = var_export($data, true);
 
         $timestamp = date('Y-m-d H:i:s');
-        $output    = $label ? "[$timestamp] [$label] " : "[$timestamp] ";
-        $output    .= is_scalar($data) ? $data : print_r($data, true);
-        $output    .= PHP_EOL;
+
+        $output = $label ? "[$timestamp] [$label] " : "[$timestamp] ";
+        $output .= is_scalar($data) ? $data : print_r($data, true);
+        $output .= PHP_EOL;
 
         if ($once) {
             if (DlogOnceChecker::isLogged($label)) {

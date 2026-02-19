@@ -6,36 +6,36 @@ use Symfony\Component\Process\Process;
 
 readonly class DockerComposeService
 {
-    public function up(string $dockerFile, string $project, int $port): void
+    public function up(string $dockerFile, string $name, array $env): void
     {
-        $this->runCompose($dockerFile, $project, ['up', '-d'], $port);
+        $this->runCompose($dockerFile, $name, ['up', '-d'], $env);
     }
 
-    public function down(string $dockerFile, string $project, int $port): void
+    public function down(string $dockerFile, string $name, int $port): void
     {
-        $this->runCompose($dockerFile, $project, ['down'], $port);
+        $this->runCompose($dockerFile, $name, ['down'], [Config::ENV_PORT => $port]);
     }
 
-    public function isRunning(string $dockerFile, string $project): bool
+    public function isRunning(string $dockerFile, string $name): bool
     {
-        $process = $this->runCompose($dockerFile, $project, ['ps', '--status', 'running', '-q'], null, false);
+        $process = $this->runCompose($dockerFile, $name, ['ps', '--status', 'running', '-q'], [], false);
 
         return (bool) $process->getOutput();
     }
 
     public function getContainerName(string $dockerFile, string $name): string
     {
-        $process = $this->runCompose($dockerFile, $name, ['ps', '--status', 'running', '--format', '{{.Name}}'], null, false);
+        $process = $this->runCompose($dockerFile, $name, ['ps', '--status', 'running', '--format', '{{.Name}}'], [], false);
 
         return trim($process->getOutput());
     }
 
-    private function runCompose(string $file, string $name, array $arg, ?int $port, bool $output = true): Process
+    private function runCompose(string $file, string $name, array $arg, array $env = [], bool $output = true): Process
     {
         $command = array_merge(['docker', 'compose', '-f', $file, '-p', $name], $arg);
 
         $process = new Process($command);
-        $process->setEnv(['PORT' => $port, 'ALIAS' => $name]);
+        $process->setEnv($env);
         $process->setTty(Process::isTtySupported() && $output);
 
         $process->run(function ($type, $buffer) use ($output) {
