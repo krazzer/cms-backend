@@ -37,6 +37,7 @@ readonly class DockerComposeService
         $process = new Process($command);
         $process->setEnv($env);
         $process->setTty(Process::isTtySupported() && $output);
+        $process->setTimeout(null);
 
         $process->run(function ($type, $buffer) use ($output) {
             if ($output) {

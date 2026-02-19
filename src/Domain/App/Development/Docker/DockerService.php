@@ -54,14 +54,6 @@ readonly class DockerService
 
     public function setUpServices(SymfonyStyle $io): void
     {
-        $requiredDirectories = ['~/.docker-kikdev', '~/.docker-kikdev/mysql', '~/.docker-kikdev/logs'];
-
-        foreach ($requiredDirectories as $directory) {
-            if ( ! file_exists($directory)) {
-                mkdir($directory);
-            }
-        }
-
         $servicesDockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SERVICES);
 
         $password = $io->askHidden('Enter the desired password for the local DB: ');
