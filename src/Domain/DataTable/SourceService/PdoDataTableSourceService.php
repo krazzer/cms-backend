@@ -13,6 +13,7 @@ use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableDataService;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeIntegrityService;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
@@ -42,6 +43,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private StringService $stringService,
         private RelationService $relationService,
         private EntityService $entityService,
+        private RearrangeIntegrityService $rearrangeIntegrityService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -229,6 +231,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
 
     public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
     {
+        $this->rearrangeIntegrityService->check($dataTable->getPdoModel());
         $this->rearrangeService->rearrange($dataTable, $source, $target, $location);
     }
 
