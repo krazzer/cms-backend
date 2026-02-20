@@ -31,6 +31,8 @@ readonly class DataTablePdoFilterService
 
         if ($filters->getSort() && $filters->getSortDirection()) {
             $this->sort($builder, $filters);
+        } elseif($dataTable->isRearrange()){
+            $builder->orderBy('e.' . DataTableConfig::DISPLAY_ORDER, 'ASC');
         }
 
         if ($filters->getParentId()) {

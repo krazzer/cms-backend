@@ -40,6 +40,12 @@ readonly class DataTableStoreService
             $storeData = array_replace_recursive($storeData, $fieldWithValue);
         }
 
+        if ($dataTable->isRearrange()) {
+            $maxDisplayOrder = $this->rearrangeService->getMaxDisplayOrder($dataTable->getPdoModel());
+
+            $storeData[DataTableConfig::DISPLAY_ORDER] = $maxDisplayOrder + 1;
+        }
+
         return $storeData;
     }
 
