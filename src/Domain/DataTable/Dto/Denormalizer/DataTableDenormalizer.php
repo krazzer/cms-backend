@@ -18,7 +18,7 @@ readonly class DataTableDenormalizer implements DenormalizerInterface
         return $type === DataTable::class && is_string($data);
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): DataTable
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): DataTable
     {
         return $this->dataTableService->getByInstance((string) $data);
     }
