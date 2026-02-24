@@ -24,14 +24,12 @@ class Kernel extends BaseKernel
     const string DIR_PUBLIC          = 'public_html';
     const string DIR_ADMIN           = 'public_html/cms';
 
-    const string FILE_DOCKER_COMPOSE_SERVICES = 'docker/docker-compose-services.yml';
-    const string FILE_DOCKER_COMPOSE_SITE     = 'docker/docker-compose-site.yml';
-    const string FILE_DOCKER_COMPOSE          = 'docker/docker-compose.yml';
+    const string FILE_DOCKER_COMPOSE_SERVICES = 'resources/docker/docker-compose-services.yml';
+    const string FILE_DOCKER_COMPOSE_SITE     = 'resources/docker/docker-compose-site.yml';
+    const string FILE_DOCKER_COMPOSE          = 'resources/docker/docker-compose.yml';
 
-    const string FILE_CERT         = 'certs/cert.crt';
-    const string FILE_CERT_KEY     = 'certs/cert.key';
-    const string FILE_CMS_CERT     = 'var/certs/cert.crt';
-    const string FILE_CMS_CERT_KEY = 'var/certs/cert.key';
+    const string FILE_CERT         = 'var/certs/cert.crt';
+    const string FILE_CERT_KEY     = 'var/certs/cert.key';
 
     const string FILE_SNAKE_CERT     = 'resources/certs/snakeoil.crt';
     const string FILE_SNAKE_CERT_KEY = 'resources/certs/snakeoil.key';

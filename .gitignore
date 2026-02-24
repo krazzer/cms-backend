@@ -9,8 +9,7 @@
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
-/phpunit.xml
-/.phpunit.cache/
+/tests/.phpunit.cache/
 ###< phpunit/phpunit ###
 
 .idea

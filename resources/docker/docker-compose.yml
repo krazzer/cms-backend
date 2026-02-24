@@ -4,9 +4,8 @@ services:
     ports:
       - "${PORT}:443"
     volumes:
-      - ./../:/var/www:cached
-      - ./../var/certs:/var/www/certs:cached
-      - ./../public_html/:/var/www/public_html:cached
+      - ./../../:/var/www:cached
+      - ./../../public_html/:/var/www/public_html:cached
     networks:
       kikdev:
         aliases:
