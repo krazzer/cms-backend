@@ -60,3 +60,8 @@ services:
     KikCMS\Domain\App\ExceptionSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
+
+    KikCMS\Entity\File\FileService:
+        arguments:
+            $storageDir: '%kernel.project_dir%/var/storage'
+            $publicMediaDir: '%kernel.project_dir%/public_html/media'

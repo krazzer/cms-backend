@@ -15,6 +15,8 @@
         "doctrine/doctrine-fixtures-bundle": "^4.3.1",
         "doctrine/doctrine-migrations-bundle": "^4.0.0",
         "doctrine/orm": "^3.6.2",
+        "imagine/imagine": "^1.5",
+        "nelmio/cors-bundle": "^2.6.1",
         "phpdocumentor/reflection-docblock": "^5.6.6",
         "phpstan/phpdoc-parser": "^2.3.2",
         "psr/cache": "^3.0",
@@ -38,8 +40,7 @@
         "symfony/validator": "8.0.*",
         "symfony/yaml": "8.0.*",
         "twig/extra-bundle": "^2.12|^3.23",
-        "twig/twig": "^2.12|^3.23",
-        "nelmio/cors-bundle": "^2.6.1"
+        "twig/twig": "^2.12|^3.23"
     },
     "config": {
         "platform": {
