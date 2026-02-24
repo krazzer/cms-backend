@@ -2,23 +2,34 @@
 
 namespace KikCMS\Domain\Form\Field;
 
-use KikCMS\Domain\DataTable\Config\DataTableConfigService;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\Form\Field\Types\DatatableField;
 use ReflectionClass;
 
 readonly class FieldService
 {
-    public function __construct(
-        private DataTableConfigService $dataTableConfigService
-    ) {}
+    public function getByForm(array $form, ?string $filterType = null): array
+    {
+        $fields = [];
+
+        $this->walk($form, function ($field, $key) use (&$fields, $filterType) {
+            if ($filterType && $field[DataTableConfig::FIELD_TYPE] !== $filterType) {
+                return;
+            }
+
+            $fields[$key] = $field;
+        });
+
+        return $fields;
+    }
 
     /**
      * @return Field[]
      */
     public function getFieldMap(DataTable $dataTable, ?string $filterType = null): array
     {
-        $fieldsArrayData = $this->dataTableConfigService->getFields($dataTable, $filterType);
+        $fieldsArrayData = $this->getByForm($dataTable->getForm($filterType));
 
         $fields = [];
 
@@ -39,6 +50,19 @@ readonly class FieldService
         }
 
         return $fields;
+    }
+
+    public function walk(array $node, callable $callback): array
+    {
+        foreach ($node[DataTableConfig::FORM_FIELDS] ?? [] as $i => $field) {
+            $node[DataTableConfig::FORM_FIELDS][$i] = $callback($field, $i);
+        }
+
+        foreach ($node[DataTableConfig::FORM_TABS] ?? [] as $i => $tab) {
+            $node[DataTableConfig::FORM_TABS][$i] = $this->walk($tab, $callback);
+        }
+
+        return $node;
     }
 
     private function getFieldObject(mixed $type): Field

@@ -3,6 +3,8 @@
 namespace KikCMS\Controller;
 
 use KikCMS\Domain\DataTable\DataTableService;
+use KikCMS\Domain\Form\Config\FormConfigService;
+use KikCMS\Domain\Form\FormService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +15,9 @@ class HomeController extends AbstractController
 {
     public function __construct(
         private readonly Security $security,
-        private readonly DataTableService $dataTableService
+        private readonly DataTableService $dataTableService,
+        private readonly FormConfigService $formConfigService,
+        private readonly FormService $formService
     ) {}
 
     #[Route('/api/home')]
@@ -22,10 +26,10 @@ class HomeController extends AbstractController
         $loggedIn = (bool) $this->security->getUser();
 
         $menu = [
-            'pages' => ['label' => "Pages", 'icon' => 'view-grid'],
-            'users' => ['label' => "Users", 'icon' => 'account-multiple-outline'],
-            'media' => ['label' => "Media", 'icon' => 'image-outline'],
-            'fail'  => ['label' => "Fail"],
+            'pages'    => ['label' => "Pages", 'icon' => 'view-grid'],
+            'users'    => ['label' => "Users", 'icon' => 'account-multiple-outline'],
+            'media'    => ['label' => "Media", 'icon' => 'image-outline'],
+            'settings' => ['label' => "Settings"],
         ];
 
         return new JsonResponse([
@@ -64,6 +68,21 @@ class HomeController extends AbstractController
         return new JsonResponse([
             'media'            => ['files' => ['media']],
             'selectedMenuItem' => 'media',
+        ]);
+    }
+
+    #[Route('/api/module/settings')]
+    public function settingsModule(): Response
+    {
+        $form = $this->formConfigService->getByName('settings');
+
+        return new JsonResponse([
+            'form'             => [
+                'settings'   => $form,
+                'data'       => (object) [],
+                'helperData' => $this->formService->getHelperData($form),
+            ],
+            'selectedMenuItem' => 'settings',
         ]);
     }
 }

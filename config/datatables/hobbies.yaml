@@ -1,0 +1,26 @@
+buttons:
+    -   label: Add hobby
+        action: add
+    -   label: Delete
+        action: delete
+headers:
+    id: "Id"
+    name: "Name"
+mobileColumns:
+    - id
+    - name
+actions:
+    -   key: rearrange
+        type: rearrange
+        icon: mdi-drag-horizontal-variant
+form:
+    fields:
+        name:
+            type: 'text'
+            label: Name
+            validator:
+                name: presence
+instance: hobbies
+search: false
+source:
+    type: local

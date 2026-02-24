@@ -12,15 +12,16 @@ use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
+use KikCMS\Domain\Form\Field\FieldService;
 
 readonly class DataTableService
 {
     public function __construct(
         private DataTableConfigService $configService,
         private DataTableSourceServiceResolver $resolver,
-        private DataTableConfigService $dataTableConfigService,
         private DataTablePdoFilterService $dataTableFilterService,
         private RelationService $relationService,
+        private FieldService $fieldService,
     ) {}
 
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
@@ -42,7 +43,7 @@ readonly class DataTableService
     {
         $defaultData = [];
 
-        $fields = $this->dataTableConfigService->getFieldsByForm($dataTable->getForm($type));
+        $fields = $this->fieldService->getByForm($dataTable->getForm($type));
 
         foreach ($fields as $key => $field) {
             if ($default = $field['default'] ?? null) {
@@ -135,28 +136,29 @@ readonly class DataTableService
     {
         $subData = [];
 
-        $fieldMap = $this->dataTableConfigService->getFields($dataTable, DataTableConfig::FIELD_TYPE_DATATABLE);
+        $fieldMap = $this->fieldService->getByForm($dataTable->getForm(), DataTableConfig::FIELD_TYPE_DATATABLE);
 
         foreach ($fieldMap as $key => $field) {
-            $subData[$key] = $this->getSubDataTableFieldHelperData($dataTable, $field, $id, $editData[$key] ?? []);
+            $filters = $this->dataTableFilterService->getDefault()
+                ->setParentDataTable($dataTable)
+                ->setParentId($id);
+
+            $subData[$key] = $this->getSubDataTableFieldHelperData($field, $editData[$key] ?? [], $filters);
         }
 
         return $subData;
     }
 
-    public function getSubDataTableFieldHelperData(DataTable $dataTable, array $field, ?string $id, array $editData): array
+    public function getSubDataTableFieldHelperData(array $field, array $editData = [], ?Filters $filters = null): array
     {
         $subDataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
 
-        $filters = $this->dataTableFilterService->getDefault()
-            ->setParentDataTable($dataTable)
-            ->setParentId($id);
+        $filters = $filters ?? new Filters();
 
-        $helperData = [DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($subDataTable)];
-
-        $helperData[DataTableConfig::HELPER_DATA] = $this->getData($subDataTable, $filters, new StoreData($editData));
-
-        return $helperData;
+        return [
+            DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($subDataTable),
+            DataTableConfig::HELPER_DATA     => $this->getData($subDataTable, $filters, new StoreData($editData)),
+        ];
     }
 
     public function rearrange(DataTable $dataTable, Filters $filters, int $source, int $target, Location $location,

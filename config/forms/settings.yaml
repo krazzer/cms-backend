@@ -1,0 +1,40 @@
+tabs:
+    -   key: general
+        name: General
+        fields:
+            darkmode:
+                type: select
+                items:
+                    -   key: default
+                        value: System
+                    -   key: light
+                        value: Light
+                    -   key: dark
+                        value: Dark
+                label: Darkmode
+                special: darkModeSelect
+
+    -   key: advanced
+        name: Advanced
+        fields:
+            field:
+                type: text
+                label: Open field
+
+            field2:
+                key: field2
+                type: text
+                label: Another open field (required)
+                validator:
+                    name: presence
+                    parameters: { }
+
+            hobbies:
+                type: datatable
+                label: Hobbies
+                instance: hobbies
+                settings: this.appMocker.dataTableMock.subDataTableData
+
+        save: true
+
+instance: settings

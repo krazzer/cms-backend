@@ -5,6 +5,7 @@ namespace KikCMS\Domain\DataTable\Config;
 use Exception;
 use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\Form\Field\FieldService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -16,28 +17,9 @@ readonly class DataTableConfigService
         private Parser $yamlParser,
         private ParameterBagInterface $params,
         private TranslatorInterface $translator,
-        private CallableService $callableService
+        private CallableService $callableService,
+        private FieldService $fieldService,
     ) {}
-
-    public function getFields(DataTable $dataTable, ?string $filterType = null): array
-    {
-        return $this->getFieldsByForm($dataTable->getForm(), $filterType);
-    }
-
-    public function getFieldsByForm(array $form, ?string $filterType = null): array
-    {
-        $fields = [];
-
-        $this->walkFields($form, function ($field, $key) use (&$fields, $filterType) {
-            if ($filterType && $field[DataTableConfig::FIELD_TYPE] !== $filterType) {
-                return;
-            }
-
-            $fields[$key] = $field;
-        });
-
-        return $fields;
-    }
 
     public function getFromConfigByInstance(string $instance): DataTable
     {
@@ -108,26 +90,13 @@ readonly class DataTableConfigService
 
     public function updateFormConfig(array $form): array
     {
-        return $this->walkFields($form, function ($field): array {
+        return $this->fieldService->walk($form, function ($field): array {
             if ($field[DataTableConfig::FIELD_TYPE] === DataTableConfig::FIELD_TYPE_SELECT) {
                 return $this->resolveSelectFieldItems($field);
             }
 
             return $field;
         });
-    }
-
-    public function walkFields(array $node, callable $callback): array
-    {
-        foreach ($node[DataTableConfig::FORM_FIELDS] ?? [] as $i => $field) {
-            $node[DataTableConfig::FORM_FIELDS][$i] = $callback($field, $i);
-        }
-
-        foreach ($node[DataTableConfig::FORM_TABS] ?? [] as $i => $tab) {
-            $node[DataTableConfig::FORM_TABS][$i] = $this->walkFields($tab, $callback);
-        }
-
-        return $node;
     }
 
     public function resolveSelectFieldItems(array $field): array
