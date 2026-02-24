@@ -12,5 +12,6 @@ services:
         parent: cache.adapter.doctrine_dbal
         arguments:
             $connOrDsn: '@database_connection'
+            $namespace: '%cms.key_value_namespace%'
             $options:
-                db_table: cms_keyvalue
+                db_table: '%cms.key_value_table%'

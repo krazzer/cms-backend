@@ -2,14 +2,15 @@
 
 namespace KikCMS\Domain\DataTable\Tree;
 
+use KikCMS\Domain\App\KeyValue\KeyValueConfig;
+use KikCMS\Domain\App\KeyValue\KeyValueService;
 use KikCMS\Domain\DataTable\Dto\CollapseDto;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 readonly class CollapseService
 {
     public function __construct(
-        private CacheItemPoolInterface $keyValueStore,
+        private KeyValueService $keyValueService,
         private Security $security,
     ) {}
 
@@ -18,40 +19,14 @@ readonly class CollapseService
         $cacheKey  = $this->getCacheKeyByDto($dto);
         $collapsed = $dto->getCollapsed();
 
-        $item = $this->keyValueStore->getItem($cacheKey);
-        $item->set($collapsed);
-        $this->keyValueStore->save($item);
+        $this->keyValueService->set($cacheKey, $collapsed);
     }
 
     public function isCollapsed(string $id, string $instance): bool
     {
         $cacheKey = $this->getCacheKeyByInstanceAndId($instance, $id);
 
-        return (bool) $this->keyValueStore->getItem($cacheKey)->get();
-    }
-
-    public function getCollapsedMap(array $ids, string $instance): array
-    {
-        $collapsedMap = [];
-        $cacheKeys    = [];
-
-        foreach ($ids as $id) {
-            $cacheKey = $this->getCacheKeyByInstanceAndId($instance, $id);
-
-            $cacheKeys[$id] = $cacheKey;
-        }
-
-        $items = $this->keyValueStore->getItems($cacheKeys);
-
-        foreach ($items as $item) {
-            $id = array_flip($cacheKeys)[$item->getKey()];
-
-            if($item->get()) {
-                $collapsedMap[$id] = $item->get();
-            }
-        }
-
-        return $collapsedMap;
+        return (bool) $this->keyValueService->get($cacheKey);
     }
 
     private function getCacheKeyByDto(CollapseDto $dto): string
@@ -63,11 +38,11 @@ readonly class CollapseService
     {
         $userId = $this->security->getUser()->getId();
 
-        return $this->getCacheKeyPrefixByInstanceAndUserId($instance, $userId) . '_' . $id;
+        return $this->getCacheKeyPrefixByInstanceAndUserId($instance, $userId) . KeyValueConfig::SEPARATOR . $id;
     }
 
     private function getCacheKeyPrefixByInstanceAndUserId(string $instance, int $userId): string
     {
-        return 'datatable_collapse_' . $instance . '_user_' . $userId;
+        return implode(KeyValueConfig::SEPARATOR, ['dataTableCollapse', $instance, 'user', $userId]);
     }
 }

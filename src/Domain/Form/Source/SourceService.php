@@ -3,15 +3,15 @@
 namespace KikCMS\Domain\Form\Source;
 
 use KikCMS\Domain\App\Exception\StorageHttpException;
+use KikCMS\Domain\App\KeyValue\KeyValueService;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
-use Psr\Cache\CacheItemPoolInterface;
 
 readonly class SourceService
 {
     public function __construct(
         private FieldService $fieldService,
-        private CacheItemPoolInterface $keyValueStore,
+        private KeyValueService $keyValueService,
     ) {}
 
     public function store(Form $form, array $data): void
@@ -19,7 +19,7 @@ readonly class SourceService
         $fields = $this->fieldService->getObjectMapByForm($form);
 
         foreach ($fields as $key => $field) {
-            if( ! $field->isStore()){
+            if ( ! $field->isStore()) {
                 continue;
             }
 
@@ -29,9 +29,7 @@ readonly class SourceService
 
             $cacheKey = $field->getField();
 
-            $item = $this->keyValueStore->getItem($cacheKey)->set($value);
-
-            if( ! $this->keyValueStore->save($item)){
+            if ( ! $this->keyValueService->set($cacheKey, $value)) {
                 throw new StorageHttpException("Could not save item $cacheKey");
             }
         }
@@ -44,11 +42,11 @@ readonly class SourceService
         $fields = $this->fieldService->getObjectMapByForm($form);
 
         foreach ($fields as $key => $field) {
-            if( ! $field->isStore()){
+            if ( ! $field->isStore()) {
                 continue;
             }
 
-            $data[$key] = $this->keyValueStore->getItem($field->getField())->get();
+            $data[$key] = $this->keyValueService->get($field->getField());
         }
 
         return $data;

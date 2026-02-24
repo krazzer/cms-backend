@@ -22,6 +22,9 @@ parameters:
     cms.port: '%env(PORT)%'
     cms.name: '%env(ALIAS)%'
 
+    cms.key_value_table: 'cms_keyvalue'
+    cms.key_value_namespace: 'keyvalue'
+
     admin.dist.latest: '%env(LATEST_ADMIN_DIST)%'
 
 services:
