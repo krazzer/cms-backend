@@ -154,7 +154,7 @@ readonly class DataTableService
     {
         $subDataTable = $this->getByInstance($field[DataTableConfig::FIELD_INSTANCE]);
 
-        $filters = $filters ?? new Filters();
+        $filters = $filters ?? $this->dataTableFilterService->getDefault();
 
         return [
             DataTableConfig::HELPER_SETTINGS => $this->getFullConfig($subDataTable),

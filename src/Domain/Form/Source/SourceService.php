@@ -1,13 +1,13 @@
 <?php
 
-namespace KikCMS\Domain\Form\Storage;
+namespace KikCMS\Domain\Form\Source;
 
 use KikCMS\Domain\App\Exception\StorageHttpException;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
 use Psr\Cache\CacheItemPoolInterface;
 
-readonly class StorageService
+readonly class SourceService
 {
     public function __construct(
         private FieldService $fieldService,
@@ -35,5 +35,22 @@ readonly class StorageService
                 throw new StorageHttpException("Could not save item $cacheKey");
             }
         }
+    }
+
+    public function getData(Form $form): array
+    {
+        $data = [];
+
+        $fields = $this->fieldService->getObjectMapByForm($form);
+
+        foreach ($fields as $key => $field) {
+            if( ! $field->isStore()){
+                continue;
+            }
+
+            $data[$key] = $this->keyValueStore->getItem($field->getField())->get();
+        }
+
+        return $data;
     }
 }
