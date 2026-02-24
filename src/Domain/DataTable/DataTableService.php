@@ -13,6 +13,7 @@ use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
 use KikCMS\Domain\Form\Field\FieldService;
+use KikCMS\Domain\Form\Form;
 
 readonly class DataTableService
 {
@@ -127,7 +128,7 @@ readonly class DataTableService
         $this->source($dataTable)->updateCheckbox($dataTable, $filters, $id, $field, $value, $storeData);
     }
 
-    public function getForm(DataTable $dataTable, ?string $type = null): array
+    public function getForm(DataTable $dataTable, ?string $type = null): Form
     {
         return $dataTable->getForm($type);
     }

@@ -14,6 +14,7 @@ use KikCMS\Domain\DataTable\Dto\RearrangeDto;
 use KikCMS\Domain\DataTable\Dto\SaveDto;
 use KikCMS\Domain\DataTable\Dto\ShowDto;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
+use KikCMS\Domain\Form\FormService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,9 @@ class DataTableController extends AbstractController
 {
     public function __construct(
         private readonly DataTableService $dataTableService,
-        private readonly DeleteImpactCalculator $deleteImpactCalculator, private readonly DeleteImpactMessageBuilder $deleteImpactMessageBuilder,
+        private readonly DeleteImpactCalculator $deleteImpactCalculator,
+        private readonly DeleteImpactMessageBuilder $deleteImpactMessageBuilder,
+        private readonly FormService $formService,
     ) {}
 
     #[Route('/api/datatable', methods: 'POST')]
@@ -48,7 +51,7 @@ class DataTableController extends AbstractController
         $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $dto->getId(), $editData);
 
         return new JsonResponse([
-            'form'       => $dataTable->getForm(),
+            'form'       => $this->formService->getFullConfig($dataTable->getForm()),
             'data'       => $editData,
             'helperData' => $helperData,
         ]);
@@ -62,7 +65,7 @@ class DataTableController extends AbstractController
         $helperData  = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable());
 
         return new JsonResponse([
-            'form'       => $form,
+            'form'       => $this->formService->getFullConfig($form),
             'data'       => $defaultData,
             'helperData' => $helperData,
         ]);

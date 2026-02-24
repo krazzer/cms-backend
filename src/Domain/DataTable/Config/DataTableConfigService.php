@@ -3,9 +3,8 @@
 namespace KikCMS\Domain\DataTable\Config;
 
 use Exception;
-use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\DataTable\DataTable;
-use KikCMS\Domain\Form\Field\FieldService;
+use KikCMS\Domain\Form\Config\FormConfigService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -17,8 +16,7 @@ readonly class DataTableConfigService
         private Parser $yamlParser,
         private ParameterBagInterface $params,
         private TranslatorInterface $translator,
-        private CallableService $callableService,
-        private FieldService $fieldService,
+        private FormConfigService $formConfigService,
     ) {}
 
     public function getFromConfigByInstance(string $instance): DataTable
@@ -60,7 +58,7 @@ readonly class DataTableConfigService
             $headers = array_map(fn($value) => $this->translator->trans($value), $headersTranslate);
         }
 
-        $form = $this->updateFormConfig($form);
+        $form = $this->formConfigService->getByConfig($form);
 
         $dataTable = (new DataTable)
             ->setInstance($instance)
@@ -86,33 +84,5 @@ readonly class DataTableConfigService
         }
 
         return $dataTable;
-    }
-
-    public function updateFormConfig(array $form): array
-    {
-        return $this->fieldService->walk($form, function ($field): array {
-            if ($field[DataTableConfig::FIELD_TYPE] === DataTableConfig::FIELD_TYPE_SELECT) {
-                return $this->resolveSelectFieldItems($field);
-            }
-
-            return $field;
-        });
-    }
-
-    public function resolveSelectFieldItems(array $field): array
-    {
-        $items = $field[DataTableConfig::FIELD_ITEMS] ?? [];
-
-        if (empty($items)) {
-            return $field;
-        }
-
-        if ( ! $callable = $this->callableService->getCallableByString($items)) {
-            return $field;
-        }
-
-        $field[DataTableConfig::FIELD_ITEMS] = call_user_func($callable);
-
-        return $field;
     }
 }

@@ -4,6 +4,7 @@ tabs:
         fields:
             darkmode:
                 type: select
+                field: settings.cms.darkmode
                 items:
                     -   key: default
                         value: System
@@ -17,11 +18,11 @@ tabs:
     -   key: advanced
         name: Advanced
         fields:
-            field:
+            settings.cms.text1:
                 type: text
                 label: Open field
 
-            field2:
+            settings.cms.text2:
                 key: field2
                 type: text
                 label: Another open field (required)
@@ -29,7 +30,7 @@ tabs:
                     name: presence
                     parameters: { }
 
-            hobbies:
+            settings.cms.hobbies:
                 type: datatable
                 label: Hobbies
                 instance: hobbies
@@ -37,4 +38,6 @@ tabs:
 
         save: true
 
-instance: settings
+name: settings
+source:
+    type: keyValue

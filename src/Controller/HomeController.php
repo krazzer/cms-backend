@@ -16,7 +16,6 @@ class HomeController extends AbstractController
     public function __construct(
         private readonly Security $security,
         private readonly DataTableService $dataTableService,
-        private readonly FormConfigService $formConfigService,
         private readonly FormService $formService
     ) {}
 
@@ -74,14 +73,8 @@ class HomeController extends AbstractController
     #[Route('/api/module/settings')]
     public function settingsModule(): Response
     {
-        $form = $this->formConfigService->getByName('settings');
-
         return new JsonResponse([
-            'form'             => [
-                'settings'   => $form,
-                'data'       => (object) [],
-                'helperData' => $this->formService->getHelperData($form),
-            ],
+            'form'             => $this->formService->getPayloadByName('settings'),
             'selectedMenuItem' => 'settings',
         ]);
     }

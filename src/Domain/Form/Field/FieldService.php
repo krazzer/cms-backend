@@ -5,11 +5,12 @@ namespace KikCMS\Domain\Form\Field;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\Form\Field\Types\DatatableField;
+use KikCMS\Domain\Form\Form;
 use ReflectionClass;
 
 readonly class FieldService
 {
-    public function getByForm(array $form, ?string $filterType = null): array
+    public function getByForm(Form $form, ?string $filterType = null): array
     {
         $fields = [];
 
@@ -52,17 +53,21 @@ readonly class FieldService
         return $fields;
     }
 
-    public function walk(array $node, callable $callback): array
+    public function walk(Form $form, callable $callback): void
     {
-        foreach ($node[DataTableConfig::FORM_FIELDS] ?? [] as $i => $field) {
-            $node[DataTableConfig::FORM_FIELDS][$i] = $callback($field, $i);
+        foreach ($form->getFields() as $key => $field) {
+            if($field = $callback($field, $key)) {
+                $form->setField($key, $field);
+            }
         }
 
-        foreach ($node[DataTableConfig::FORM_TABS] ?? [] as $i => $tab) {
-            $node[DataTableConfig::FORM_TABS][$i] = $this->walk($tab, $callback);
+        foreach ($form->getTabs() as $tabKey => $tab) {
+            foreach ($tab[DataTableConfig::FORM_FIELDS] as $fieldKey => $field) {
+                if($field = $callback($field, $fieldKey)) {
+                    $form->setTabField($tabKey, $fieldKey, $field);
+                }
+            }
         }
-
-        return $node;
     }
 
     private function getFieldObject(mixed $type): Field
