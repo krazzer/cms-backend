@@ -3,7 +3,6 @@
 namespace KikCMS\Controller;
 
 use KikCMS\Domain\DataTable\DataTableService;
-use KikCMS\Domain\Form\Config\FormConfigService;
 use KikCMS\Domain\Form\FormService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;

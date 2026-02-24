@@ -25,12 +25,9 @@ readonly class FieldService
         return $fields;
     }
 
-    /**
-     * @return Field[]
-     */
-    public function getFieldMap(DataTable $dataTable, ?string $filterType = null): array
+    public function getObjectMapByForm(Form $form): array
     {
-        $fieldsArrayData = $this->getByForm($dataTable->getForm($filterType));
+        $fieldsArrayData = $this->getByForm($form);
 
         $fields = [];
 
@@ -40,6 +37,7 @@ readonly class FieldService
             $field->setKey($key);
             $field->setField($fieldArray['field'] ?? $key);
             $field->setType($fieldArray['type']);
+            $field->setStore($fieldArray['store'] ?? true);
 
             if ($fieldArray['label'] ?? null) {
                 $field->setLabel($fieldArray['label']);
@@ -51,6 +49,14 @@ readonly class FieldService
         }
 
         return $fields;
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function getObjectMapByDataTable(DataTable $dataTable, ?string $filterType = null): array
+    {
+        return $this->getObjectMapByForm($dataTable->getForm($filterType));
     }
 
     public function walk(Form $form, callable $callback): void

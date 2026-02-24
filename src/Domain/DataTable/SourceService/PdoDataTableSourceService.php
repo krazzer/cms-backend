@@ -82,7 +82,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
     public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
-        $fieldMap   = $this->fieldService->getFieldMap($dataTable);
+        $fieldMap   = $this->fieldService->getObjectMapByDataTable($dataTable);
 
         if ( ! $entity = $repository->find($id)) {
             throw new ObjectNotFoundHttpException("Object with id: $id not found");

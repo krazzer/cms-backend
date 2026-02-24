@@ -2,12 +2,16 @@
 
 namespace KikCMS\Domain\Form\Dto;
 
+use KikCMS\Domain\Form\Form;
+use Symfony\Component\Serializer\Attribute\SerializedName;
+
 class FormDto
 {
-    public string $instance;
+    #[SerializedName('name')]
+    public Form $form;
 
-    public function getInstance(): string
+    public function getForm(): Form
     {
-        return $this->instance;
+        return $this->form;
     }
 }

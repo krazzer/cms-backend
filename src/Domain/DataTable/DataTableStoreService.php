@@ -25,7 +25,7 @@ readonly class DataTableStoreService
     {
         $storeData = [];
 
-        $fields = $this->fieldService->getFieldMap($dataTable);
+        $fields = $this->fieldService->getObjectMapByDataTable($dataTable);
 
         foreach ($fields as $key => $field) {
             if ( ! array_key_exists($key, $rawData)) {

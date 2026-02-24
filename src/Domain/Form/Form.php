@@ -10,6 +10,7 @@ class Form
     private SourceType $source;
     private array $tabs = [];
     private array $fields = [];
+    private ?string $name = null;
 
     public function getTabs(): array
     {
@@ -53,5 +54,15 @@ class Form
     {
         $this->tabs[$tabKey][DataTableConfig::FORM_FIELDS][$fieldKey] = $field;
         return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
     }
 }

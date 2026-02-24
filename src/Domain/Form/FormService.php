@@ -11,8 +11,14 @@ readonly class FormService
 {
     public function __construct(
         private FieldService $fieldService,
-        private DataTableService $dataTableService, private FormConfigService $formConfigService
+        private DataTableService $dataTableService,
+        private FormConfigService $formConfigService
     ) {}
+
+    public function getByName(string $name): Form
+    {
+        return $this->formConfigService->getObjectByName($name);
+    }
 
     public function getHelperData(Form $form): array
     {
@@ -29,7 +35,7 @@ readonly class FormService
 
     public function getPayloadByName(string $string): array
     {
-        $form = $this->formConfigService->getByName($string);
+        $form = $this->formConfigService->getObjectByName($string);
 
         return [
             'settings'   => $this->getFullConfig($form),
@@ -43,6 +49,7 @@ readonly class FormService
         $config = [
             'fields' => $form->getFields(),
             'source' => $form->getSource(),
+            'name'   => $form->getName(),
         ];
 
         if ($tabs = $form->getTabs()) {

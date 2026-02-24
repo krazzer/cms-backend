@@ -14,6 +14,7 @@ tabs:
                         value: Dark
                 label: Darkmode
                 special: darkModeSelect
+                store: false
 
     -   key: advanced
         name: Advanced

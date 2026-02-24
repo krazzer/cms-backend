@@ -8,6 +8,7 @@ class Field
     private string $label;
     private string $type;
     private string $field;
+    private bool $store = true;
 
     public function getKey(): string
     {
@@ -51,5 +52,15 @@ class Field
     {
         $this->field = $field;
         return $this;
+    }
+
+    public function isStore(): bool
+    {
+        return $this->store;
+    }
+
+    public function setStore(bool $store): void
+    {
+        $this->store = $store;
     }
 }

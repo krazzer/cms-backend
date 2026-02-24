@@ -21,7 +21,7 @@ readonly class FormConfigService
         private FieldService $fieldService
     ) {}
 
-    public function getByName(string $name): Form
+    public function getObjectByName(string $name): Form
     {
         $filePath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG_FORMS . DIRECTORY_SEPARATOR . $name . '.yaml');
 
@@ -29,10 +29,10 @@ readonly class FormConfigService
             throw new Exception("No config found for Form '$name'");
         }
 
-        return $this->getByConfig($config);
+        return $this->getByConfig($config, $name);
     }
 
-    public function getByConfig(array $config): Form
+    public function getByConfig(array $config, ?string $name = null): Form
     {
         $sourceType = $config['source']['type'] ?? null;
         $sourceType = SourceType::tryFrom($sourceType) ?? SourceType::KeyValue;
@@ -42,6 +42,7 @@ readonly class FormConfigService
         $form->setTabs($config['tabs'] ?? []);
         $form->setFields($config['fields'] ?? []);
         $form->setSource($sourceType);
+        $form->setName($name);
 
         $this->resolveReferences($form);
 
