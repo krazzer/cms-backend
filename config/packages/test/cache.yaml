@@ -1,0 +1,7 @@
+framework:
+    cache:
+        pools:
+            key_value_store:
+                default_lifetime: 0
+                adapters:
+                    - app.cms_pdo_provider
