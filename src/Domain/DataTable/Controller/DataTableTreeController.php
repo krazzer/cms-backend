@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Controller;
+namespace KikCMS\Domain\DataTable\Controller;
 
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Dto\CollapseDto;

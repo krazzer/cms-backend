@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Controller;
+namespace KikCMS\Domain\App;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

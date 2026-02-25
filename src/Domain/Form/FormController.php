@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace KikCMS\Controller;
+namespace KikCMS\Domain\Form;
 
 use KikCMS\Domain\Form\Dto\SaveDto;
 use KikCMS\Domain\Form\Source\SourceService;

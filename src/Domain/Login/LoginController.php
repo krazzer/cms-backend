@@ -1,12 +1,9 @@
 <?php
 
-namespace KikCMS\Controller;
+namespace KikCMS\Domain\Login;
 
-use KikCMS\Domain\Login\EmailDto;
-use KikCMS\Domain\Login\PasswordResetService;
-use KikCMS\Domain\Login\SetPasswordDto;
-use KikCMS\Entity\User\UserService;
 use Exception;
+use KikCMS\Entity\User\UserService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;

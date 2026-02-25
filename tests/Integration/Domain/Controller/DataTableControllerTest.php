@@ -4,7 +4,7 @@ namespace KikCMS\Tests\Integration\Domain\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use KikCMS\Controller\DataTableController;
+use KikCMS\Domain\DataTable\Controller\DataTableController;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Dto\ShowDto;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

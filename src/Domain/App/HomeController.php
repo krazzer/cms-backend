@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Controller;
+namespace KikCMS\Domain\App;
 
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\Form\FormService;

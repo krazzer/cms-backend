@@ -1,7 +1,13 @@
-controllers:
+controllers_domain:
     resource:
-        path: ../src/Controller/
-        namespace: KikCMS\Controller
+        path: ../src/Domain
+        namespace: KikCMS\Domain
+    type: attribute
+
+controllers_entity:
+    resource:
+        path: ../src/Entity
+        namespace: KikCMS\Entity
     type: attribute
 
 reset:
