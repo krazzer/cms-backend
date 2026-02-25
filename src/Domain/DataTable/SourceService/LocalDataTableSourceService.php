@@ -8,6 +8,7 @@ use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\Filter\DataTableLocalFilterService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
+use KikCMS\Domain\DataTable\Rearrange\ArrayRearrangeService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 
 readonly class LocalDataTableSourceService implements DataTableSourceServiceInterface
@@ -15,6 +16,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
     public function __construct(
         private DataTableRowService $rowService,
         private DataTableLocalFilterService $filterService,
+        private ArrayRearrangeService $arrayRearrangeService,
     ) {}
 
     public function update(DataTable $dataTable, Filters $filters, string $id, array $updateData, StoreData $storeData): void
@@ -99,21 +101,6 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
 
     public function rearrange(DataTable $dataTable, int $source, int $target, Location $location, StoreData $storeData): void
     {
-        $data = $storeData->getData();
-
-        $ids = array_column($data, DataTableConfig::ID);
-
-        $from = array_search($source, $ids);
-        $to   = array_search($target, $ids);
-
-        $item = $data[$from];
-
-        unset($data[$from]);
-
-        $data = array_values($data);
-
-        array_splice($data, $to, 0, [$item]);
-
-        $storeData->setData($data);
+        $storeData->setData($this->arrayRearrangeService->rearrange($source, $target, $location, $storeData->getData()));
     }
 }
