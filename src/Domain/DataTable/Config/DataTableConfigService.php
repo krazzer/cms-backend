@@ -40,7 +40,7 @@ readonly class DataTableConfigService
         $typeForms        = $config['typeForms'] ?? [];
         $rearrange        = $config['rearrange'] ?? false;
 
-        $sourceType = SourceType::tryFrom($source['type'] ?? null) ?? SourceType::Pdo;
+        $sourceType = SourceType::tryFrom($source['type'] ?? '') ?? SourceType::Pdo;
 
         $pdoModel = $source['model'] ?? null;
         $query    = $source['query'] ?? null;

@@ -34,7 +34,7 @@ readonly class FormConfigService
 
     public function getByConfig(array $config, ?string $name = null): Form
     {
-        $sourceType = $config['source']['type'] ?? null;
+        $sourceType = $config['source']['type'] ?? '';
         $sourceType = SourceType::tryFrom($sourceType) ?? SourceType::KeyValue;
 
         $form = new Form();
