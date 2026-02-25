@@ -18,8 +18,7 @@ class Kernel extends BaseKernel
     const string DIR_SRC             = 'src';
     const string DIR_CONFIG          = 'config';
     const string DIR_CONFIG_FORMS    = 'config/forms';
-    const string DIR_CERTS           = 'certs';
-    const string DIR_CMS_CERTS       = 'var/certs';
+    const string DIR_CERTS           = 'var/certs';
     const string DIR_CONFIG_PACKAGES = 'config/packages';
     const string DIR_PUBLIC          = 'public_html';
     const string DIR_ADMIN           = 'public_html/cms';

@@ -8,7 +8,7 @@ readonly class CmsCertService extends AbstractCertService
 {
     protected function getPaths(): array
     {
-        $certsDir    = $this->kernel->getCmsDir(Kernel::DIR_CMS_CERTS);
+        $certsDir    = $this->kernel->getCmsDir(Kernel::DIR_CERTS);
         $certFile    = $this->kernel->getCmsDir(Kernel::FILE_CERT);
         $certKeyFile = $this->kernel->getCmsDir(Kernel::FILE_CERT_KEY);
 
