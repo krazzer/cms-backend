@@ -148,7 +148,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
 
             // Check if $field is a mapped field in Doctrine
             if ($metadata->hasField($field)) {
-                $value = $this->getValueByType($metadata->getFieldMapping($field)['type'], $value);
+                $value = $this->getValueByType($metadata->getFieldMapping($field)->type, $value);
             }
 
             $entity->$setter($value);

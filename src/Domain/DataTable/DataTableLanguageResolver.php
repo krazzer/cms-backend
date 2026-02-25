@@ -15,11 +15,13 @@ readonly class DataTableLanguageResolver
 
     public function resolve(?string $providedLangCode = null): string
     {
-        if ($providedLangCode) {
+        if ($providedLangCode !== null) {
             return $providedLangCode;
         }
 
-        return $this->requestStack->getSession()->get(DataTableConfig::SESSION_KEY_LANG)
-            ?? $this->params->get('app.default_cms_content_language');
+        $request     = $this->requestStack->getCurrentRequest();
+        $sessionLang = $request?->hasSession() ? $request->getSession()->get(DataTableConfig::SESSION_KEY_LANG) : null;
+
+        return $sessionLang ?? $this->params->get('app.default_cms_content_language');
     }
 }

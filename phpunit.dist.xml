@@ -23,6 +23,16 @@
             <directory>src</directory>
         </include>
 
+        <exclude>
+            <directory>src/Command</directory>
+            <directory>src/Domain/App/Admin</directory>
+            <directory>src/Domain/App/Development</directory>
+            <directory>src/Domain/App/Exception</directory>
+            <directory>src/Tests</directory>
+            <file>src/Kernel.php</file>
+            <file>src/functions.php</file>
+        </exclude>
+
         <deprecationTrigger>
             <method>Doctrine\Deprecations\Deprecation::trigger</method>
             <method>Doctrine\Deprecations\Deprecation::delegateTriggerToBackend</method>

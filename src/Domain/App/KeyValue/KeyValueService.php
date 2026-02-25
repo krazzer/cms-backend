@@ -12,7 +12,8 @@ readonly class KeyValueService
         #[Autowire('%cms.key_value_table%')] private string $tableName,
         #[Autowire('%cms.key_value_namespace%')] private string $namespace,
         private CacheItemPoolInterface $keyValueStore,
-        private Connection $connection
+        private Connection $connection,
+        private bool $writeJsonToDb = true,
     ) {}
 
     public function set(string $key, mixed $value): bool
@@ -29,7 +30,9 @@ readonly class KeyValueService
         $jsonValue   = json_encode($value, JSON_PRETTY_PRINT);
         $prefixedKey = $this->getPrefixedKey($key);
 
-        $this->connection->update($this->tableName, ['item_json' => $jsonValue], ['item_id' => $prefixedKey]);
+        if($this->writeJsonToDb) {
+            $this->connection->update($this->tableName, ['item_json' => $jsonValue], ['item_id' => $prefixedKey]);
+        }
 
         return true;
     }

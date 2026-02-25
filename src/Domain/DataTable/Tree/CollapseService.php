@@ -36,7 +36,7 @@ readonly class CollapseService
 
     private function getCacheKeyByInstanceAndId(string $instance, int $id): string
     {
-        $userId = $this->security->getUser()->getId();
+        $userId = $this->security->getUser()?->getId() ?? 0;
 
         return $this->getCacheKeyPrefixByInstanceAndUserId($instance, $userId) . KeyValueConfig::SEPARATOR . $id;
     }
