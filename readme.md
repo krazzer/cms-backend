@@ -1,46 +1,29 @@
-# CMS standalone setup
+## CMS standalone setup
 
 Use this guide to set up the CMS as standalone. This can be useful for development on the CMS itself without needing to
 set up a full project.
 
-## Set up CMS
+### Set up CMS
 
 1. Clone this repo
 2. Run `composer install`
 3. Run `php bin/console kikcms:cms:up`
 
-# Useful commands
+### Useful commands
 
-### Set up site:
-`ALIAS=[ALIAS] PORT=[PORT] docker compose -f vendor/kiksaus/cms-backend/docker/docker-compose-site.yml -p [KEY] up -d`
+#### Load/unload dev env
+- `php bin/console kikcms:cms:up`
+- `php bin/console kikcms:cms:down`
 
-### Enable XDebug:
-`docker exec -ti cms-php-1 sh -c "echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20240924/xdebug.so" >> /usr/local/etc/php/php.ini && apachectl restart"`
+#### Update DB schema
+- Check: `php bin/console doctrine:schema:update --dump-sql`
+- Update: `php bin/console doctrine:schema:update --force`
 
-### Disable XDebug:
-`docker exec -ti cms-php-1 sh -c "sed -i \"/\b\(xdebug.so\)\b/d\" /usr/local/etc/php/php.ini && apachectl restart"`
+#### Enter container:
+`php bin/console kikcms:cms:attach`
 
-### Enter container:
-`docker exec -it <CONTAINER_NAME> /bin/bash`
+#### Update admin JS/CSS to latest:
+`php bin/console kikcms:cms:update-admin`
 
-### Edit CMS code within a project
-Create symlink (replace `../../KikCMS` with where the CMS sits relative to the vendor dir) `rm -rf vendor/kiksaus && ln -s ../../KikCMS vendor/kiksaus`
-
-### How to do a composer update with updated CMS code without a commit?
-- Update composer.json with:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../KikCMS2/cms-backend",
-            "options": {
-                "symlink": true
-            }
-        }
-    ]
-}
-```
-- Remove existing symlink
-- Run `composer update`
+#### List all kikcms commands:
+`php bin/console kikcms list`
