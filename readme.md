@@ -22,7 +22,7 @@ set up a full project.
 #### Enter container:
 `php bin/console kikcms:cms:attach`
 
-#### Update admin JS/CSS to latest:
+#### Update admin JS/CSS to the latest:
 `php bin/console kikcms:cms:update-admin`
 
 #### List all kikcms commands:
