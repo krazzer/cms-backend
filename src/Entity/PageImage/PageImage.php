@@ -25,10 +25,10 @@ class PageImage
     #[ORM\JoinColumn(name: 'page_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private ?Page $page = null;
 
-    #[ORM\Column]
+    #[ORM\Column(index: true)]
     private ?int $image_id = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true, index: true)]
     private ?int $display_order = null;
 
     public function getId(): ?int

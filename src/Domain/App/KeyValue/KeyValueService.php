@@ -2,18 +2,17 @@
 
 namespace KikCMS\Domain\App\KeyValue;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
+use KikCMS\Entity\KeyValue\KeyValue;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 readonly class KeyValueService
 {
     public function __construct(
-        #[Autowire('%cms.key_value_table%')] private string $tableName,
         #[Autowire('%cms.key_value_namespace%')] private string $namespace,
+        private EntityManagerInterface $entityManager,
         private CacheItemPoolInterface $keyValueStore,
-        private Connection $connection,
-        private bool $writeJsonToDb = true,
     ) {}
 
     public function set(string $key, mixed $value): bool
@@ -30,8 +29,11 @@ readonly class KeyValueService
         $jsonValue   = json_encode($value, JSON_PRETTY_PRINT);
         $prefixedKey = $this->getPrefixedKey($key);
 
-        if($this->writeJsonToDb) {
-            $this->connection->update($this->tableName, ['item_json' => $jsonValue], ['item_id' => $prefixedKey]);
+        if($keyValueEntity = $this->entityManager->find(KeyValue::class, $prefixedKey)){
+            $keyValueEntity->setItemJson($jsonValue);
+
+            $this->entityManager->persist($keyValueEntity);
+            $this->entityManager->flush();
         }
 
         return true;
