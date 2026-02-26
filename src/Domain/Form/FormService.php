@@ -29,7 +29,7 @@ readonly class FormService
         $fieldMap = $this->fieldService->getByForm($form, DataTableConfig::FIELD_TYPE_DATATABLE);
 
         foreach ($fieldMap as $key => $field) {
-            $subData[$key] = $this->dataTableService->getSubDataTableFieldHelperData($field, $data[$key]);
+            $subData[$key] = $this->dataTableService->getSubDataTableFieldHelperData($field, $data[$key] ?? []);
         }
 
         return $subData;
