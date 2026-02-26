@@ -24,10 +24,11 @@ class HomeController extends AbstractController
         $loggedIn = (bool) $this->security->getUser();
 
         $menu = [
-            'pages'    => ['label' => "Pages", 'icon' => 'view-grid'],
-            'users'    => ['label' => "Users", 'icon' => 'account-multiple-outline'],
-            'media'    => ['label' => "Media", 'icon' => 'image-outline'],
-            'settings' => ['label' => "Settings"],
+            'pages'      => ['label' => "Pages", 'icon' => 'view-grid'],
+            'users'      => ['label' => "Users", 'icon' => 'account-multiple-outline'],
+            'media'      => ['label' => "Media", 'icon' => 'image-outline'],
+            'statistics' => ['label' => "Statistieken", 'icon' => 'google-analytics'],
+            'settings'   => ['label' => "Settings"],
         ];
 
         return new JsonResponse([
@@ -75,6 +76,15 @@ class HomeController extends AbstractController
         return new JsonResponse([
             'form'             => $this->formService->getPayloadByName('settings'),
             'selectedMenuItem' => 'settings',
+        ]);
+    }
+
+    #[Route('/api/module/statistics')]
+    public function statisticsModule(): Response
+    {
+        return new JsonResponse([
+            'statistics'       => ['foo' => 'bar'],
+            'selectedMenuItem' => 'statistics',
         ]);
     }
 }
