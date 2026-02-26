@@ -8,6 +8,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
@@ -16,7 +17,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 )]
 class AttachCommand extends Command
 {
-    public function __construct(readonly string $name, private readonly DockerService $dockerService,
+    public function __construct(
+        #[Autowire('%app.name%')] readonly string $name,
+        private readonly DockerService $dockerService,
         private readonly KernelInterface $kernel)
     {
         parent::__construct();

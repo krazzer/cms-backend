@@ -8,6 +8,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
@@ -16,8 +17,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 )]
 class DownCommand extends Command
 {
-    public function __construct(readonly string $name, readonly int $port,
-        readonly DockerComposeService $dockerComposeService, readonly KernelInterface $kernel)
+    public function __construct(
+        #[Autowire('%cms.name%')] readonly string $name,
+        #[Autowire('%cms.port%')] readonly int $port,
+        readonly DockerComposeService $dockerComposeService,
+        readonly KernelInterface $kernel)
     {
         parent::__construct();
     }
