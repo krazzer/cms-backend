@@ -26,11 +26,10 @@ readonly class KeyValueService
         }
 
         // store as JSON in the DB for an easy view
-        $jsonValue   = json_encode($value, JSON_PRETTY_PRINT);
         $prefixedKey = $this->getPrefixedKey($key);
 
         if($keyValueEntity = $this->entityManager->find(KeyValue::class, $prefixedKey)){
-            $keyValueEntity->setItemJson($jsonValue);
+            $keyValueEntity->setItemJson(json_encode($value, JSON_PRETTY_PRINT));
 
             $this->entityManager->persist($keyValueEntity);
             $this->entityManager->flush();
