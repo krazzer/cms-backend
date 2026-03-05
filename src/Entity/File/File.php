@@ -27,6 +27,10 @@ class File
     public const string FIELD_CHILDREN    = 'children'; // derived
     public const string FIELD_PAGE_IMAGES = 'pageImages'; // derived
 
+    /**
+     * Todo: Hier mist een constant type. Als het goed is geeft de IDE dit ook als melding (als je language op PHP 8.4 staat).
+     * Over het algemeen moet je IDE waarschuwingen nooit negeren.
+     */
     public const IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
     #[ORM\Id]
@@ -76,6 +80,8 @@ class File
     {
         $this->children = new ArrayCollection();
     }
+
+    // Todo: overbodige comment
 
     // Getters and setters...
 
