@@ -1,9 +1,8 @@
 <?php
 
-namespace KikCMS\Controller;
+namespace KikCMS\Entity\File;
 
 use KikCMS\Entity\File\Dto\UploadDto;
-use KikCMS\Entity\File\FileService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
