@@ -36,7 +36,7 @@ form:
     tabs:
         -   key: page
             name: Page
-            fields_provider: page_template
+            field_provider: page_template
         -   key: seo
             name: SEO
             fields:

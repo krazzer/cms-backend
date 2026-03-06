@@ -16,7 +16,6 @@ class DataTableConfig
     const string FIELD_TYPE     = 'type';
     const string FIELD_SETTINGS = 'settings';
     const string FIELD_INSTANCE = 'instance';
-    const string FIELD_ITEMS    = 'items';
 
     const string HELPER_DATA     = 'data';
     const string HELPER_SETTINGS = 'settings';

@@ -5,11 +5,9 @@ namespace KikCMS\Entity\User;
 use KikCMS\Domain\Login\SetPasswordDto;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Autoconfigure(public: true)]
 readonly class UserService
 {
     public function __construct(

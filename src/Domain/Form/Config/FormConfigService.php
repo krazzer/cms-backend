@@ -3,11 +3,11 @@
 namespace KikCMS\Domain\Form\Config;
 
 use Exception;
-use KikCMS\Domain\App\Service\CallableService;
+use KikCMS\Domain\App\Config\Provider\ConfigProviderRegistry;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use KikCMS\Domain\Form\Field\Config\FieldConfig;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
-use KikCMS\Domain\Form\Providers\FormFieldsProviderRegistry;
 use KikCMS\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
@@ -18,9 +18,8 @@ readonly class FormConfigService
     public function __construct(
         private KernelInterface $kernel,
         private Parser $yamlParser,
-        private CallableService $callableService,
         private FieldService $fieldService,
-        private FormFieldsProviderRegistry $fieldsProviderRegistry
+        private ConfigProviderRegistry $providerRegistry
     ) {}
 
     public function getObjectByName(string $name): Form
@@ -40,10 +39,10 @@ readonly class FormConfigService
         $sourceType = SourceType::tryFrom($sourceType) ?? SourceType::KeyValue;
 
         $fields = $this->resolveFields($config);
-        $tabs   = $config['tabs'] ?? [];
+        $tabs   = $config[DataTableConfig::FORM_TABS] ?? [];
 
         foreach ($tabs as &$tab) {
-            $tab['fields'] = $this->resolveFields($tab);
+            $tab[FormConfig::FIELDS] = $this->resolveFields($tab);
         }
 
         $form = new Form()
@@ -70,27 +69,19 @@ readonly class FormConfigService
 
     public function resolveSelectFieldItems(array $field): array
     {
-        $items = $field[DataTableConfig::FIELD_ITEMS] ?? [];
-
-        if (empty($items) || is_array($items)) {
-            return $field;
+        if ($itemProviderKey = $field[FieldConfig::ITEM_PROVIDER] ?? null) {
+            $field[FieldConfig::ITEMS] = $this->providerRegistry->getConfig($itemProviderKey);
         }
-
-        if ( ! $callable = $this->callableService->getCallableByString($items)) {
-            return $field;
-        }
-
-        $field[DataTableConfig::FIELD_ITEMS] = call_user_func($callable);
 
         return $field;
     }
 
     private function resolveFields(array $config): array
     {
-        if (empty($config['fields_provider'])) {
-            return $config['fields'] ?? [];
+        if ($fieldProviderKey = $config[FormConfig::FIELD_PROVIDER] ?? null) {
+            return $this->providerRegistry->getConfig($fieldProviderKey);
         }
 
-        return $this->fieldsProviderRegistry->get($config['fields_provider'])->getFieldsConfig();
+        return $config[FormConfig::FIELDS] ?? [];
     }
 }

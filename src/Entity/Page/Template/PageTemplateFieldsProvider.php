@@ -2,13 +2,13 @@
 
 namespace KikCMS\Entity\Page\Template;
 
-use KikCMS\Domain\Form\Providers\FormFieldsProviderInterface;
+use KikCMS\Domain\App\Config\Provider\ConfigProviderInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
 #[AsTaggedItem('page_template')]
-class PageTemplateFieldsProvider implements FormFieldsProviderInterface
+class PageTemplateFieldsProvider implements ConfigProviderInterface
 {
-    public function getFieldsConfig(): array
+    public function getConfig(): array
     {
         return [
             'type'     => [
