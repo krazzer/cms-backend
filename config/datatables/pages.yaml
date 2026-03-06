@@ -46,25 +46,10 @@ form:
                     label: Name
                     validator:
                         name: presence
-                header:
-                    type: text
-                    field: content.*.header
-                    label: Header
                 content:
-                    type: textarea
-                    field: content.*.content
+                    type: datatable
                     label: Content
-                    validator:
-                        name: presence
-                pageImages:
-                    type: datatable
-                    label: Afbeeldingen
-                    instance: page_images
-                colors:
-                    type: datatable
-                    field: content.colors
-                    label: Kleurenlijst
-                    instance: colors
+                    instance: page_content
         -   key: seo
             name: SEO
             fields:

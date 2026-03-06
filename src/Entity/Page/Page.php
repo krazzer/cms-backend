@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use KikCMS\Entity\PageImage\PageImage;
+use KikCMS\Entity\PageSection\PageSection;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 #[ORM\Table(name: 'cms_page')]
@@ -68,9 +69,13 @@ class Page
     #[ORM\OneToMany(targetEntity: PageImage::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $pageImages;
 
+    #[ORM\OneToMany(targetEntity: PageSection::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $pageSections;
+
     public function __construct()
     {
-        $this->pageImages = new ArrayCollection();
+        $this->pageImages   = new ArrayCollection();
+        $this->pageSections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -252,13 +257,30 @@ class Page
         return $this->pageImages;
     }
 
-    public function setPageImages(iterable $pageImages): Page
+    public function setPageImages(iterable $images): Page
     {
         $this->pageImages = new ArrayCollection();
 
-        foreach ($pageImages as $pageImage) {
-            $pageImage->setPage($this);
-            $this->pageImages->add($pageImage);
+        foreach ($images as $image) {
+            $image->setPage($this);
+            $this->pageImages->add($image);
+        }
+
+        return $this;
+    }
+
+    public function getPageSections(): Collection
+    {
+        return $this->pageSections;
+    }
+
+    public function setPageSections(iterable $sections): Page
+    {
+        $this->pageImages = new ArrayCollection();
+
+        foreach ($sections as $section) {
+            $section->setPage($this);
+            $this->pageSections->add($section);
         }
 
         return $this;

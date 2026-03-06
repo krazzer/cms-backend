@@ -1,0 +1,27 @@
+buttons:
+    -   label: Add section
+        action: add
+        icon: 'mdi-plus'
+    -   label: Delete
+        action: delete
+        icon: 'mdi-delete'
+headers:
+    id: Id
+    type: Type
+mobileColumns:
+    - type
+form:
+    fields:
+        type:
+            type: 'text'
+            label: 'Type'
+            validator:
+                name: presence
+        content:
+            type: 'textarea'
+            label: 'Content'
+            field: content.text
+rearrange: true
+source:
+    type: pdo
+    model: KikCMS\Entity\PageSection\PageSection
