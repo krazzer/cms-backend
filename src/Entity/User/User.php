@@ -224,9 +224,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return void
      */
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 
     /**
      * @return string
