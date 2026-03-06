@@ -36,20 +36,7 @@ form:
     tabs:
         -   key: page
             name: Page
-            fields:
-                type:
-                    type: hidden
-                    default: 'page'
-                title:
-                    type: text
-                    field: name.*
-                    label: Name
-                    validator:
-                        name: presence
-                content:
-                    type: datatable
-                    label: Content
-                    instance: page_content
+            fields_provider: page_template
         -   key: seo
             name: SEO
             fields:

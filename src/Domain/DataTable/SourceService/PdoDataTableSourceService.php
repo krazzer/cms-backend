@@ -88,8 +88,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
             throw new ObjectNotFoundHttpException("Object with id: $id not found");
         }
 
-        $arrayData  = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
-        $returnData = $arrayData;
+        $returnData = $arrayData = $this->getEntityDataAsArray($dataTable->getPdoModel(), $entity);
 
         foreach ($fieldMap as $key => $field) {
             if ($key === $field->getField()) {

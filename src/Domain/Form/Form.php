@@ -17,7 +17,7 @@ class Form
         return $this->tabs;
     }
 
-    public function setTabs(array $tabs): Form
+    public function setTabs(array $tabs): static
     {
         $this->tabs = $tabs;
         return $this;
@@ -28,7 +28,7 @@ class Form
         return $this->fields;
     }
 
-    public function setFields(array $fields): Form
+    public function setFields(array $fields): static
     {
         $this->fields = $fields;
         return $this;
@@ -39,18 +39,19 @@ class Form
         return $this->source;
     }
 
-    public function setSource(SourceType $source): void
+    public function setSource(SourceType $source): static
     {
         $this->source = $source;
+        return $this;
     }
 
-    public function setField(string $key, array $field): Form
+    public function setField(string $key, array $field): static
     {
         $this->fields[$key] = $field;
         return $this;
     }
 
-    public function setTabField(string $tabKey, string $fieldKey, array $field): Form
+    public function setTabField(string $tabKey, string $fieldKey, array $field): static
     {
         $this->tabs[$tabKey][DataTableConfig::FORM_FIELDS][$fieldKey] = $field;
         return $this;
@@ -61,8 +62,9 @@ class Form
         return $this->name;
     }
 
-    public function setName(?string $name): void
+    public function setName(?string $name): static
     {
         $this->name = $name;
+        return $this;
     }
 }

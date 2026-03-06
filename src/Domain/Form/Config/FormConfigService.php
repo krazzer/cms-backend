@@ -7,6 +7,7 @@ use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
+use KikCMS\Domain\Form\Providers\FormFieldsProviderRegistry;
 use KikCMS\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
@@ -18,7 +19,8 @@ readonly class FormConfigService
         private KernelInterface $kernel,
         private Parser $yamlParser,
         private CallableService $callableService,
-        private FieldService $fieldService
+        private FieldService $fieldService,
+        private FormFieldsProviderRegistry $fieldsProviderRegistry
     ) {}
 
     public function getObjectByName(string $name): Form
@@ -37,12 +39,18 @@ readonly class FormConfigService
         $sourceType = $config['source']['type'] ?? '';
         $sourceType = SourceType::tryFrom($sourceType) ?? SourceType::KeyValue;
 
-        $form = new Form();
+        $fields = $this->resolveFields($config);
+        $tabs   = $config['tabs'] ?? [];
 
-        $form->setTabs($config['tabs'] ?? []);
-        $form->setFields($config['fields'] ?? []);
-        $form->setSource($sourceType);
-        $form->setName($name);
+        foreach ($tabs as &$tab) {
+            $tab['fields'] = $this->resolveFields($tab);
+        }
+
+        $form = new Form()
+            ->setTabs($tabs)
+            ->setFields($fields)
+            ->setSource($sourceType)
+            ->setName($name);
 
         $this->resolveReferences($form);
 
@@ -75,5 +83,14 @@ readonly class FormConfigService
         $field[DataTableConfig::FIELD_ITEMS] = call_user_func($callable);
 
         return $field;
+    }
+
+    private function resolveFields(array $config): array
+    {
+        if (empty($config['fields_provider'])) {
+            return $config['fields'] ?? [];
+        }
+
+        return $this->fieldsProviderRegistry->get($config['fields_provider'])->getFieldsConfig();
     }
 }
