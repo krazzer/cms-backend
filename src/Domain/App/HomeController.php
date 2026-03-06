@@ -31,7 +31,6 @@ class HomeController extends AbstractController
             'media'      => ['label' => "Media", 'icon' => 'image-outline'],
             'statistics' => ['label' => "Statistieken", 'icon' => 'google-analytics'],
             'settings'   => ['label' => "Settings"],
-            'fail'       => ['label' => "Fail"],
         ];
 
         return new JsonResponse([
