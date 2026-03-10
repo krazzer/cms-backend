@@ -27,11 +27,7 @@ class File
     public const string FIELD_CHILDREN    = 'children'; // derived
     public const string FIELD_PAGE_IMAGES = 'pageImages'; // derived
 
-    /**
-     * Todo: Hier mist een constant type. Als het goed is geeft de IDE dit ook als melding (als je language op PHP 8.4 staat).
-     * Over het algemeen moet je IDE waarschuwingen nooit negeren.
-     */
-    public const IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    public const array IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -80,10 +76,6 @@ class File
     {
         $this->children = new ArrayCollection();
     }
-
-    // Todo: overbodige comment
-
-    // Getters and setters...
 
     public function getId(): ?int
     {
@@ -243,11 +235,6 @@ class File
     {
         $name = $private ? $this->getHash() : (string) $this->getId();
         return $name . '.' . ($extension ?: $this->getExtension());
-    }
-
-    public function getFilePath(string $storageDir): string
-    {
-        return rtrim($storageDir, '/') . '/' . $this->getFileName();
     }
 
     public function secondsUpdated(): int

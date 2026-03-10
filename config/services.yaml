@@ -27,6 +27,17 @@ parameters:
 
     admin.dist.latest: '%env(LATEST_ADMIN_DIST)%'
 
+    cms.storage.dir: '%kernel.project_dir%/var/storage'
+    cms.media.public_dir: '%kernel.project_dir%/public_html/media'
+    cms.media.public_subdir: 'files'
+    cms.media.url_prefix: 'media/files'
+
+    cms.thumbnail.type: 'default'
+    cms.thumbnail.directory: 'thumbs'
+    cms.thumbnail.extension: 'webp'
+    cms.thumbnail.width: '200'
+    cms.thumbnail.height: '200'
+
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
     Symfony\Component\String\ByteString: ~
@@ -63,8 +74,3 @@ services:
     KikCMS\Domain\App\ExceptionSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
-
-    KikCMS\Entity\File\FileService:
-        arguments:
-            $storageDir: '%kernel.project_dir%/var/storage'
-            $publicMediaDir: '%kernel.project_dir%/public_html/media'

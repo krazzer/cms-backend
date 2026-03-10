@@ -2,63 +2,59 @@
 
 namespace KikCMS\Entity\File;
 
-use KikCMS\Entity\File\Dto\UploadDto;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
 
 class FileController extends AbstractController
 {
-    /**
-     * Todo: Ter info: deze methode heb ik aangepast, zodat de $files direct als UploadedFile array meekomen
-     *
-     * Ik heb ook een UploadDto toegevoegd, zodat ik de folder kan meegeven, als die is meegegeven, kun je direct de
-     * folder als File object ophalen met $dto->getFolder().
-     *
-     * Ik heb ook de route aangepast zoals die in de frontend wordt aangeroepen (had je die niet getest?)
-     *
-     * Vue code is iets aangepast met andere naming (gebruik command kikcms:cms:update-admin om bij te werken)
-     *
-     * Todo: Services moeten altijd via de constructor (zie bijv in de DataTableController)
-     */
+    public function __construct(
+        private readonly FileService $fileService,
+        private readonly FilePublicService $filePublicService,
+        private readonly FileRepository $fileRepository,
+    ) {}
+
     #[Route('/api/media/upload')]
-    public function upload(#[MapUploadedFile] array $files, #[MapRequestPayload] UploadDto $dto, FileService $fileService): JsonResponse
+    public function upload(#[MapUploadedFile] UploadedFile|array $files, Request $request): JsonResponse
     {
-        /**
-         * Todo: pas de code aan zodat het werkt met de nieuwe input.
-         * Houd er ook regening mee dat meerdere bestanden geupload kunnen worden.
-         */
-        $uploadedFile = $request->files->get('file');
-        if ( ! $uploadedFile) {
-            return $this->json(['error' => 'No file uploaded'], 400);
+        $files = is_array($files) ? $files : [$files];
+
+        if (empty($files)) {
+            return $this->json(['error' => 'Geen bestanden geüpload'], 400);
         }
 
         try {
-            $folderId = $request->request->get('folder_id');
-            $file     = $fileService->upload($uploadedFile, $folderId);
-            $url      = $fileService->getUrlCreateIfMissing($file);
+            $folderId = $request->request->get('folder');
+            $folderId = ($folderId === 'null' || $folderId === '') ? null : (int) $folderId;
+            $folder   = $folderId ? $this->fileRepository->find($folderId) : null;
 
-            /**
-             * todo: Het is de bedoeling dat je alle bestanden van de huidige folder teruggeeft
-             * Kijk in de Vue code wat er verwacht wordt
-             */
+            $newFiles = [];
+
+            foreach ($files as $uploadedFile) {
+                $fileEntity = $this->fileService->upload($uploadedFile, $folder);
+                $newFiles[] = $fileEntity;
+            }
+
+            $allFiles = $this->fileService->getFilesInFolder($folderId);
+
+            $formatFile = function (File $file): array {
+                return [
+                    'id'   => $file->getId(),
+                    'name' => $file->getName(),
+                    'url'  => $this->filePublicService->getUrlCreateIfMissing($file),
+                ];
+            };
+
             return $this->json([
-                'id'   => $file->getId(),
-                'name' => $file->getName(),
-                'url'  => $url,
+                'files'    => array_map($formatFile, $allFiles),
+                'newFiles' => array_map($formatFile, $newFiles),
             ]);
-        } catch (\Exception $e) {
-            /**
-             * Todo: Je geeft hier een error terug, maar in de Vue code is er niks die dit afhandeld
-             * Daarnaast doe je $e->getMessage(), exception messages wil je eigenlijk nooit aan de gebruiker laten zien
-             * vaak kunnen die daar niks mee en kan mogelijk ook een security issue zijn
-             *
-             * Beter is bijv: Er is iets mis gegaan met het uploaden van het bestand
-             * Zorg dan ook dat deze melding in de Vue code wordt weergegeven
-             */
-            return $this->json(['error' => $e->getMessage()], 500);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan met het uploaden van het bestand.'], 500);
         }
     }
 }
