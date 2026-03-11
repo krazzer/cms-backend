@@ -109,6 +109,32 @@ readonly class FileService
         ];
     }
 
+    public function openFolder(?string $folderIdParam) : array
+    {
+        $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+
+        $allFiles = $this->getFilesInFolder($folderId);
+
+        $path = $this->buildPath($folderId);
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'    => $file->getId(),
+                'name'  => $file->getName(),
+                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+                'isDir' => $file->isFolder(),
+                'key'   => $file->getKey(),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $allFiles),
+            'path'  => $path,
+        ];
+    }
+
+    //
+
     private function buildPath(?int $folderId): array
     {
         $path = [];
@@ -119,17 +145,12 @@ readonly class FileService
             if (!$folder) {
                 break;
             }
-            array_unshift($path, [
-                'id'   => $folder->getId(),
-                'name' => $folder->getName(),
-            ]);
-            $currentId = $folder->getParent() ? $folder->getParent()->getId() : null;
+            $path = [$folder->getId() => $folder->getName()] + $path;
+            $currentId = $folder->getFolder() ? $folder->getFolder()->getId() : null;
         }
 
         return $path;
     }
-
-    //
 
     private function getFilesInFolder(?int $folderId = null): array
     {

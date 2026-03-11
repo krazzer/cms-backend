@@ -47,4 +47,18 @@ class FileController extends AbstractController
             return $this->json(['error' => 'Er is iets mis gegaan bij het aanmaken van de map.'], 500);
         }
     }
+
+    #[Route('/api/media/open', methods: ['POST'])]
+    public function openFolder(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $folderId = $data['id'] ?? null;
+
+        try {
+            $result = $this->fileService->openFolder($folderId);
+            return $this->json($result);
+        } catch (Exception $e) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het openen van de map.' . $e], 500);
+        }
+    }
 }
