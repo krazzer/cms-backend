@@ -57,8 +57,47 @@ class FileController extends AbstractController
         try {
             $result = $this->fileService->openFolder($folderId);
             return $this->json($result);
-        } catch (Exception $e) {
-            return $this->json(['error' => 'Er is iets mis gegaan bij het openen van de map.' . $e], 500);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het openen van de map.'], 500);
+        }
+    }
+
+    #[Route('/api/media/changefilename', methods: ['POST'])]
+    public function changeFilename(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $id = $data['id'] ?? null;
+        $newFileName = $data['name'] ?? null;
+
+        if (!$id || !$newFileName) {
+            return $this->json(['error' => 'Missing parameters'], 400);
+        }
+
+        try {
+            $result = $this->fileService->changeFilename($newFileName, (int) $id);
+            return $this->json($result);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het wijzigen van de bestandsnaam.'], 500);
+        }
+    }
+
+    #[Route('/api/media/key', methods: ['POST'])]
+    public function changeKey(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $id = $data['id'] ?? null;
+        $key = $data['name'] ?? null;
+        $folderId = $data['folder'] ?? null;
+
+        if (!$id) {
+            return $this->json(['error' => 'Missing file ID'], 400);
+        }
+
+        try {
+            $result = $this->fileService->changeKey($key, (int) $id, $folderId);
+            return $this->json($result);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het wijzigen van de sleutel.'], 500);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace KikCMS\Entity\File;
 
+use Exception;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -92,7 +93,6 @@ readonly class FileService
         $this->entityManager->flush();
 
         $allFiles = $this->getFilesInFolder($folderId);
-
         $path = $this->buildPath($folderId);
 
         $formatFile = function (File $file): array {
@@ -114,7 +114,69 @@ readonly class FileService
         $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
 
         $allFiles = $this->getFilesInFolder($folderId);
+        $path = $this->buildPath($folderId);
 
+        $formatFile = function (File $file): array {
+            return [
+                'id'    => $file->getId(),
+                'name'  => $file->getName(),
+                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+                'isDir' => $file->isFolder(),
+                'key'   => $file->getKey(),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $allFiles),
+            'path'  => $path,
+        ];
+    }
+
+    public function changeFilename(string $newFileName, int $fileId): array
+    {
+        $file = $this->fileRepository->find($fileId);
+
+        $originalExtension = $file->getExtension();
+        $finalFileName = $originalExtension ? $newFileName . '.' . $originalExtension : $newFileName;
+
+        $file->setName($finalFileName);
+        $file->setUpdated(new DateTimeImmutable());
+
+        $this->entityManager->flush();
+
+        $folderId = $file->getFolder() ? $file->getFolder()->getId() : null;
+
+        $allFiles = $this->getFilesInFolder($folderId);
+        $path = $this->buildPath($folderId);
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'    => $file->getId(),
+                'name'  => $file->getName(),
+                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+                'isDir' => $file->isFolder(),
+                'key'   => $file->getKey(),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $allFiles),
+            'path'  => $path,
+        ];
+    }
+
+    public function changeKey(?string $key, int $fileId, ?string $folderIdParam): array
+    {
+        $file = $this->fileRepository->find($fileId);
+
+        $file->setKey($key === '' ? null : $key);
+        $file->setUpdated(new \DateTimeImmutable());
+
+        $this->entityManager->flush();
+
+        $folderId = $file->getFolder() ? $file->getFolder()->getId() : null;
+
+        $allFiles = $this->getFilesInFolder($folderId);
         $path = $this->buildPath($folderId);
 
         $formatFile = function (File $file): array {
