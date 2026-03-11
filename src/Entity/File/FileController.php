@@ -2,6 +2,7 @@
 
 namespace KikCMS\Entity\File;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -14,47 +15,36 @@ class FileController extends AbstractController
 {
     public function __construct(
         private readonly FileService $fileService,
-        private readonly FilePublicService $filePublicService,
-        private readonly FileRepository $fileRepository,
+        protected EntityManagerInterface $entityManager,
     ) {}
 
     #[Route('/api/media/upload')]
-    public function upload(#[MapUploadedFile] UploadedFile|array $files, Request $request): JsonResponse
+    public function uploadFile(#[MapUploadedFile] UploadedFile|array $files, Request $request): JsonResponse
     {
         $files = is_array($files) ? $files : [$files];
-
-        if (empty($files)) {
-            return $this->json(['error' => 'Geen bestanden geüpload'], 400);
-        }
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $folderId = $data['folder'] ?? null;
 
         try {
-            $folderId = $request->request->get('folder');
-            $folderId = ($folderId === 'null' || $folderId === '') ? null : (int) $folderId;
-            $folder   = $folderId ? $this->fileRepository->find($folderId) : null;
-
-            $newFiles = [];
-
-            foreach ($files as $uploadedFile) {
-                $fileEntity = $this->fileService->upload($uploadedFile, $folder);
-                $newFiles[] = $fileEntity;
-            }
-
-            $allFiles = $this->fileService->getFilesInFolder($folderId);
-
-            $formatFile = function (File $file): array {
-                return [
-                    'id'   => $file->getId(),
-                    'name' => $file->getName(),
-                    'url'  => $this->filePublicService->getUrlCreateIfMissing($file),
-                ];
-            };
-
-            return $this->json([
-                'files'    => array_map($formatFile, $allFiles),
-                'newFiles' => array_map($formatFile, $newFiles),
-            ]);
+            $result = $this->fileService->uploadFiles($files, $folderId);
+            return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan met het uploaden van het bestand.'], 500);
+        }
+    }
+
+    #[Route('/api/media/newfolder', methods: ['POST'])]
+    public function createFolder(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $name = $data['name'] ?? null;
+        $folderId = $data['folder'] ?? null;
+
+        try {
+            $result = $this->fileService->createFolder($name, $folderId);
+            return $this->json($result);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het aanmaken van de map.'], 500);
         }
     }
 }

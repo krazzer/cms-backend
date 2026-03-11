@@ -21,9 +21,36 @@ readonly class FileService
         private FileStorageService $fileStorageService,
         private FileHashService $fileHashService,
         private FileThumbnailService $fileThumbnailService,
+        private FilePublicService $filePublicService,
     ) {}
 
-    public function upload(UploadedFile $uploadedFile, ?File $folder): File
+    public function uploadFiles(array $files, ?string $folderIdParam): array
+    {
+        $folderId = ($folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+        $folder = $folderId ? $this->fileRepository->find($folderId) : null;
+
+        $newFiles = [];
+        foreach ($files as $uploadedFile) {
+            $newFiles[] = $this->uploadFile($uploadedFile, $folder);
+        }
+
+        $allFiles = $this->getFilesInFolder($folderId);
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'   => $file->getId(),
+                'name' => $file->getName(),
+                'url'  => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+            ];
+        };
+
+        return [
+            'files'    => array_map($formatFile, $allFiles),
+            'newFiles' => array_map($formatFile, $newFiles),
+        ];
+    }
+
+    private function uploadFile(UploadedFile $uploadedFile, ?File $folder): File
     {
         $folderId = $folder?->getId();
 
@@ -48,16 +75,66 @@ readonly class FileService
         return $file;
     }
 
-    public function getFilesInFolder(?int $folderId = null): array
+    public function createFolder(string $name, ?string $folderIdParam): array
     {
-        $criteria = ['isFolder' => false];
+        $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+        $parent = $folderId ? $this->fileRepository->find($folderId) : null;
 
-        if ($folderId === null) {
-            $criteria['folder'] = null;
-        } else {
-            $criteria['folder'] = $folderId;
+        $folder = new File()
+            ->setName($name)
+            ->setCreated(new DateTimeImmutable())
+            ->setUpdated(new DateTimeImmutable())
+            ->setIsFolder(true)
+            ->setFolder($parent)
+            ->setSize(0);
+
+        $this->entityManager->persist($folder);
+        $this->entityManager->flush();
+
+        $allFiles = $this->getFilesInFolder($folderId);
+
+        $path = $this->buildPath($folderId);
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'   => $file->getId(),
+                'name' => $file->getName(),
+                'url'  => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $allFiles),
+            'path'  => $path,
+        ];
+    }
+
+    private function buildPath(?int $folderId): array
+    {
+        $path = [];
+        $currentId = $folderId;
+
+        while ($currentId !== null) {
+            $folder = $this->fileRepository->find($currentId);
+            if (!$folder) {
+                break;
+            }
+            array_unshift($path, [
+                'id'   => $folder->getId(),
+                'name' => $folder->getName(),
+            ]);
+            $currentId = $folder->getParent() ? $folder->getParent()->getId() : null;
         }
 
-        return $this->fileRepository->findBy($criteria, ['name' => 'ASC']);
+        return $path;
+    }
+
+    //
+
+    private function getFilesInFolder(?int $folderId = null): array
+    {
+        $criteria = ['folder' => $folderId];
+
+        return $this->fileRepository->findBy($criteria, ['isFolder' => 'DESC', 'name' => 'ASC']);
     }
 }
