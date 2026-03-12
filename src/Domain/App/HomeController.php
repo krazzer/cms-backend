@@ -21,6 +21,7 @@ class HomeController extends AbstractController
     #[Route('/api/home')]
     public function home(): Response
     {
+        $user = $this->security->getUser();
         $loggedIn = (bool) $this->security->getUser();
 
         $menu = [
@@ -34,6 +35,7 @@ class HomeController extends AbstractController
         return new JsonResponse([
             'loggedIn' => $loggedIn,
             'menu'     => $menu,
+            'role'     => $user ? implode(',', $user->getRoles()) : null,
         ]);
     }
 

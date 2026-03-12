@@ -30,7 +30,7 @@ parameters:
     cms.storage.dir: '%kernel.project_dir%/var/storage'
     cms.media.public_dir: '%kernel.project_dir%/public_html/media'
     cms.media.public_subdir: 'files'
-    cms.media.url_prefix: 'media/files'
+    cms.media.url_prefix: 'media'
 
     cms.thumbnail.type: 'default'
     cms.thumbnail.directory: 'thumbs'

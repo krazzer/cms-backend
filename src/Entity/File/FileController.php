@@ -87,17 +87,35 @@ class FileController extends AbstractController
         $data = json_decode($request->getContent(), true) ?? $request->request->all();
         $id = $data['id'] ?? null;
         $key = $data['name'] ?? null;
-        $folderId = $data['folder'] ?? null;
 
         if (!$id) {
             return $this->json(['error' => 'Missing file ID'], 400);
         }
 
         try {
-            $result = $this->fileService->changeKey($key, (int) $id, $folderId);
+            $result = $this->fileService->changeKey($key, (int) $id);
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het wijzigen van de sleutel.'], 500);
+        }
+    }
+
+    #[Route('/api/media/delete', methods: ['POST'])]
+    public function deleteFiles(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $ids = $data['ids'] ?? [];
+        $folderId = $data['folder'] ?? null;
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'Geen bestanden geselecteerd'], 400);
+        }
+
+        try {
+            $result = $this->fileService->deleteFiles($ids, $folderId);
+            return $this->json($result);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het verwijderen van bestanden.'], 500);
         }
     }
 }

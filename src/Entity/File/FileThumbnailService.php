@@ -12,6 +12,7 @@ readonly class FileThumbnailService
     public function __construct(
         #[Autowire('%cms.media.public_dir%')] public string $publicMediaDir,
         #[Autowire('%cms.thumbnail.type%')] private string $thumbnailType,
+        #[Autowire('%cms.media.url_prefix%')] public string $publicMediaUrlPrefix,
         #[Autowire('%cms.thumbnail.directory%')] private string $thumbnailDir,
         #[Autowire('%cms.thumbnail.extension%')] private string $thumbnailExt,
         #[Autowire('%cms.thumbnail.width%')] private string $thumbnailWidth,
@@ -36,6 +37,28 @@ readonly class FileThumbnailService
 
             $thumbnail = $image->thumbnail(new Box($this->thumbnailWidth, $this->thumbnailHeight));
             $thumbnail->save($thumbPath);
+        }
+    }
+
+
+    public function getThumb(File $file): ?string
+    {
+        if (!$file->isImage()) {
+            return null;
+        }
+
+        $thumbFileName = $file->getHash() . '.' . $this->thumbnailExt;
+        return '/' . $this->publicMediaUrlPrefix . '/' . $this->thumbnailDir . '/' . $this->thumbnailType . '/' . $thumbFileName;
+    }
+
+    public function deleteThumbnails(File $file): void
+    {
+        $fullThumbDir = $this->publicMediaDir . '/' . $this->thumbnailDir . '/' . $this->thumbnailType;
+        $thumbFileName = $file->getHash() . '.' . $this->thumbnailExt;
+        $thumbPath = $fullThumbDir . '/' . $thumbFileName;
+
+        if ($this->filesystem->exists($thumbPath)) {
+            $this->filesystem->remove($thumbPath);
         }
     }
 }

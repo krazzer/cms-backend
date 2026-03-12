@@ -22,4 +22,12 @@ readonly class FileStorageService
         $this->filesystem->mkdir(dirname($targetPath));
         $uploadedFile->move(dirname($targetPath), $targetFilename);
     }
+
+    public function deleteFile(File $file): void
+    {
+        $filePath = $this->filePathService->getFilePath($file);
+        if ($this->filesystem->exists($filePath)) {
+            $this->filesystem->remove($filePath);
+        }
+    }
 }

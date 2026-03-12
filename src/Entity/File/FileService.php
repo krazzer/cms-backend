@@ -41,6 +41,7 @@ readonly class FileService
             return [
                 'id'   => $file->getId(),
                 'name' => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
                 'url'  => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
             ];
         };
@@ -99,6 +100,7 @@ readonly class FileService
             return [
                 'id'   => $file->getId(),
                 'name' => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
                 'url'  => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
             ];
         };
@@ -120,6 +122,7 @@ readonly class FileService
             return [
                 'id'    => $file->getId(),
                 'name'  => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
                 'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
                 'isDir' => $file->isFolder(),
                 'key'   => $file->getKey(),
@@ -135,6 +138,9 @@ readonly class FileService
     public function changeFilename(string $newFileName, int $fileId): array
     {
         $file = $this->fileRepository->find($fileId);
+        if ($file instanceof File) {
+            $this->filePublicService->deletePublicFiles($file);
+        }
 
         $originalExtension = $file->getExtension();
         $finalFileName = $originalExtension ? $newFileName . '.' . $originalExtension : $newFileName;
@@ -153,6 +159,7 @@ readonly class FileService
             return [
                 'id'    => $file->getId(),
                 'name'  => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
                 'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
                 'isDir' => $file->isFolder(),
                 'key'   => $file->getKey(),
@@ -165,12 +172,12 @@ readonly class FileService
         ];
     }
 
-    public function changeKey(?string $key, int $fileId, ?string $folderIdParam): array
+    public function changeKey(?string $key, int $fileId): array
     {
         $file = $this->fileRepository->find($fileId);
 
         $file->setKey($key === '' ? null : $key);
-        $file->setUpdated(new \DateTimeImmutable());
+        $file->setUpdated(new DateTimeImmutable());
 
         $this->entityManager->flush();
 
@@ -183,6 +190,7 @@ readonly class FileService
             return [
                 'id'    => $file->getId(),
                 'name'  => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
                 'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
                 'isDir' => $file->isFolder(),
                 'key'   => $file->getKey(),
@@ -193,6 +201,78 @@ readonly class FileService
             'files' => array_map($formatFile, $allFiles),
             'path'  => $path,
         ];
+    }
+
+    public function deleteFiles(array $ids, ?string $folderIdParam): array
+    {
+        $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+
+        $this->entityManager->beginTransaction();
+        try {
+            foreach ($ids as $id) {
+                $file = $this->fileRepository->find($id);
+                if (!$file instanceof File) {
+                    continue;
+                }
+
+                if ($file->isFolder()) {
+                    $this->deleteFolderRecursively($file, false);
+                } else {
+                    $this->deleteFileAndStorage($file, false);
+                }
+            }
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (Exception) {
+            $this->entityManager->rollback();
+        }
+
+        $allFiles = $this->getFilesInFolder($folderId);
+        $path = $this->buildPath($folderId);
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'    => $file->getId(),
+                'name'  => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
+                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+                'isDir' => $file->isFolder(),
+                'key'   => $file->getKey(),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $allFiles),
+            'path'  => $path,
+        ];
+    }
+
+    private function deleteFolderRecursively(File $folder, bool $flush = true): void
+    {
+        $children = $this->getFilesInFolder($folder->getId());
+        foreach ($children as $child) {
+            if ($child->isFolder()) {
+                $this->deleteFolderRecursively($child, false);
+            } else {
+                $this->deleteFileAndStorage($child, false);
+            }
+        }
+        $this->entityManager->remove($folder);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    private function deleteFileAndStorage(File $file, bool $flush = true): void
+    {
+        $this->filePublicService->deletePublicFiles($file);
+        $this->fileStorageService->deleteFile($file);
+        $this->fileThumbnailService->deleteThumbnails($file);
+
+        $this->entityManager->remove($file);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
     //

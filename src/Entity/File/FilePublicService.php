@@ -31,13 +31,25 @@ class FilePublicService
             $this->filesystem->symlink($targetPath, $publicFilePath);
         }
 
-        $url = '/' . $this->publicMediaUrlPrefix . '/' . $fileName;
+        $url = '/' . $this->publicMediaUrlPrefix . '/' . $this->publicMediaSubDir . '/' . $fileName;
 
         if ($secondsUpdated = $file->secondsUpdated()) {
             $url .= '?u=' . $secondsUpdated;
         }
 
         return $url;
+    }
+
+    public function deletePublicFiles(File $file): void
+    {
+        $publicDir = $this->publicMediaDir . '/' . $this->publicMediaSubDir;
+        $pattern = $publicDir . '/' . $file->getId() . '-*';
+
+        foreach (glob($pattern) as $publicFile) {
+            if (is_link($publicFile) || is_file($publicFile)) {
+                $this->filesystem->remove($publicFile);
+            }
+        }
     }
 
     private function getPublicFileName(File $file): string
