@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FileController extends AbstractController
 {
@@ -69,10 +70,6 @@ class FileController extends AbstractController
         $id = $data['id'] ?? null;
         $newFileName = $data['name'] ?? null;
 
-        if (!$id || !$newFileName) {
-            return $this->json(['error' => 'Missing parameters'], 400);
-        }
-
         try {
             $result = $this->fileService->changeFilename($newFileName, (int) $id);
             return $this->json($result);
@@ -87,10 +84,6 @@ class FileController extends AbstractController
         $data = json_decode($request->getContent(), true) ?? $request->request->all();
         $id = $data['id'] ?? null;
         $key = $data['name'] ?? null;
-
-        if (!$id) {
-            return $this->json(['error' => 'Missing file ID'], 400);
-        }
 
         try {
             $result = $this->fileService->changeKey($key, (int) $id);
@@ -107,15 +100,42 @@ class FileController extends AbstractController
         $ids = $data['ids'] ?? [];
         $folderId = $data['folder'] ?? null;
 
-        if (empty($ids)) {
-            return $this->json(['error' => 'Geen bestanden geselecteerd'], 400);
-        }
-
         try {
             $result = $this->fileService->deleteFiles($ids, $folderId);
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het verwijderen van bestanden.'], 500);
+        }
+    }
+
+    #[Route('/api/media/paste', methods: ['POST'])]
+    public function pasteFiles(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $ids = $data['ids'] ?? [];
+        $targetFolderId = $data['folder'] ?? null;
+
+        try {
+            $result = $this->fileService->pasteFiles($ids, $targetFolderId);
+            return $this->json($result);
+        } catch (HttpException $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getStatusCode());
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het verplaatsen van bestanden.'], 500);
+        }
+    }
+
+    #[Route('/api/media/search', methods: ['POST'])]
+    public function search(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+        $query = $data['search'] ?? '';
+
+        try {
+            $result = $this->fileService->searchFiles($query);
+            return $this->json($result);
+        } catch (Exception) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het zoeken.'], 500);
         }
     }
 }

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 readonly class FileService
 {
@@ -273,6 +274,101 @@ readonly class FileService
         if ($flush) {
             $this->entityManager->flush();
         }
+    }
+
+    /**
+     * @throws \DateMalformedStringException
+     */
+    public function pasteFiles(array $ids, ?string $targetFolderIdParam): array
+    {
+        $targetFolderId = ($targetFolderIdParam === null || $targetFolderIdParam === 'null' || $targetFolderIdParam === '') ? null : (int) $targetFolderIdParam;
+        $targetFolder = $targetFolderId ? $this->fileRepository->find($targetFolderId) : null;
+
+        $this->entityManager->beginTransaction();
+        try {
+            foreach ($ids as $id) {
+                $file = $this->fileRepository->find($id);
+
+                if ($file->isFolder() && $targetFolderId !== null) {
+                    if ($file->getId() === $targetFolderId) {
+                        throw new BadRequestHttpException('Kan een map niet naar zichzelf verplaatsen');
+                    }
+                    if ($this->isAncestorOf($file->getId(), $targetFolderId)) {
+                        throw new BadRequestHttpException('Kan een map niet naar een submap verplaatsen');
+                    }
+                }
+
+                $file->setFolder($targetFolder);
+                $file->setUpdated(new DateTimeImmutable());
+            }
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
+        }
+
+        $allFiles = $this->getFilesInFolder($targetFolderId);
+        $path = $this->buildPath($targetFolderId);
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'    => $file->getId(),
+                'name'  => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
+                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+                'isDir' => $file->isFolder(),
+                'key'   => $file->getKey(),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $allFiles),
+            'path'  => $path,
+        ];
+    }
+
+    private function isAncestorOf(int $ancestorId, int $descendantId): bool
+    {
+        $currentId = $descendantId;
+        while ($currentId !== null) {
+            if ($currentId === $ancestorId) {
+                return true;
+            }
+            $folder = $this->fileRepository->find($currentId);
+            if (!$folder) {
+                break;
+            }
+            $currentId = $folder->getFolder() ? $folder->getFolder()->getId() : null;
+        }
+        return false;
+    }
+
+    public function searchFiles(string $query): array
+    {
+        $qb = $this->fileRepository->createQueryBuilder('f');
+        $qb->where($qb->expr()->like('f.name', ':query'))
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('f.isFolder', 'DESC')
+            ->addOrderBy('f.name', 'ASC');
+
+        $files = $qb->getQuery()->getResult();
+
+        $formatFile = function (File $file): array {
+            return [
+                'id'    => $file->getId(),
+                'name'  => $file->getName(),
+                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
+                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+                'isDir' => $file->isFolder(),
+                'key'   => $file->getKey(),
+            ];
+        };
+
+        return [
+            'files' => array_map($formatFile, $files),
+            'path'  => [],
+        ];
     }
 
     //
