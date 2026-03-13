@@ -11,6 +11,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DateTimeService
 {
+    // Todo: Dit mag er uit, en de code die het gebruikt, het nieuwe CMS hoeft geen rekening te houden met legacy code
     private const STRFTIME_REPLACES = [
         '%a' => 'E',
         '%A' => 'EEEE',

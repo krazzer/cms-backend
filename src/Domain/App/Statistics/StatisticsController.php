@@ -14,8 +14,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class StatisticsController extends AbstractController
 {
     public function __construct(
-        private AnalyticsService $analyticsService,
-        private DateTimeService $dateTimeService
+        private readonly AnalyticsService $analyticsService,
+        private readonly DateTimeService $dateTimeService
     ) {}
 
     #[Route('/api/statistics/visitors', name: 'statistics_visitors', methods: ['POST'])]
@@ -24,8 +24,9 @@ class StatisticsController extends AbstractController
         $data = $request->toArray();
 
         $interval = $data['interval'] ?? StatisticsConfig::VISITS_MONTHLY;
-        $start    = $this->dateTimeService->getFromDatePickerValue($data['start'] ?? null);
-        $end      = $this->dateTimeService->getFromDatePickerValue($data['end'] ?? null);
+
+        $start = $this->dateTimeService->getFromDatePickerValue($data['start'] ?? null);
+        $end   = $this->dateTimeService->getFromDatePickerValue($data['end'] ?? null);
 
         $visitorsData   = $this->analyticsService->getVisitorsChartData($interval, $start, $end);
         $visitorData    = $this->analyticsService->getVisitorData($start, $end);
@@ -43,8 +44,8 @@ class StatisticsController extends AbstractController
     #[Route('/api/statistics/update', name: 'statistics_update', methods: ['POST'])]
     public function updateAction(Request $request): JsonResponse
     {
-        $data  = $request->toArray();
-        $token = $data['token'] ?? $request->request->get('token');
+        $token = $request->toArray()['token'] ?? $request->request->get('token');
+
         if ( ! $token) {
             throw new AccessDeniedException('Missing security token.');
         }
@@ -53,6 +54,7 @@ class StatisticsController extends AbstractController
             while ($this->analyticsService->isUpdating()) {
                 sleep(1);
             }
+
             return new JsonResponse(['success' => true]);
         }
 

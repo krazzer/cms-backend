@@ -10,6 +10,7 @@ class AnalyticsDateService
 {
     private Connection $connection;
 
+    // Todo: Gebruik constructor property promotion ipv deze oude manier
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -20,6 +21,7 @@ class AnalyticsDateService
      */
     public function getMaxMetricDate(string $type): ?DateTime
     {
+        // Todo: Doctrine entity gebruiken
         $qb = $this->connection->createQueryBuilder();
         $qb->select('MAX(date)')
             ->from(GaVisitData::TABLE)

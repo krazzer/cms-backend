@@ -21,6 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class AnalyticsService
 {
+    // Todo: Gebruik constructor property promotion ipv deze oude manier
     private Connection $connection;
     private CacheInterface $cache;
     private TranslatorInterface $translator;

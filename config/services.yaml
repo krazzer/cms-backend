@@ -27,10 +27,6 @@ parameters:
 
     admin.dist.latest: '%env(LATEST_ADMIN_DIST)%'
 
-    analytics.property_id: '%env(ANALYTICS_PROPERTY_ID)%'
-    analytics.view_id: '%env(ANALYTICS_VIEW_ID)%'
-    analytics.credentials_path: '%kernel.project_dir%/config/analytics-credentials.json'
-
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
     Symfony\Component\String\ByteString: ~
@@ -72,29 +68,3 @@ services:
         arguments:
             $storageDir: '%kernel.project_dir%/var/storage'
             $publicMediaDir: '%kernel.project_dir%/public_html/media'
-
-    Google_Client_UA:
-        class: Google_Client
-        calls:
-            -   setAuthConfig: [ '%analytics.credentials_path%' ]
-            -   setScopes: [ [ 'https://www.googleapis.com/auth/analytics.readonly' ] ]
-
-    Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient:
-        arguments:
-            -   credentials: '%analytics.credentials_path%'
-                transport: 'rest'
-
-    KikCMS\Services\Analytics\AnalyticsDataService:
-        arguments:
-            $betaAnalyticsDataClient: '@Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient'
-            $propertyId: '%analytics.property_id%'
-
-    Google_Service_AnalyticsReporting:
-        class: Google_Service_AnalyticsReporting
-        arguments:
-            - '@Google_Client_UA'
-
-    KikCMS\Services\Analytics\AnalyticsGoogleService:
-        arguments:
-            $analytics: '@Google_Service_AnalyticsReporting'
-            $viewId: '%analytics.view_id%'

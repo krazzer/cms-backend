@@ -19,6 +19,7 @@ use KikCMS\Model\Analytics\GaVisitData;
  */
 class AnalyticsDataService
 {
+    // Todo: Gebruik constructor property promotion ipv deze oude manier
     private AnalyticsDateService $analyticsDateService;
     private BetaAnalyticsDataClient $betaAnalyticsDataClient;
     private string $propertyId;
@@ -128,7 +129,7 @@ class AnalyticsDataService
 
             $value = $row->getDimensionValues()[1]->getValue();
 
-            // empty value in path is same as /, so replace to merge
+            // the empty value in the path is the same as /, so replace it to merge
             if ($metric === GaConfig::METRIC_PATH && $value === '') {
                 $value = '/';
             }
@@ -139,9 +140,9 @@ class AnalyticsDataService
 
             $results[] = [
                 GaVisitData::FIELD_DATE   => $row->getDimensionValues()[0]->getValue(),
+                GaVisitData::FIELD_VISITS => $row->getMetricValues()[0]->getValue(),
                 GaVisitData::FIELD_TYPE   => $type,
                 GaVisitData::FIELD_VALUE  => $value,
-                GaVisitData::FIELD_VISITS => $row->getMetricValues()[0]->getValue(),
             ];
         }
 
@@ -160,7 +161,8 @@ class AnalyticsDataService
         $resPath       = $this->getMetricData(GaConfig::DIMENSION_PATH, GaConfig::METRIC_PATH);
         $resBrowser    = $this->getMetricData(GaConfig::DIMENSION_BROWSER, GaConfig::METRIC_BROWSER);
         $resCountry    = $this->getMetricData(GaConfig::DIMENSION_COUNTRY, GaConfig::METRIC_COUNTRY);
-        $resResolution = $this->getMetricData(GaConfig::DIMENSION_RESOLUTION, GaConfig::METRIC_RESOLUTION, GaConfig::DIMENSION_DEVICECATEGORY);
+        $resResolution = $this->getMetricData(GaConfig::DIMENSION_RESOLUTION, GaConfig::METRIC_RESOLUTION,
+            GaConfig::DIMENSION_DEVICECATEGORY);
 
         return array_merge($resSource, $resOs, $resPath, $resBrowser, $resCountry, $resResolution);
     }

@@ -12,6 +12,7 @@ use KikCMS\Model\Analytics\GaVisitData;
  */
 class AnalyticsImportService
 {
+    // Todo: Gebruik constructor property promotion ipv deze oude manier
     private Connection $connection;
     private AnalyticsGoogleService $analyticsGoogleService;
 
@@ -67,6 +68,7 @@ class AnalyticsImportService
      */
     private function getTypeLastUpdate(string $type): ?DateTime
     {
+        // Todo: Doctrine entity gebruiken
         $qb = $this->connection->createQueryBuilder();
         $qb->select('MAX(' . GaVisitData::FIELD_DATE . ')')
             ->from(GaVisitData::TABLE)
@@ -89,7 +91,7 @@ class AnalyticsImportService
             $date  = $resultRow['ga:year'] . '-' . $resultRow['ga:month'] . '-' . $resultRow['ga:day'];
             $value = $resultRow[$dimension];
 
-            // Handle excessively long values (as in original code)
+            // Handle excessively long values (as in the original code)
             if (strlen($value) > 128) {
                 $value = substr($value, 0, 115) . uniqid();
             }
@@ -108,6 +110,7 @@ class AnalyticsImportService
     }
 
     /**
+     * Todo: In AnalyticsService bestaat al een betere insertBulk, wellicht die gebruiken?
      * Perform a bulk insert using DBAL.
      */
     private function insertBulk(string $table, array $rows): void

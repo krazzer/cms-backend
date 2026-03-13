@@ -13,13 +13,14 @@ use KikCMS\Config\StatisticsConfig;
 
 class AnalyticsGoogleService
 {
+    // Todo: Gebruik constructor property promotion ipv deze oude manier
     private Google_Service_AnalyticsReporting $analytics;
     private string $viewId;
 
     public function __construct(Google_Service_AnalyticsReporting $analytics, string $viewId)
     {
         $this->analytics = $analytics;
-        $this->viewId = $viewId;
+        $this->viewId    = $viewId;
     }
 
     public function getVisitData(): array
@@ -27,12 +28,9 @@ class AnalyticsGoogleService
         return $this->getVisitorData(null, null, ["ga:percentNewSessions" => "unique"]);
     }
 
-    public function getVisitorData(
-        ?string $dimensionName = null,
-        ?DateTime $fromDate = null,
-        array $addMetrics = [],
-        array $filters = []
-    ): array {
+    public function getVisitorData(?string $dimensionName = null, ?DateTime $fromDate = null, array $addMetrics = [],
+        array $filters = []): array
+    {
         $fromDate = $fromDate ?: new DateTime('2005-01-01');
 
         $dateRange = new Google_Service_AnalyticsReporting_DateRange();
@@ -57,6 +55,7 @@ class AnalyticsGoogleService
         $month->setName('ga:month');
         $day = new Google_Service_AnalyticsReporting_Dimension();
         $day->setName('ga:day');
+
         $dimensions = [$year, $month, $day];
 
         if ($dimensionName) {
@@ -114,10 +113,11 @@ class AnalyticsGoogleService
             $resultRow[$dimensionHeaders[$i]] = $dimensions[$i];
         }
 
-        if (!empty($metrics)) {
+        if ( ! empty($metrics)) {
             $values = $metrics[0]->getValues() ?: [];
             for ($k = 0; $k < count($values) && $k < count($metricHeaders); $k++) {
-                $entry                        = $metricHeaders[$k];
+                $entry = $metricHeaders[$k];
+
                 $resultRow[$entry->getName()] = $values[$k];
             }
         }
