@@ -58,7 +58,7 @@ form:
                 template:
                     type: select
                     label: Template
-                    items: { }
+                    item_provider: 'page_template_options'
                 slug:
                     type: text
                     label: Slug
