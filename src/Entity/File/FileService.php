@@ -28,7 +28,7 @@ readonly class FileService
 
     public function uploadFiles(array $files, ?string $folderIdParam): array
     {
-        $folderId = ($folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+        $folderId = $this->normalizeFolderId($folderIdParam);
         $folder = $folderId ? $this->fileRepository->find($folderId) : null;
 
         $newFiles = [];
@@ -38,18 +38,9 @@ readonly class FileService
 
         $allFiles = $this->getFilesInFolder($folderId);
 
-        $formatFile = function (File $file): array {
-            return [
-                'id'   => $file->getId(),
-                'name' => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'  => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-            ];
-        };
-
         return [
-            'files'    => array_map($formatFile, $allFiles),
-            'newFiles' => array_map($formatFile, $newFiles),
+            'files'    => array_map([$this, 'formatFile'], $allFiles),
+            'newFiles' => array_map([$this, 'formatFile'], $newFiles),
         ];
     }
 
@@ -57,7 +48,7 @@ readonly class FileService
     {
         $folderId = $folder?->getId();
 
-        $file = new File()
+        $file = (new File())
             ->setName($uploadedFile->getClientOriginalName())
             ->setExtension($uploadedFile->guessExtension() ?? $uploadedFile->getClientOriginalExtension())
             ->setMimetype($uploadedFile->getMimeType())
@@ -80,10 +71,10 @@ readonly class FileService
 
     public function createFolder(string $name, ?string $folderIdParam): array
     {
-        $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+        $folderId = $this->normalizeFolderId($folderIdParam);
         $parent = $folderId ? $this->fileRepository->find($folderId) : null;
 
-        $folder = new File()
+        $folder = (new File())
             ->setName($name)
             ->setCreated(new DateTimeImmutable())
             ->setUpdated(new DateTimeImmutable())
@@ -95,45 +86,14 @@ readonly class FileService
         $this->entityManager->flush();
 
         $allFiles = $this->getFilesInFolder($folderId);
-        $path = $this->buildPath($folderId);
-
-        $formatFile = function (File $file): array {
-            return [
-                'id'   => $file->getId(),
-                'name' => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'  => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-            ];
-        };
-
-        return [
-            'files' => array_map($formatFile, $allFiles),
-            'path'  => $path,
-        ];
+        return $this->buildResponse($allFiles, $folderId);
     }
 
-    public function openFolder(?string $folderIdParam) : array
+    public function openFolder(?string $folderIdParam): array
     {
-        $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
-
+        $folderId = $this->normalizeFolderId($folderIdParam);
         $allFiles = $this->getFilesInFolder($folderId);
-        $path = $this->buildPath($folderId);
-
-        $formatFile = function (File $file): array {
-            return [
-                'id'    => $file->getId(),
-                'name'  => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-                'isDir' => $file->isFolder(),
-                'key'   => $file->getKey(),
-            ];
-        };
-
-        return [
-            'files' => array_map($formatFile, $allFiles),
-            'path'  => $path,
-        ];
+        return $this->buildResponse($allFiles, $folderId);
     }
 
     public function changeFilename(string $newFileName, int $fileId): array
@@ -154,23 +114,7 @@ readonly class FileService
         $folderId = $file->getFolder() ? $file->getFolder()->getId() : null;
 
         $allFiles = $this->getFilesInFolder($folderId);
-        $path = $this->buildPath($folderId);
-
-        $formatFile = function (File $file): array {
-            return [
-                'id'    => $file->getId(),
-                'name'  => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-                'isDir' => $file->isFolder(),
-                'key'   => $file->getKey(),
-            ];
-        };
-
-        return [
-            'files' => array_map($formatFile, $allFiles),
-            'path'  => $path,
-        ];
+        return $this->buildResponse($allFiles, $folderId);
     }
 
     public function changeKey(?string $key, int $fileId): array
@@ -185,28 +129,12 @@ readonly class FileService
         $folderId = $file->getFolder() ? $file->getFolder()->getId() : null;
 
         $allFiles = $this->getFilesInFolder($folderId);
-        $path = $this->buildPath($folderId);
-
-        $formatFile = function (File $file): array {
-            return [
-                'id'    => $file->getId(),
-                'name'  => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-                'isDir' => $file->isFolder(),
-                'key'   => $file->getKey(),
-            ];
-        };
-
-        return [
-            'files' => array_map($formatFile, $allFiles),
-            'path'  => $path,
-        ];
+        return $this->buildResponse($allFiles, $folderId);
     }
 
     public function deleteFiles(array $ids, ?string $folderIdParam): array
     {
-        $folderId = ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+        $folderId = $this->normalizeFolderId($folderIdParam);
 
         $this->entityManager->beginTransaction();
         try {
@@ -229,23 +157,7 @@ readonly class FileService
         }
 
         $allFiles = $this->getFilesInFolder($folderId);
-        $path = $this->buildPath($folderId);
-
-        $formatFile = function (File $file): array {
-            return [
-                'id'    => $file->getId(),
-                'name'  => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-                'isDir' => $file->isFolder(),
-                'key'   => $file->getKey(),
-            ];
-        };
-
-        return [
-            'files' => array_map($formatFile, $allFiles),
-            'path'  => $path,
-        ];
+        return $this->buildResponse($allFiles, $folderId);
     }
 
     private function deleteFolderRecursively(File $folder, bool $flush = true): void
@@ -276,12 +188,9 @@ readonly class FileService
         }
     }
 
-    /**
-     * @throws \DateMalformedStringException
-     */
     public function pasteFiles(array $ids, ?string $targetFolderIdParam): array
     {
-        $targetFolderId = ($targetFolderIdParam === null || $targetFolderIdParam === 'null' || $targetFolderIdParam === '') ? null : (int) $targetFolderIdParam;
+        $targetFolderId = $this->normalizeFolderId($targetFolderIdParam);
         $targetFolder = $targetFolderId ? $this->fileRepository->find($targetFolderId) : null;
 
         $this->entityManager->beginTransaction();
@@ -309,23 +218,7 @@ readonly class FileService
         }
 
         $allFiles = $this->getFilesInFolder($targetFolderId);
-        $path = $this->buildPath($targetFolderId);
-
-        $formatFile = function (File $file): array {
-            return [
-                'id'    => $file->getId(),
-                'name'  => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-                'isDir' => $file->isFolder(),
-                'key'   => $file->getKey(),
-            ];
-        };
-
-        return [
-            'files' => array_map($formatFile, $allFiles),
-            'path'  => $path,
-        ];
+        return $this->buildResponse($allFiles, $targetFolderId);
     }
 
     private function isAncestorOf(int $ancestorId, int $descendantId): bool
@@ -353,25 +246,33 @@ readonly class FileService
             ->addOrderBy('f.name', 'ASC');
 
         $files = $qb->getQuery()->getResult();
+        return $this->buildResponse($files, null);
+    }
 
-        $formatFile = function (File $file): array {
-            return [
-                'id'    => $file->getId(),
-                'name'  => $file->getName(),
-                'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
-                'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
-                'isDir' => $file->isFolder(),
-                'key'   => $file->getKey(),
-            ];
-        };
+    private function normalizeFolderId(?string $folderIdParam): ?int
+    {
+        return ($folderIdParam === null || $folderIdParam === 'null' || $folderIdParam === '') ? null : (int) $folderIdParam;
+    }
 
+    private function formatFile(File $file): array
+    {
         return [
-            'files' => array_map($formatFile, $files),
-            'path'  => [],
+            'id'    => $file->getId(),
+            'name'  => $file->getName(),
+            'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
+            'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
+            'isDir' => $file->isFolder(),
+            'key'   => $file->getKey(),
         ];
     }
 
-    //
+    private function buildResponse(array $files, ?int $folderId): array
+    {
+        return [
+            'files' => array_map([$this, 'formatFile'], $files),
+            'path'  => $this->buildPath($folderId),
+        ];
+    }
 
     private function buildPath(?int $folderId): array
     {
@@ -392,8 +293,9 @@ readonly class FileService
 
     private function getFilesInFolder(?int $folderId = null): array
     {
-        $criteria = ['folder' => $folderId];
-
-        return $this->fileRepository->findBy($criteria, ['isFolder' => 'DESC', 'name' => 'ASC']);
+        return $this->fileRepository->findBy(
+            ['folder' => $folderId],
+            ['isFolder' => 'DESC', 'name' => 'ASC']
+        );
     }
 }
