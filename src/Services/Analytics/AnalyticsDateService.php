@@ -3,32 +3,27 @@
 namespace KikCMS\Services\Analytics;
 
 use DateTime;
-use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Model\Analytics\GaVisitData;
 
 class AnalyticsDateService
 {
-    private Connection $connection;
-
-    // Todo: Gebruik constructor property promotion ipv deze oude manier
-    public function __construct(Connection $connection)
-    {
-        $this->connection = $connection;
-    }
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+    ) {}
 
     /**
      * Get the maximum date for a given metric type (from GaVisitData).
      */
     public function getMaxMetricDate(string $type): ?DateTime
     {
-        // Todo: Doctrine entity gebruiken
-        $qb = $this->connection->createQueryBuilder();
-        $qb->select('MAX(date)')
-            ->from(GaVisitData::TABLE)
-            ->where('type LIKE :type')
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('MAX(g.date)')
+            ->from(GaVisitData::class, 'g')
+            ->where('g.type LIKE :type')
             ->setParameter('type', $type . '%');
 
-        $result = $qb->executeQuery()->fetchOne();
+        $result = $qb->getQuery()->getSingleScalarResult();
 
         return $result ? new DateTime($result) : null;
     }

@@ -13,15 +13,10 @@ use KikCMS\Config\StatisticsConfig;
 
 class AnalyticsGoogleService
 {
-    // Todo: Gebruik constructor property promotion ipv deze oude manier
-    private Google_Service_AnalyticsReporting $analytics;
-    private string $viewId;
-
-    public function __construct(Google_Service_AnalyticsReporting $analytics, string $viewId)
-    {
-        $this->analytics = $analytics;
-        $this->viewId    = $viewId;
-    }
+    public function __construct(
+        private readonly Google_Service_AnalyticsReporting $analytics,
+        private readonly string $viewId
+    ) {}
 
     public function getVisitData(): array
     {

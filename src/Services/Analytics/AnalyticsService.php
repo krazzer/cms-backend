@@ -21,36 +21,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class AnalyticsService
 {
-    // Todo: Gebruik constructor property promotion ipv deze oude manier
-    private Connection $connection;
-    private CacheInterface $cache;
-    private TranslatorInterface $translator;
-    private LoggerInterface $logger;
-    private AnalyticsImportService $analyticsImportService;
-    private AnalyticsGoogleService $analyticsGoogleService;
-    private AnalyticsDataService $analyticsDataService;
-    private CacheConfig $cacheConfig;
-
     public function __construct(
-        Connection $connection,
-        CacheInterface $cache,
-        TranslatorInterface $translator,
-        LoggerInterface $logger,
-        AnalyticsImportService $analyticsImportService,
-        AnalyticsGoogleService $analyticsGoogleService,
-        AnalyticsDataService $analyticsDataService,
-        CacheConfig $cacheConfig
-    )
-    {
-        $this->connection             = $connection;
-        $this->cache                  = $cache;
-        $this->translator             = $translator;
-        $this->logger                 = $logger;
-        $this->analyticsImportService = $analyticsImportService;
-        $this->analyticsGoogleService = $analyticsGoogleService;
-        $this->analyticsDataService   = $analyticsDataService;
-        $this->cacheConfig            = $cacheConfig;
-    }
+        private readonly Connection $connection,
+        private readonly CacheInterface $cache,
+        private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
+        private readonly AnalyticsImportService $analyticsImportService,
+        private readonly AnalyticsGoogleService $analyticsGoogleService,
+        private readonly AnalyticsDataService $analyticsDataService,
+        private readonly AnalyticsBulkInsertService $analyticsBulkInsertService,
+    ) {}
 
     /**
      * Fetch statistics from Google and save them to the database.
@@ -75,8 +55,8 @@ class AnalyticsService
                 $visitData  = $this->analyticsDataService->getVisitData();
                 $metricData = $this->analyticsDataService->getVisitMetricData();
 
-                $this->insertBulk(GaDayVisit::TABLE, $visitData, true);
-                $this->insertBulk(GaVisitData::TABLE, $metricData, true);
+                $this->analyticsBulkInsertService->insertBulk(GaDayVisit::TABLE, $visitData);
+                $this->analyticsBulkInsertService->insertBulk(GaVisitData::TABLE, $metricData);
 
                 $this->stopUpdatingForSixHours();
             } else {
@@ -92,7 +72,7 @@ class AnalyticsService
                 }, $results);
 
                 $this->truncateTable(GaDayVisit::TABLE);
-                $this->insertBulk(GaDayVisit::TABLE, $results);
+                $this->analyticsBulkInsertService->insertBulk(GaDayVisit::TABLE, $results);
 
                 if ( ! $requireUpdate) {
                     $this->stopUpdatingForSixHours();
@@ -442,34 +422,6 @@ class AnalyticsService
         $this->cache->get(cacheConfig::STATS_REQUIRE_UPDATE, function () {
             return false;
         }, 6 * 3600);
-    }
-
-    /**
-     * Perform a bulk insert using DBAL.
-     */
-    private function insertBulk(string $table, array $rows, bool $replace = true): void
-    {
-        if (empty($rows)) {
-            return;
-        }
-
-        $columns      = array_keys($rows[0]);
-        $values       = [];
-        $placeholders = [];
-
-        foreach ($rows as $rowIndex => $row) {
-            $rowPlaceholders = [];
-            foreach ($columns as $col) {
-                $paramName          = 'val' . $rowIndex . '_' . $col;
-                $rowPlaceholders[]  = ':' . $paramName;
-                $values[$paramName] = $row[$col] ?? null;
-            }
-            $placeholders[] = '(' . implode(', ', $rowPlaceholders) . ')';
-        }
-
-        $sql = ($replace ? 'REPLACE' : 'INSERT') . ' INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $placeholders);
-
-        $this->connection->executeStatement($sql, $values);
     }
 
     /**

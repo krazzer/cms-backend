@@ -19,21 +19,11 @@ use KikCMS\Model\Analytics\GaVisitData;
  */
 class AnalyticsDataService
 {
-    // Todo: Gebruik constructor property promotion ipv deze oude manier
-    private AnalyticsDateService $analyticsDateService;
-    private BetaAnalyticsDataClient $betaAnalyticsDataClient;
-    private string $propertyId;
-
     public function __construct(
-        AnalyticsDateService $analyticsDateService,
-        BetaAnalyticsDataClient $betaAnalyticsDataClient,
-        string $propertyId
-    )
-    {
-        $this->analyticsDateService    = $analyticsDateService;
-        $this->betaAnalyticsDataClient = $betaAnalyticsDataClient;
-        $this->propertyId              = $propertyId;
-    }
+        private readonly AnalyticsDateService $analyticsDateService,
+        private readonly BetaAnalyticsDataClient $betaAnalyticsDataClient,
+        private readonly string $propertyId,
+    ) {}
 
     public function getVisitData(): array
     {

@@ -4,6 +4,7 @@ namespace KikCMS\Services\Analytics;
 
 use DateTime;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Config\StatisticsConfig;
 use KikCMS\Model\Analytics\GaVisitData;
 
@@ -12,18 +13,12 @@ use KikCMS\Model\Analytics\GaVisitData;
  */
 class AnalyticsImportService
 {
-    // Todo: Gebruik constructor property promotion ipv deze oude manier
-    private Connection $connection;
-    private AnalyticsGoogleService $analyticsGoogleService;
-
     public function __construct(
-        Connection $connection,
-        AnalyticsGoogleService $analyticsGoogleService
-    )
-    {
-        $this->connection             = $connection;
-        $this->analyticsGoogleService = $analyticsGoogleService;
-    }
+        private readonly Connection $connection,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AnalyticsGoogleService $analyticsGoogleService,
+        private readonly AnalyticsBulkInsertService $analyticsBulkInsertService,
+    ) {}
 
     /**
      * Import various info about visitors.
@@ -53,7 +48,7 @@ class AnalyticsImportService
                 ]);
             }
 
-            $this->insertBulk(GaVisitData::TABLE, $insertData);
+            $this->analyticsBulkInsertService->insertBulk(GaVisitData::TABLE, $insertData);
 
             if (count($visitorData) == StatisticsConfig::MAX_IMPORT_ROWS) {
                 $requireUpdate = true;
@@ -68,14 +63,13 @@ class AnalyticsImportService
      */
     private function getTypeLastUpdate(string $type): ?DateTime
     {
-        // Todo: Doctrine entity gebruiken
-        $qb = $this->connection->createQueryBuilder();
-        $qb->select('MAX(' . GaVisitData::FIELD_DATE . ')')
-            ->from(GaVisitData::TABLE)
-            ->where(GaVisitData::FIELD_TYPE . ' = :type')
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('MAX(g.date)')
+            ->from(GaVisitData::class, 'g')
+            ->where('g.type = :type')
             ->setParameter('type', $type);
 
-        $result = $qb->executeQuery()->fetchOne();
+        $result = $qb->getQuery()->getSingleScalarResult();
 
         return $result ? new DateTime($result) : null;
     }
@@ -107,28 +101,5 @@ class AnalyticsImportService
         }
 
         return $insertData;
-    }
-
-    /**
-     * Todo: In AnalyticsService bestaat al een betere insertBulk, wellicht die gebruiken?
-     * Perform a bulk insert using DBAL.
-     */
-    private function insertBulk(string $table, array $rows): void
-    {
-        if (empty($rows)) {
-            return;
-        }
-
-        $columns = array_keys($rows[0]);
-        $qb      = $this->connection->createQueryBuilder();
-
-        // Build multiple INSERT statements (simplified; for performance consider using multi-row INSERT)
-        foreach ($rows as $row) {
-            $values = [];
-            foreach ($columns as $col) {
-                $values[$col] = $row[$col] ?? null;
-            }
-            $qb->insert($table)->values($values)->executeStatement();
-        }
     }
 }
