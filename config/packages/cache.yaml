@@ -1,5 +1,7 @@
+# yaml-language-server: $schema=../../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 framework:
     cache:
+        app: cache.adapter.apcu
         pools:
             key_value_store:
                 default_lifetime: 0 # Never expire

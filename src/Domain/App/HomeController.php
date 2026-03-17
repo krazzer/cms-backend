@@ -9,13 +9,15 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class HomeController extends AbstractController
 {
     public function __construct(
         private readonly Security $security,
         private readonly DataTableService $dataTableService,
-        private readonly FormService $formService
+        private readonly FormService $formService,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager
     ) {}
 
     #[Route('/api/home')]
@@ -72,21 +74,24 @@ class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/api/module/statistics')]
+    public function statisticsModule(): Response
+    {
+        $csrfToken = $this->csrfTokenManager->getToken('cms_update')->getValue();
+
+        return new JsonResponse([
+            'statistics'       => ['statistics' => ['statistics']],
+            'selectedMenuItem' => 'statistics',
+            'csrfToken'        => $csrfToken
+        ]);
+    }
+
     #[Route('/api/module/settings')]
     public function settingsModule(): Response
     {
         return new JsonResponse([
             'form'             => $this->formService->getPayloadByName('settings'),
             'selectedMenuItem' => 'settings',
-        ]);
-    }
-
-    #[Route('/api/module/statistics')]
-    public function statisticsModule(): Response
-    {
-        return new JsonResponse([
-            'statistics'       => ['foo' => 'bar'],
-            'selectedMenuItem' => 'statistics',
         ]);
     }
 }
