@@ -22,15 +22,20 @@ readonly class FormConfigService
         private ConfigProviderRegistry $providerRegistry
     ) {}
 
-    public function getObjectByName(string $name): Form
+    public function getConfigFromFile(string $name): array
     {
         $filePath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG_FORMS . DIRECTORY_SEPARATOR . $name . '.yaml');
 
-        if ( ! $config = $this->yamlParser->parseFile($filePath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
-            throw new Exception("No config found for Form '$name'");
+        if ($config = $this->yamlParser->parseFile($filePath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
+            return $config;
         }
 
-        return $this->getByConfig($config, $name);
+        throw new Exception("No config found for Form '$name'");
+    }
+
+    public function getObjectByName(string $name): Form
+    {
+        return $this->getByConfig($this->getConfigFromFile($name), $name);
     }
 
     public function getByConfig(array $config, ?string $name = null): Form
