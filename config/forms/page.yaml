@@ -1,0 +1,38 @@
+tabs:
+    -   key: page
+        name: Page
+        field_provider: page_template
+    -   key: seo
+        name: SEO
+        fields:
+            seo_title:
+                field: seo.*.title
+                type: text
+                label: SEO title
+            seo_keywords:
+                field: seo.*.keywords
+                type: textarea
+                label: SEO keywords
+            seo_description:
+                field: seo.*.description
+                type: textarea
+                label: SEO description
+    -   key: advanced
+        name: Advanced
+        fields:
+            template:
+                type: select
+                label: Template
+                item_provider: 'page_template_options'
+                is_form_modifier: true
+            slug:
+                type: text
+                label: Slug
+                field: slug.*
+            key:
+                type: text
+                label: Key
+            active:
+                type: checkbox
+                label: Active
+                field: active.*

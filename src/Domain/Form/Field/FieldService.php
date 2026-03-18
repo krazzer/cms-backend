@@ -3,7 +3,6 @@
 namespace KikCMS\Domain\Form\Field;
 
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
-use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\Form\Field\Types\DatatableField;
 use KikCMS\Domain\Form\Form;
 use ReflectionClass;
@@ -49,14 +48,6 @@ readonly class FieldService
         }
 
         return $fields;
-    }
-
-    /**
-     * @return Field[]
-     */
-    public function getObjectMapByDataTable(DataTable $dataTable, ?string $filterType = null): array
-    {
-        return $this->getObjectMapByForm($dataTable->getForm($filterType));
     }
 
     public function walk(Form $form, callable $callback): void

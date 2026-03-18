@@ -7,6 +7,7 @@ use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
+use KikCMS\Domain\Form\Config\FormConfigService;
 use KikCMS\Domain\Form\Field\Field;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
@@ -19,13 +20,15 @@ readonly class DataTableStoreService
         private DataTablePathService $dataTablePathService,
         private DataTableConfigService $dataTableConfigService,
         private RearrangeService $rearrangeService,
+        private FormConfigService $formConfigService,
     ) {}
 
     public function getDataArrayToStore(DataTable $dataTable, DataTableFilters $filters, array $rawData): array
     {
         $storeData = [];
 
-        $fields = $this->fieldService->getObjectMapByDataTable($dataTable);
+        $form   = $this->formConfigService->getByConfig($dataTable->getForm());
+        $fields = $this->fieldService->getObjectMapByForm($form);
 
         foreach ($fields as $key => $field) {
             if ( ! array_key_exists($key, $rawData)) {

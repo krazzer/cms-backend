@@ -1,0 +1,17 @@
+fields:
+    type:
+        type: hidden
+        default: 'menu'
+    title:
+        type: text
+        field: name.*
+        label: Name
+        validator:
+            name: presence
+    maxLevel:
+        type: text
+        field: maxlevel
+        label: Maximum level
+    key:
+        type: text
+        label: Key

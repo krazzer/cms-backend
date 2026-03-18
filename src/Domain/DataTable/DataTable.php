@@ -3,12 +3,11 @@
 namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Domain\DataTable\Config\SourceType;
-use KikCMS\Domain\Form\Form;
 
 class DataTable
 {
     private SourceType $source;
-    private Form $form;
+    private array $form;
     private string $instance;
     private ?string $pdoModel = null;
     private string $cachePool;
@@ -79,16 +78,12 @@ class DataTable
         return $this;
     }
 
-    public function getForm(?string $type = null): Form
+    public function getForm(): array
     {
-        if( ! $type){
-            return $this->form;
-        }
-
-        return $this->getTypeForms()[$type] ?? $this->form;
+        return $this->form;
     }
 
-    public function setForm(Form $form): DataTable
+    public function setForm(array $form): DataTable
     {
         $this->form = $form;
         return $this;

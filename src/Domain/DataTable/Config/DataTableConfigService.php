@@ -4,7 +4,6 @@ namespace KikCMS\Domain\DataTable\Config;
 
 use Exception;
 use KikCMS\Domain\DataTable\DataTable;
-use KikCMS\Domain\Form\Config\FormConfigService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -16,7 +15,6 @@ readonly class DataTableConfigService
         private Parser $yamlParser,
         private ParameterBagInterface $params,
         private TranslatorInterface $translator,
-        private FormConfigService $formConfigService,
     ) {}
 
     public function getFromConfigByInstance(string $instance): DataTable
@@ -57,8 +55,6 @@ readonly class DataTableConfigService
         if ($headersTranslate) {
             $headers = array_map(fn($value) => $this->translator->trans($value), $headersTranslate);
         }
-
-        $form = $this->formConfigService->getByConfig($form);
 
         $dataTable = (new DataTable)
             ->setInstance($instance)

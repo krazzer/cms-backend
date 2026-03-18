@@ -52,7 +52,7 @@ class DataTableController extends AbstractController
         $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $dto->getId(), $editData);
 
         return new JsonResponse([
-            'form'       => $this->formService->getFullConfig($dataTable->getForm()),
+            'form'       => $this->formService->getFullConfig($this->dataTableService->getForm($dataTable)),
             'data'       => $editData,
             'helperData' => $helperData,
         ]);
@@ -62,7 +62,7 @@ class DataTableController extends AbstractController
     public function add(#[MapRequestPayload] AddDto $dto): Response
     {
         $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable(), $dto->getType());
-        $form        = $this->dataTableService->getForm($dto->getDataTable(), $dto->getType());
+        $form        = $this->dataTableService->getForm($dto->getDataTable());
         $helperData  = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable());
 
         return new JsonResponse([
@@ -161,7 +161,7 @@ class DataTableController extends AbstractController
         dlog($dto->getValue());
 
         return new JsonResponse([
-            'form' => $this->formService->getFullConfig($dto->getDataTable()->getForm()),
+            'form' => $this->formService->getFullConfig($this->dataTableService->getForm($dto->getDataTable())),
         ]);
     }
 }

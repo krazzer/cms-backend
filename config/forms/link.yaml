@@ -1,0 +1,21 @@
+fields:
+    type:
+        type: hidden
+        default: 'page'
+    title:
+        type: text
+        field: name.*
+        label: Name
+        validator:
+            name: presence
+    link:
+        type: text
+        field: link
+        label: Url waar de pagina naar toe linkt
+    slug:
+        type: text
+        label: Slug
+        field: slug.*
+    key:
+        type: text
+        label: Key

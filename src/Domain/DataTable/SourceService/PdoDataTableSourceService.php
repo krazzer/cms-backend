@@ -14,6 +14,7 @@ use KikCMS\Domain\DataTable\DataTableDataService;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeIntegrityService;
+use KikCMS\Domain\Form\Config\FormConfigService;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
@@ -44,6 +45,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private RelationService $relationService,
         private EntityService $entityService,
         private RearrangeIntegrityService $rearrangeIntegrityService,
+        private FormConfigService $formConfigService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -82,7 +84,8 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
     public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
-        $fieldMap   = $this->fieldService->getObjectMapByDataTable($dataTable);
+        $form       = $this->formConfigService->getByConfig($dataTable->getForm());
+        $fieldMap   = $this->fieldService->getObjectMapByForm($form);
 
         if ( ! $entity = $repository->find($id)) {
             throw new ObjectNotFoundHttpException("Object with id: $id not found");
