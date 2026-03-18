@@ -59,6 +59,7 @@ form:
                     type: select
                     label: Template
                     item_provider: 'page_template_options'
+                    is_form_modifier: true
                 slug:
                     type: text
                     label: Slug

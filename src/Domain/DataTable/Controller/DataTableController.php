@@ -13,6 +13,7 @@ use KikCMS\Domain\DataTable\Dto\FilterDto;
 use KikCMS\Domain\DataTable\Dto\RearrangeDto;
 use KikCMS\Domain\DataTable\Dto\SaveDto;
 use KikCMS\Domain\DataTable\Dto\ShowDto;
+use KikCMS\Domain\DataTable\Dto\UpdateFormDto;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\Form\FormService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -150,6 +151,17 @@ class DataTableController extends AbstractController
         return new JsonResponse([
             'data'      => $this->dataTableService->getData($dataTable, $filters, $storeData),
             'storeData' => $storeData->getData(),
+        ]);
+    }
+
+    #[Route('/api/datatable/updateform', methods: 'POST')]
+    public function updateform(#[MapRequestPayload] UpdateFormDto $dto): Response
+    {
+        dlog($dto->getField());
+        dlog($dto->getValue());
+
+        return new JsonResponse([
+            'form' => $this->formService->getFullConfig($dto->getDataTable()->getForm()),
         ]);
     }
 }
