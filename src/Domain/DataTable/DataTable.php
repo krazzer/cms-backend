@@ -7,8 +7,9 @@ use KikCMS\Domain\DataTable\Config\SourceType;
 class DataTable
 {
     private SourceType $source;
-    private array $form;
     private string $instance;
+    private array $form;
+    private ?string $formProvider = null;
     private ?string $pdoModel = null;
     private string $cachePool;
     private array $actions;
@@ -201,6 +202,17 @@ class DataTable
     public function setRearrange(bool $rearrange): DataTable
     {
         $this->rearrange = $rearrange;
+        return $this;
+    }
+
+    public function getFormProvider(): ?string
+    {
+        return $this->formProvider;
+    }
+
+    public function setFormProvider(?string $formProvider): DataTable
+    {
+        $this->formProvider = $formProvider;
         return $this;
     }
 }

@@ -32,6 +32,6 @@ buttons:
                 icon: 'mdi-menu'
                 action: 'add'
                 addType: 'menu'
-form: page
+formProvider: pageForm
 source:
     model: KikCMS\Entity\Page\Page

@@ -28,6 +28,7 @@ readonly class DataTableConfigService
         }
 
         $form             = $config['form'] ?? [];
+        $formProvider     = $config['formProvider'] ?? null;
         $actions          = $config['actions'] ?? [];
         $source           = $config['source'];
         $headers          = $config['headers'] ?? [];
@@ -68,6 +69,7 @@ readonly class DataTableConfigService
             ->setButtons($buttons)
             ->setMobileColumns($mobileColumns)
             ->setForm($form)
+            ->setFormProvider($formProvider)
             ->setCells($cells)
             ->setQuery($query)
             ->setModify($modify)

@@ -11,10 +11,10 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableDataService;
+use KikCMS\Domain\DataTable\DataTableFormService;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeIntegrityService;
-use KikCMS\Domain\Form\Config\FormConfigService;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
@@ -45,7 +45,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private RelationService $relationService,
         private EntityService $entityService,
         private RearrangeIntegrityService $rearrangeIntegrityService,
-        private FormConfigService $formConfigService,
+        private DataTableFormService $dataTableFormService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -84,7 +84,7 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
     public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
-        $form       = $this->formConfigService->getByConfig($dataTable->getForm());
+        $form       = $this->dataTableFormService->getForm($dataTable);
         $fieldMap   = $this->fieldService->getObjectMapByForm($form);
 
         if ( ! $entity = $repository->find($id)) {
