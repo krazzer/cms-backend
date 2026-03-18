@@ -21,7 +21,6 @@ readonly class DataTableFormService
     public function getFormConfig(DataTable $dataTable): array
     {
         if ($formProvider = $dataTable->getFormProvider()) {
-            dlog($formProvider);
             return $this->providerRegistry->getConfig($formProvider);
         }
 
