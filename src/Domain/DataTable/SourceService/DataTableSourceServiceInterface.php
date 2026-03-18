@@ -6,12 +6,13 @@ use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
+use KikCMS\Domain\Form\Form;
 
 interface DataTableSourceServiceInterface
 {
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array;
 
-    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array;
+    public function getEditData(DataTable $dataTable, Form $form, Filters $filters, int $id, StoreData $storeData): array;
 
     public function create(DataTable $dataTable, Filters $filters, array $createData, StoreData $storeData): int;
 

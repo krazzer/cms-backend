@@ -7,5 +7,5 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('kikcms.config_provider')]
 interface ConfigProviderInterface
 {
-    public function getConfig(): array;
+    public function getConfig(Context $context): array;
 }

@@ -2,31 +2,31 @@
 
 namespace KikCMS\Domain\DataTable\SourceService;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use Exception;
 use KikCMS\Doctrine\Service\EntityService;
 use KikCMS\Doctrine\Service\RelationService;
-use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\App\Exception\ObjectNotFoundHttpException;
+use KikCMS\Domain\App\Service\CallableService;
 use KikCMS\Domain\App\Service\StringService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\DataTableDataService;
-use KikCMS\Domain\DataTable\DataTableFormService;
 use KikCMS\Domain\DataTable\DataTableRowService;
 use KikCMS\Domain\DataTable\DataTableStoreService;
-use KikCMS\Domain\DataTable\Rearrange\RearrangeIntegrityService;
-use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Filter\DataTablePdoFilterService;
 use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
 use KikCMS\Domain\DataTable\Modifier\RawTableDataModifierInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
-use Exception;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
+use KikCMS\Domain\DataTable\Rearrange\RearrangeIntegrityService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
+use KikCMS\Domain\Form\Field\FieldService;
+use KikCMS\Domain\Form\Form;
 
 readonly class PdoDataTableSourceService implements DataTableSourceServiceInterface
 {
@@ -45,7 +45,6 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         private RelationService $relationService,
         private EntityService $entityService,
         private RearrangeIntegrityService $rearrangeIntegrityService,
-        private DataTableFormService $dataTableFormService,
     ) {}
 
     public function getData(DataTable $dataTable, DataTableFilters $filters, ?StoreData $storeData = null): array
@@ -81,10 +80,9 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
         return $repository->createQueryBuilder(DataTableConfig::DEFAULT_TABLE_ALIAS);
     }
 
-    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Form $form, Filters $filters, int $id, StoreData $storeData): array
     {
         $repository = $this->entityManager->getRepository($dataTable->getPdoModel());
-        $form       = $this->dataTableFormService->getForm($dataTable);
         $fieldMap   = $this->fieldService->getObjectMapByForm($form);
 
         if ( ! $entity = $repository->find($id)) {

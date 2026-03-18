@@ -4,16 +4,16 @@ namespace KikCMS\Domain\DataTable\Dto;
 
 class UpdateFormDto extends Dto
 {
-    public string $field;
-    public mixed $value;
+    public array $data;
+    public ?string $trigger = null;
 
-    public function getField(): string
+    public function getData(): array
     {
-        return $this->field;
+        return $this->data;
     }
 
-    public function getValue()
+    public function getTrigger(): ?string
     {
-        return $this->value;
+        return $this->trigger;
     }
 }

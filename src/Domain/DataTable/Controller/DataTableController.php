@@ -7,6 +7,7 @@ use KikCMS\Domain\DataTable\Delete\DeleteImpactCalculator;
 use KikCMS\Domain\DataTable\Delete\DeleteImpactMessageBuilder;
 use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
+use KikCMS\Domain\DataTable\Dto\Context\FormContext;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
 use KikCMS\Domain\DataTable\Dto\EditDto;
 use KikCMS\Domain\DataTable\Dto\FilterDto;
@@ -47,12 +48,17 @@ class DataTableController extends AbstractController
     {
         $dataTable = $dto->getDataTable();
         $storeData = $dto->getStoreData();
+        $filters   = $dto->getFilters();
+        $id        = $dto->getId();
 
-        $editData   = $this->dataTableService->getEditData($dataTable, $dto->getFilters(), $dto->getId(), $storeData);
-        $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $dto->getId(), $editData);
+        $context = new FormContext([FormContext::ID => $id]);
+
+        $form       = $this->dataTableService->getForm($dataTable, $context);
+        $editData   = $this->dataTableService->getEditData($dataTable, $form, $filters, $id, $storeData);
+        $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $form, $id, $editData);
 
         return new JsonResponse([
-            'form'       => $this->formService->getFullConfig($this->dataTableService->getForm($dataTable)),
+            'form'       => $this->formService->getFullConfig($form),
             'data'       => $editData,
             'helperData' => $helperData,
         ]);
@@ -61,9 +67,11 @@ class DataTableController extends AbstractController
     #[Route('/api/datatable/add', methods: 'POST')]
     public function add(#[MapRequestPayload] AddDto $dto): Response
     {
-        $defaultData = $this->dataTableService->getDefaultData($dto->getDataTable(), $dto->getType());
-        $form        = $this->dataTableService->getForm($dto->getDataTable());
-        $helperData  = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable());
+        $context = new FormContext([FormContext::TYPE => $dto->getType()]);
+
+        $form        = $this->dataTableService->getForm($dto->getDataTable(), $context);
+        $helperData  = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable(), $form);
+        $defaultData = $this->dataTableService->getDefaultData($form);
 
         return new JsonResponse([
             'form'       => $this->formService->getFullConfig($form),
@@ -155,13 +163,14 @@ class DataTableController extends AbstractController
     }
 
     #[Route('/api/datatable/updateform', methods: 'POST')]
-    public function updateform(#[MapRequestPayload] UpdateFormDto $dto): Response
+    public function updateForm(#[MapRequestPayload] UpdateFormDto $dto): Response
     {
-        dlog($dto->getField());
-        dlog($dto->getValue());
+        $context = new FormContext($dto->getData(), $dto->getTrigger());
+
+        $form = $this->dataTableService->getForm($dto->getDataTable(), $context);
 
         return new JsonResponse([
-            'form' => $this->formService->getFullConfig($this->dataTableService->getForm($dto->getDataTable())),
+            'form' => $this->formService->getFullConfig($form),
         ]);
     }
 }

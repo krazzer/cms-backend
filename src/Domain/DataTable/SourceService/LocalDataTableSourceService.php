@@ -10,6 +10,7 @@ use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\Rearrange\ArrayRearrangeService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
+use KikCMS\Domain\Form\Form;
 
 readonly class LocalDataTableSourceService implements DataTableSourceServiceInterface
 {
@@ -62,7 +63,7 @@ readonly class LocalDataTableSourceService implements DataTableSourceServiceInte
         return $viewData;
     }
 
-    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Form $form, Filters $filters, int $id, StoreData $storeData): array
     {
         foreach ($storeData->getData() as $row) {
             if ($row[DataTableConfig::ID] == $id) {

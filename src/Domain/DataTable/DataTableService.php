@@ -3,11 +3,13 @@
 namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Doctrine\Service\RelationService;
+use KikCMS\Domain\App\Config\Provider\Context;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\SourceType;
-use KikCMS\Domain\DataTable\Filter\DataTablePdoFilterService;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
+use KikCMS\Domain\DataTable\Filter\DataTablePdoFilterService;
+use KikCMS\Domain\DataTable\Form\DataTableFormService;
 use KikCMS\Domain\DataTable\Object\DataTableStoreData as StoreData;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
@@ -31,9 +33,9 @@ readonly class DataTableService
         return $this->source($dataTable, $filters)->getData($dataTable, $filters, $storeData);
     }
 
-    public function getForm(DataTable $dataTable): Form
+    public function getForm(DataTable $dataTable, ?Context $context = null): Form
     {
-        return $this->dataTableFormService->getForm($dataTable);
+        return $this->dataTableFormService->getForm($dataTable, $context);
     }
 
     public function getHeaders(string $instance): array
@@ -46,11 +48,11 @@ readonly class DataTableService
         return $this->configService->getFromConfigByInstance($instance);
     }
 
-    public function getDefaultData(DataTable $dataTable): ?array
+    public function getDefaultData(Form $form): ?array
     {
         $defaultData = [];
 
-        $fields = $this->fieldService->getByForm($this->getForm($dataTable));
+        $fields = $this->fieldService->getByForm($form);
 
         foreach ($fields as $key => $field) {
             if ($default = $field['default'] ?? null) {
@@ -61,9 +63,9 @@ readonly class DataTableService
         return $defaultData;
     }
 
-    public function getEditData(DataTable $dataTable, Filters $filters, int $id, StoreData $storeData): array
+    public function getEditData(DataTable $dataTable, Form $form, Filters $filters, int $id, StoreData $storeData): array
     {
-        return $this->source($dataTable, $filters)->getEditData($dataTable, $filters, $id, $storeData);
+        return $this->source($dataTable, $filters)->getEditData($dataTable, $form, $filters, $id, $storeData);
     }
 
     public function getPayloadByInstance(string $instance, ?Filters $filters = null): array
@@ -134,11 +136,11 @@ readonly class DataTableService
         $this->source($dataTable)->updateCheckbox($dataTable, $filters, $id, $field, $value, $storeData);
     }
 
-    public function getSubDataTableHelperData(DataTable $dataTable, ?string $id = null, ?array $editData = null): array
+    public function getSubDataTableHelperData(DataTable $dataTable, Form $form, ?string $id = null, ?array $editData = null): array
     {
         $subData = [];
 
-        $fieldMap = $this->fieldService->getByForm($this->getForm($dataTable), DataTableConfig::FIELD_TYPE_DATATABLE);
+        $fieldMap = $this->fieldService->getByForm($form, DataTableConfig::FIELD_TYPE_DATATABLE);
 
         foreach ($fieldMap as $key => $field) {
             $filters = $this->dataTableFilterService->getDefault()

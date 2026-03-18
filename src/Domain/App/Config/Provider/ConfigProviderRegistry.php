@@ -20,8 +20,8 @@ readonly class ConfigProviderRegistry
         throw new InvalidArgumentException("No provider found for key: '$key'");
     }
 
-    public function getConfig(string $key): array
+    public function getConfig(string $key, ?Context $context = null): array
     {
-        return $this->get($key)->getConfig();
+        return $this->get($key)->getConfig($context ?: new Context);
     }
 }
