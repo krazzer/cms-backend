@@ -11,8 +11,8 @@ use Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy;
 use Google\Analytics\Data\V1beta\RunReportRequest;
 use KikCMS\Config\GaConfig;
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Model\Analytics\GaDayVisit;
-use KikCMS\Model\Analytics\GaVisitData;
+use KikCMS\Entity\Analytics\GaDayVisit;
+use KikCMS\Entity\Analytics\GaVisitData;
 
 /**
  * Service for handling the analytics v4 using the new (2022) Analytics Data API.
@@ -54,8 +54,8 @@ class AnalyticsDataService
         $results = [];
 
         foreach ($response->getRows() as $row) {
-            $sessions = $row->getMetricValues()[0]->getValue();
-            $users    = $row->getMetricValues()[1]->getValue();
+            $sessions = (int) $row->getMetricValues()[0]->getValue();
+            $users    = (int) $row->getMetricValues()[1]->getValue();
 
             $results[] = [
                 GaDayVisit::FIELD_DATE          => $row->getDimensionValues()[0]->getValue(),

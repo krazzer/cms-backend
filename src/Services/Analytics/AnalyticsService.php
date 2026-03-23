@@ -10,8 +10,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use KikCMS\Config\CacheConfig;
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Model\Analytics\GaDayVisit;
-use KikCMS\Model\Analytics\GaVisitData;
+use KikCMS\Entity\Analytics\GaDayVisit;
+use KikCMS\Entity\Analytics\GaVisitData;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -174,7 +174,7 @@ class AnalyticsService
             $this->addDateWhere($qb, $start, $end, 'date');
 
             $result = $qb->executeQuery()->fetchAllAssociative();
-            $result = $this->addMissingDays($result);
+            $result = $this->addMissingDays($result, $start, $end);
 
             $rows = [];
             foreach ($result as $row) {
@@ -187,15 +187,16 @@ class AnalyticsService
                 ];
             }
         } else {
-            $sql    = "SELECT DATE_FORMAT(date, '%Y-%m') as month, SUM(visits) as visits, SUM(unique_visits) as unique_visits
-                FROM " . GaDayVisit::TABLE . "
-                WHERE 1=1 " . $this->getDateWhereClause($start, $end) . "
-                GROUP BY month";
-            $stmt   = $this->connection->executeQuery($sql, $this->getDateWhereParams($start, $end));
-            $visits = $stmt->fetchAllAssociative();
+            $qb = $this->connection->createQueryBuilder();
+            $qb->select("DATE_FORMAT(date, '%Y-%m') as month")
+                ->addSelect('SUM(visits) as visits')
+                ->addSelect('SUM(unique_visits) as unique_visits')
+                ->from(GaDayVisit::TABLE)
+                ->groupBy('month');
+            $this->addDateWhere($qb, $start, $end, 'date');
 
             $rows = [];
-            foreach ($visits as $row) {
+            foreach ($qb->executeQuery()->fetchAllAssociative() as $row) {
                 $rows[] = [
                     'c' => [
                         ['v' => $row['month']],
@@ -316,15 +317,13 @@ class AnalyticsService
     /**
      * Add missing days to daily chart data.
      */
-    private function addMissingDays(array $visits): array
+    private function addMissingDays(array $visits, DateTime $start, DateTime $end): array
     {
         $dates = array_column($visits, 'date');
         if (empty($dates)) {
             return $visits;
         }
 
-        $start    = new DateTime(min($dates));
-        $end      = new DateTime(max($dates));
         $interval = new DateInterval('P1D');
         $period   = new DatePeriod($start, $interval, $end->modify('+1 day'));
 

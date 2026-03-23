@@ -6,7 +6,7 @@ use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Model\Analytics\GaVisitData;
+use KikCMS\Entity\Analytics\GaVisitData;
 
 /**
  * Service for importing various visitor metrics from Google Analytics.

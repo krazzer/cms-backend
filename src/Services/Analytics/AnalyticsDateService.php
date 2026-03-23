@@ -4,7 +4,7 @@ namespace KikCMS\Services\Analytics;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use KikCMS\Model\Analytics\GaVisitData;
+use KikCMS\Entity\Analytics\GaVisitData;
 
 class AnalyticsDateService
 {
