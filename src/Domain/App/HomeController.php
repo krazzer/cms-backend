@@ -4,6 +4,7 @@ namespace KikCMS\Domain\App;
 
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\Form\FormService;
+use KikCMS\Entity\File\FileService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,13 +18,14 @@ class HomeController extends AbstractController
         private readonly Security $security,
         private readonly DataTableService $dataTableService,
         private readonly FormService $formService,
+        private readonly FileService $fileService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager
     ) {}
 
     #[Route('/api/home')]
     public function home(): Response
     {
-        $user = $this->security->getUser();
+        $user     = $this->security->getUser();
         $loggedIn = (bool) $this->security->getUser();
 
         $menu = [
@@ -69,7 +71,7 @@ class HomeController extends AbstractController
     public function mediaModule(): Response
     {
         return new JsonResponse([
-            'media'            => ['files' => ['media']],
+            'media'            => $this->fileService->openFolder(null),
             'selectedMenuItem' => 'media',
         ]);
     }

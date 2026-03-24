@@ -4,13 +4,21 @@ namespace KikCMS\Entity\File;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use KikCMS\Entity\File\Dto\ChangeKeyDto;
+use KikCMS\Entity\File\Dto\ChangeNameDto;
+use KikCMS\Entity\File\Dto\CreateDto;
+use KikCMS\Entity\File\Dto\DeleteDto;
+use KikCMS\Entity\File\Dto\OpenDto;
+use KikCMS\Entity\File\Dto\PasteDto;
+use KikCMS\Entity\File\Dto\SearchDto;
+use KikCMS\Entity\File\Dto\UploadDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Attribute\Route;
 
 class FileController extends AbstractController
 {
@@ -20,14 +28,12 @@ class FileController extends AbstractController
     ) {}
 
     #[Route('/api/media/upload')]
-    public function uploadFile(#[MapUploadedFile] UploadedFile|array $files, Request $request): JsonResponse
+    public function uploadFile(#[MapUploadedFile] UploadedFile|array $files, #[MapRequestPayload] UploadDto $dto): JsonResponse
     {
         $files = is_array($files) ? $files : [$files];
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $folderId = $data['folder'] ?? null;
 
         try {
-            $result = $this->fileService->uploadFiles($files, $folderId);
+            $result = $this->fileService->uploadFiles($files, $dto->getFolder());
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan met het uploaden van het bestand.'], 500);
@@ -35,14 +41,10 @@ class FileController extends AbstractController
     }
 
     #[Route('/api/media/newfolder', methods: ['POST'])]
-    public function createFolder(Request $request): JsonResponse
+    public function createFolder(#[MapRequestPayload] CreateDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $name = $data['name'] ?? null;
-        $folderId = $data['folder'] ?? null;
-
         try {
-            $result = $this->fileService->createFolder($name, $folderId);
+            $result = $this->fileService->createFolder($dto->getName(), $dto->getFolderId());
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het aanmaken van de map.'], 500);
@@ -50,28 +52,21 @@ class FileController extends AbstractController
     }
 
     #[Route('/api/media/open', methods: ['POST'])]
-    public function openFolder(Request $request): JsonResponse
+    public function openFolder(#[MapRequestPayload] OpenDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $folderId = $data['id'] ?? null;
-
         try {
-            $result = $this->fileService->openFolder($folderId);
+            $result = $this->fileService->openFolder($dto->getId());
             return $this->json($result);
-        } catch (Exception) {
-            return $this->json(['error' => 'Er is iets mis gegaan bij het openen van de map.'], 500);
+        } catch (Exception $e) {
+            return $this->json(['error' => 'Er is iets mis gegaan bij het openen van de map.' . $e], 500);
         }
     }
 
     #[Route('/api/media/changefilename', methods: ['POST'])]
-    public function changeFilename(Request $request): JsonResponse
+    public function changeFilename(#[MapRequestPayload] ChangeNameDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $id = $data['id'] ?? null;
-        $newFileName = $data['name'] ?? null;
-
         try {
-            $result = $this->fileService->changeFilename($newFileName, (int) $id);
+            $result = $this->fileService->changeFilename($dto->getName(), $dto->getId());
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het wijzigen van de bestandsnaam.'], 500);
@@ -79,14 +74,10 @@ class FileController extends AbstractController
     }
 
     #[Route('/api/media/key', methods: ['POST'])]
-    public function changeKey(Request $request): JsonResponse
+    public function changeKey(#[MapRequestPayload] ChangeKeyDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $id = $data['id'] ?? null;
-        $key = $data['name'] ?? null;
-
         try {
-            $result = $this->fileService->changeKey($key, (int) $id);
+            $result = $this->fileService->changeKey($dto->getName(), $dto->getId());
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het wijzigen van de sleutel.'], 500);
@@ -94,14 +85,10 @@ class FileController extends AbstractController
     }
 
     #[Route('/api/media/delete', methods: ['POST'])]
-    public function deleteFiles(Request $request): JsonResponse
+    public function deleteFiles(#[MapRequestPayload] DeleteDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $ids = $data['ids'] ?? [];
-        $folderId = $data['folder'] ?? null;
-
         try {
-            $result = $this->fileService->deleteFiles($ids, $folderId);
+            $result = $this->fileService->deleteFiles($dto->getIds(), $dto->getFolderId());
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het verwijderen van bestanden.'], 500);
@@ -109,14 +96,10 @@ class FileController extends AbstractController
     }
 
     #[Route('/api/media/paste', methods: ['POST'])]
-    public function pasteFiles(Request $request): JsonResponse
+    public function pasteFiles(#[MapRequestPayload] PasteDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $ids = $data['ids'] ?? [];
-        $targetFolderId = $data['folder'] ?? null;
-
         try {
-            $result = $this->fileService->pasteFiles($ids, $targetFolderId);
+            $result = $this->fileService->pasteFiles($dto->getIds(), $dto->getFolder());
             return $this->json($result);
         } catch (HttpException $e) {
             return $this->json(['error' => $e->getMessage()], $e->getStatusCode());
@@ -126,13 +109,10 @@ class FileController extends AbstractController
     }
 
     #[Route('/api/media/search', methods: ['POST'])]
-    public function search(Request $request): JsonResponse
+    public function search(#[MapRequestPayload] SearchDto $dto): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
-        $query = $data['search'] ?? '';
-
         try {
-            $result = $this->fileService->searchFiles($query);
+            $result = $this->fileService->searchFiles($dto->getSearch());
             return $this->json($result);
         } catch (Exception) {
             return $this->json(['error' => 'Er is iets mis gegaan bij het zoeken.'], 500);

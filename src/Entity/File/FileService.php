@@ -2,9 +2,9 @@
 
 namespace KikCMS\Entity\File;
 
-use Exception;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -26,17 +26,14 @@ readonly class FileService
         private FilePublicService $filePublicService,
     ) {}
 
-    public function uploadFiles(array $files, ?string $folderIdParam): array
+    public function uploadFiles(array $files, ?File $folder = null): array
     {
-        $folderId = $this->normalizeFolderId($folderIdParam);
-        $folder = $folderId ? $this->fileRepository->find($folderId) : null;
-
         $newFiles = [];
         foreach ($files as $uploadedFile) {
             $newFiles[] = $this->uploadFile($uploadedFile, $folder);
         }
 
-        $allFiles = $this->getFilesInFolder($folderId);
+        $allFiles = $this->getFilesInFolder($folder?->getId());
 
         return [
             'files'    => array_map([$this, 'formatFile'], $allFiles),
@@ -72,7 +69,7 @@ readonly class FileService
     public function createFolder(string $name, ?string $folderIdParam): array
     {
         $folderId = $this->normalizeFolderId($folderIdParam);
-        $parent = $folderId ? $this->fileRepository->find($folderId) : null;
+        $parent   = $folderId ? $this->fileRepository->find($folderId) : null;
 
         $folder = (new File())
             ->setName($name)
@@ -104,7 +101,7 @@ readonly class FileService
         }
 
         $originalExtension = $file->getExtension();
-        $finalFileName = $originalExtension ? $newFileName . '.' . $originalExtension : $newFileName;
+        $finalFileName     = $originalExtension ? $newFileName . '.' . $originalExtension : $newFileName;
 
         $file->setName($finalFileName);
         $file->setUpdated(new DateTimeImmutable());
@@ -140,7 +137,7 @@ readonly class FileService
         try {
             foreach ($ids as $id) {
                 $file = $this->fileRepository->find($id);
-                if (!$file instanceof File) {
+                if ( ! $file instanceof File) {
                     continue;
                 }
 
@@ -191,7 +188,7 @@ readonly class FileService
     public function pasteFiles(array $ids, ?string $targetFolderIdParam): array
     {
         $targetFolderId = $this->normalizeFolderId($targetFolderIdParam);
-        $targetFolder = $targetFolderId ? $this->fileRepository->find($targetFolderId) : null;
+        $targetFolder   = $targetFolderId ? $this->fileRepository->find($targetFolderId) : null;
 
         $this->entityManager->beginTransaction();
         try {
@@ -229,7 +226,7 @@ readonly class FileService
                 return true;
             }
             $folder = $this->fileRepository->find($currentId);
-            if (!$folder) {
+            if ( ! $folder) {
                 break;
             }
             $currentId = $folder->getFolder() ? $folder->getFolder()->getId() : null;
@@ -276,15 +273,15 @@ readonly class FileService
 
     private function buildPath(?int $folderId): array
     {
-        $path = [];
+        $path      = [];
         $currentId = $folderId;
 
         while ($currentId !== null) {
             $folder = $this->fileRepository->find($currentId);
-            if (!$folder) {
+            if ( ! $folder) {
                 break;
             }
-            $path = [$folder->getId() => $folder->getName()] + $path;
+            $path      = [$folder->getId() => $folder->getName()] + $path;
             $currentId = $folder->getFolder() ? $folder->getFolder()->getId() : null;
         }
 
