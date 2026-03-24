@@ -6,6 +6,7 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Config\SourceType;
+use KikCMS\Domain\DataTable\Dto\Context\FormContext;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Form\DataTableFormService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
@@ -27,23 +28,24 @@ readonly class DataTableStoreService
     {
         $storeData = [];
 
-        $form   = $this->dataTableFormService->getForm($dataTable);
+        $form   = $this->dataTableFormService->getForm($dataTable, new FormContext($rawData));
         $fields = $this->fieldService->getObjectMapByForm($form);
 
         foreach ($fields as $key => $field) {
-            if ( ! array_key_exists($key, $rawData)) {
+            if ( ! array_key_exists($key, $rawData) || ! $this->fieldRequiresSave($field, $filters)) {
                 continue;
             }
 
-            $value = $this->updateValueByFieldType($rawData[$key], $field);
-            $field = $field->getField();
+            $value    = $this->updateValueByFieldType($rawData[$key], $field, $filters);
+            $field    = $field->getField();
+            $langCode = $filters->getLangCode();
 
-            $fieldWithValue = $this->dataTablePathService->convertPathToArray($field, $value, $filters->getLangCode());
+            $fieldWithValue = $this->dataTablePathService->convertPathToArray($field, $value, $langCode);
 
             $storeData = array_replace_recursive($storeData, $fieldWithValue);
         }
 
-        if ($dataTable->isRearrange()) {
+        if ($dataTable->isRearrange() && $dataTable->getSource() === SourceType::Pdo) {
             $maxDisplayOrder = $this->rearrangeService->getMaxDisplayOrder($dataTable->getPdoModel());
 
             $storeData[DataTableConfig::DISPLAY_ORDER] = $maxDisplayOrder + 1;
@@ -52,18 +54,28 @@ readonly class DataTableStoreService
         return $storeData;
     }
 
-    private function updateValueByFieldType(mixed $value, Field $field): mixed
+    private function fieldRequiresSave(Field $field, DataTableFilters $filters): bool
     {
         if ($field instanceof DatatableField) {
             $dataTable = $this->dataTableConfigService->getFromConfigByInstance($field->getInstance());
 
-            if ($dataTable->isRearrange() && $dataTable->getSource() === SourceType::Pdo) {
-                $maxDisplayOrder = $this->rearrangeService->getMaxDisplayOrder($dataTable->getPdoModel());
+            if ($dataTable->getSource() === SourceType::Local) {
+                return true;
+            }
 
-                foreach ($value as $index => $row) {
-                    $maxDisplayOrder++;
-                    $value[$index][DataTableConfig::DISPLAY_ORDER] = $maxDisplayOrder;
-                }
+            return ! $filters->getParentId();
+        }
+
+        return true;
+    }
+
+    private function updateValueByFieldType(mixed $value, Field $field, DataTableFilters $filters): mixed
+    {
+        if ($field instanceof DatatableField) {
+            $dataTable = $this->dataTableConfigService->getFromConfigByInstance($field->getInstance());
+
+            foreach ($value as $index => $row) {
+                $value[$index] = $this->getDataArrayToStore($dataTable, $filters, $row);
             }
         }
 

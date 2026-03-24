@@ -1,0 +1,30 @@
+home:
+    title:
+        type: text
+        field: name.*
+        label: Name
+        validator:
+            name: presence
+
+    hero:
+        type: text
+        field: content.*.hero
+        label: Hero image text
+
+    sections:
+        type: datatable
+        label: Content
+        instance: page_content
+
+default:
+    title:
+        type: text
+        field: name.*
+        label: Name
+        validator:
+            name: presence
+
+    sections:
+        type: datatable
+        label: Content
+        instance: page_content

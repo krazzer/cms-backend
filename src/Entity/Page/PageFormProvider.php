@@ -11,11 +11,20 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 #[AsTaggedItem('pageForm')]
 readonly class PageFormProvider implements ConfigProviderInterface
 {
-    public function __construct(private FormConfigService $formConfigService) {}
+    public function __construct(
+        private FormConfigService $formConfigService,
+        private PageRepository $pageRepository
+    ) {}
 
     public function getConfig(FormContext|Context $context): array
     {
-        return match ($context->getType()) {
+        if (($id = $context->getId()) && ($page = $this->pageRepository->find($id))) {
+            $type = $page->getType();
+        } else {
+            $type = $context->getType();
+        }
+
+        return match ($type) {
             'link' => $this->formConfigService->getConfigFromFile('link'),
             'menu' => $this->formConfigService->getConfigFromFile('menu'),
             default => $this->formConfigService->getConfigFromFile('page'),

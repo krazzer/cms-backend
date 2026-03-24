@@ -52,7 +52,10 @@ class Page
     private ?int $display_order = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $type = null;
+    private ?string $type;
+
+    #[ORM\Column(length: 255, nullable: true, options: ['comment' => 'Id string to identify this page'])]
+    private ?string $identifier = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
@@ -61,21 +64,26 @@ class Page
     private ?int $menu_max_level = null;
 
     #[ORM\Column]
-    private ?DateTimeImmutable $created_at = null;
+    private ?DateTimeImmutable $created_at;
 
     #[ORM\Column]
-    private ?DateTimeImmutable $updated_at = null;
+    private ?DateTimeImmutable $updated_at;
 
     #[ORM\OneToMany(targetEntity: PageImage::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $pageImages;
+    private Collection $images;
 
     #[ORM\OneToMany(targetEntity: PageSection::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $pageSections;
+    private Collection $sections;
 
     public function __construct()
     {
-        $this->pageImages   = new ArrayCollection();
-        $this->pageSections = new ArrayCollection();
+        $this->images   = new ArrayCollection();
+        $this->sections = new ArrayCollection();
+
+        $this->type = 'page';
+
+        $this->created_at = new DateTimeImmutable();
+        $this->updated_at = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -191,7 +199,7 @@ class Page
         return $this->content;
     }
 
-    public function setContent(?array $content): Page
+    public function setContent(?array $content): static
     {
         $this->content = $content;
         return $this;
@@ -202,7 +210,7 @@ class Page
         return $this->name;
     }
 
-    public function setName(?array $name): Page
+    public function setName(?array $name): static
     {
         $this->name = $name;
         return $this;
@@ -213,7 +221,7 @@ class Page
         return $this->active;
     }
 
-    public function setActive(?array $active): Page
+    public function setActive(?array $active): static
     {
         $this->active = $active;
         return $this;
@@ -224,7 +232,7 @@ class Page
         return $this->slug;
     }
 
-    public function setSlug(?array $slug): Page
+    public function setSlug(?array $slug): static
     {
         $this->slug = $slug;
         return $this;
@@ -235,7 +243,7 @@ class Page
         return $this->seo;
     }
 
-    public function setSeo(?array $seo): Page
+    public function setSeo(?array $seo): static
     {
         $this->seo = $seo;
         return $this;
@@ -246,43 +254,54 @@ class Page
         return $this->menu_max_level;
     }
 
-    public function setMenuMaxLevel(?int $menu_max_level): Page
+    public function setMenuMaxLevel(?int $menu_max_level): static
     {
         $this->menu_max_level = $menu_max_level;
         return $this;
     }
 
-    public function getPageImages(): Collection
+    public function getImages(): Collection
     {
-        return $this->pageImages;
+        return $this->images;
     }
 
-    public function setPageImages(iterable $images): Page
+    public function setImages(iterable $images): static
     {
-        $this->pageImages = new ArrayCollection();
+        $this->images = new ArrayCollection();
 
         foreach ($images as $image) {
             $image->setPage($this);
-            $this->pageImages->add($image);
+            $this->images->add($image);
         }
 
         return $this;
     }
 
-    public function getPageSections(): Collection
+    public function getSections(): Collection
     {
-        return $this->pageSections;
+        return $this->sections;
     }
 
-    public function setPageSections(iterable $sections): Page
+    public function setSections(iterable $sections): static
     {
-        $this->pageImages = new ArrayCollection();
+        $this->images = new ArrayCollection();
 
         foreach ($sections as $section) {
             $section->setPage($this);
-            $this->pageSections->add($section);
+            $this->sections->add($section);
         }
 
+        return $this;
+    }
+
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(?string $identifier): static
+    {
+        $this->identifier = $identifier;
         return $this;
     }
 }

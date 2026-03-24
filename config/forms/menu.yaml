@@ -10,8 +10,8 @@ fields:
             name: presence
     maxLevel:
         type: text
-        field: maxlevel
+        field: menu_max_level
         label: Maximum level
-    key:
+    identifier:
         type: text
         label: Key
