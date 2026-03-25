@@ -22,12 +22,8 @@ class FileControllerTest extends DbKernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $container = self::getContainer();
 
-        $mockPublicService = $this->createMock(FilePublicService::class);
-        $mockPublicService->method('getUrlCreateIfMissing')
-            ->willReturnCallback(fn($file) => '/media/files/' . $file->getId() . '-' . $file->getName());
-        $container->set(FilePublicService::class, $mockPublicService);
+        $container = self::getContainer();
 
         $this->controller = $container->get(FileController::class);
     }
