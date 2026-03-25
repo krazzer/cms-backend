@@ -27,6 +27,21 @@ readonly class AbstractRearrangeService
             ->setParameter('order', $entity->getDisplayOrder());
     }
 
+    /**
+     * Modifies the display order of entities in bulk based on the specified operator and modification type.
+     */
+    public function getModifyRangeQuery(DataTable $dataTable, string $mod, int $from, int $to): QueryBuilder
+    {
+        $entityClass = $dataTable->getPdoModel();
+
+        return $this->entityManager->createQueryBuilder()
+            ->update($entityClass, DataTableConfig::DEFAULT_TABLE_ALIAS)
+            ->set('e.' . DataTableConfig::DISPLAY_ORDER, 'e.' . DataTableConfig::DISPLAY_ORDER . ' ' . $mod . ' 1')
+            ->where('e.' . DataTableConfig::DISPLAY_ORDER . ' BETWEEN :from AND :to')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to);
+    }
+
     public function getEntities(DataTable $dataTable, int $sourceId, int $targetId): array
     {
         $entityClass = $dataTable->getPdoModel();
@@ -36,6 +51,24 @@ readonly class AbstractRearrangeService
         $targetEntity = $repository->find($targetId);
 
         return [$sourceEntity, $targetEntity];
+    }
+
+    /**
+     * Do a +1 display order for a range
+     */
+    public function incrementRange(DataTable $dataTable, int $from, int $to): void
+    {
+        $query = $this->getModifyRangeQuery($dataTable, '+', $from, $to);
+        $query->getQuery()->execute();
+    }
+
+    /**
+     * Do a +1 display order for a range
+     */
+    public function decrementRange(DataTable $dataTable, int $from, int $to): void
+    {
+        $query = $this->getModifyRangeQuery($dataTable, '-', $from, $to);
+        $query->getQuery()->execute();
     }
 
     /**

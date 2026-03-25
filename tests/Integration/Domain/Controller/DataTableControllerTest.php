@@ -75,12 +75,8 @@ class DataTableControllerTest extends DbKernelTestCase
         $this->assertEquals([
             'active'          => true,
             'slug'            => null,
-            'content'         => null,
             'template'        => 'default',
-            'type'            => 'page',
             'title'           => null,
-            'header'          => null,
-            'colors'          => null,
             'seo_title'       => null,
             'seo_keywords'    => null,
             'seo_description' => null,
@@ -99,7 +95,7 @@ class DataTableControllerTest extends DbKernelTestCase
         $responseData = json_decode($response->getContent(), true);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(['type' => 'page'], $responseData['data']);
+        $this->assertEquals([], $responseData['data']);
     }
 
     public function testCheck()

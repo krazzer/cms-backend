@@ -12,14 +12,10 @@ readonly class RearrangeService extends AbstractRearrangeService
     {
         list($sourceEntity, $targetEntity) = $this->getEntities($dataTable, $sourceId, $targetId);
 
-        switch ($location) {
-            case Location::BEFORE:
-                $this->rearrangeBefore($dataTable, $sourceEntity, $targetEntity);
-            break;
-            case Location::AFTER:
-                $this->rearrangeAfter($dataTable, $sourceEntity, $targetEntity);
-            break;
-            case RearrangeLocation::INSIDE:
+        if($location == Location::BEFORE) {
+            $this->rearrangeBefore($dataTable, $sourceEntity, $targetEntity);
+        } elseif($location == Location::AFTER) {
+            $this->rearrangeAfter($dataTable, $sourceEntity, $targetEntity);
         }
 
         $this->entityManager->persist($sourceEntity);
@@ -37,22 +33,29 @@ readonly class RearrangeService extends AbstractRearrangeService
 
     private function rearrangeBefore(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
-        $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
-        $this->nodesFromTargetPlusOne($dataTable, $targetEntity);
+        $targetOrder = $targetEntity->getDisplayOrder();
+        $sourceOrder = $sourceEntity->getDisplayOrder();
 
-        $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder());
+        if ($targetOrder > $sourceOrder) {
+            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder - 1);
+            $sourceEntity->setDisplayOrder($targetOrder - 1);
+        } else {
+            $this->incrementRange($dataTable, $targetOrder, $sourceOrder);
+            $sourceEntity->setDisplayOrder($targetOrder);
+        }
     }
 
     private function rearrangeAfter(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
-        $this->nodesAfterSourceMinusOne($dataTable, $sourceEntity);
+        $sourceOrder = $sourceEntity->getDisplayOrder();
+        $targetOrder = $targetEntity->getDisplayOrder();
 
-        if ($targetEntity->getDisplayOrder() > $sourceEntity->getDisplayOrder()) {
-            $this->nodesFromTargetPlusOne($dataTable, $targetEntity);
-            $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder());
+        if ($targetOrder > $sourceOrder) {
+            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder);
+            $sourceEntity->setDisplayOrder($targetOrder);
         } else {
-            $this->nodesAfterTargetPlusOne($dataTable, $targetEntity);
-            $sourceEntity->setDisplayOrder($targetEntity->getDisplayOrder() + 1);
+            $this->incrementRange($dataTable, $targetOrder + 1, $sourceOrder - 1);
+            $sourceEntity->setDisplayOrder($targetOrder + 1);
         }
     }
 }

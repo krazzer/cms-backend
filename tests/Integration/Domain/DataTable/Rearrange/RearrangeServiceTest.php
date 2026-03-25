@@ -46,18 +46,24 @@ class RearrangeServiceTest extends KernelTestCase
             $this->em->refresh($page);
         }
 
+        $actualOrders = [];
+
         foreach ($expectedOrders as $order => $expectedDisplayOrder) {
-            $this->assertEquals($expectedDisplayOrder, $pages[$order]->getDisplayOrder());
+            $actualOrders[$order] = $pages[$order]->getDisplayOrder();
         }
+
+        $this->assertEquals($expectedOrders, $actualOrders);
     }
 
     public static function rearrangeProvider(): array
     {
         return [
+            'before last'   => [1, 5, Location::BEFORE, [1 => 4, 2 => 1, 3 => 2, 4 => 3, 5 => 5]],
             'before middle' => [5, 3, Location::BEFORE, [1 => 1, 2 => 2, 3 => 4, 4 => 5, 5 => 3]],
             'before first'  => [5, 1, Location::BEFORE, [1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 1]],
             'after last'    => [1, 5, Location::AFTER, [1 => 5, 2 => 1, 3 => 2, 4 => 3, 5 => 4]],
             'after middle'  => [2, 4, Location::AFTER, [1 => 1, 2 => 4, 3 => 2, 4 => 3, 5 => 5]],
+            'after first'   => [5, 1, Location::AFTER, [1 => 1, 2 => 3, 3 => 4, 4 => 5, 5 => 2]],
         ];
     }
 
