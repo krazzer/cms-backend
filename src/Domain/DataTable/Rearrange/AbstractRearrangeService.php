@@ -16,30 +16,21 @@ readonly class AbstractRearrangeService
     /**
      * Modifies the display order of entities in bulk based on the specified operator and modification type.
      */
-    public function getBulkModifyOrderQuery(DataTable $dataTable, object $entity, string $mod, string $operator): QueryBuilder
+    public function getModifyRangeQuery(DataTable $dt, string $mod, int $from, int $to, ?array $parents = null): QueryBuilder
     {
-        $entityClass = $dataTable->getPdoModel();
-
-        return $this->entityManager->createQueryBuilder()
-            ->update($entityClass, DataTableConfig::DEFAULT_TABLE_ALIAS)
-            ->set('e.' . DataTableConfig::DISPLAY_ORDER, 'e.' . DataTableConfig::DISPLAY_ORDER . ' ' . $mod . ' 1')
-            ->where('e.' . DataTableConfig::DISPLAY_ORDER . ' ' . $operator . ' :order')
-            ->setParameter('order', $entity->getDisplayOrder());
-    }
-
-    /**
-     * Modifies the display order of entities in bulk based on the specified operator and modification type.
-     */
-    public function getModifyRangeQuery(DataTable $dataTable, string $mod, int $from, int $to): QueryBuilder
-    {
-        $entityClass = $dataTable->getPdoModel();
-
-        return $this->entityManager->createQueryBuilder()
-            ->update($entityClass, DataTableConfig::DEFAULT_TABLE_ALIAS)
+        $query = $this->entityManager->createQueryBuilder()
+            ->update($dt->getPdoModel(), DataTableConfig::DEFAULT_TABLE_ALIAS)
             ->set('e.' . DataTableConfig::DISPLAY_ORDER, 'e.' . DataTableConfig::DISPLAY_ORDER . ' ' . $mod . ' 1')
             ->where('e.' . DataTableConfig::DISPLAY_ORDER . ' BETWEEN :from AND :to')
             ->setParameter('from', $from)
             ->setParameter('to', $to);
+
+        if ($parents !== null) {
+            $query->andWhere('e.parents = :parents')
+                ->setParameter('parents', json_encode($parents));
+        }
+
+        return $query;
     }
 
     public function getEntities(DataTable $dataTable, int $sourceId, int $targetId): array
@@ -56,51 +47,46 @@ readonly class AbstractRearrangeService
     /**
      * Do a +1 display order for a range
      */
-    public function incrementRange(DataTable $dataTable, int $from, int $to): void
+    public function incrementRange(DataTable $dataTable, int $from, int $to, ?array $parents = null): void
     {
-        $query = $this->getModifyRangeQuery($dataTable, '+', $from, $to);
+        $query = $this->getModifyRangeQuery($dataTable, '+', $from, $to, $parents);
         $query->getQuery()->execute();
     }
 
     /**
      * Do a +1 display order for a range
      */
-    public function decrementRange(DataTable $dataTable, int $from, int $to): void
+    public function decrementRange(DataTable $dataTable, int $from, int $to, ?array $parents = null): void
     {
-        $query = $this->getModifyRangeQuery($dataTable, '-', $from, $to);
+        $query = $this->getModifyRangeQuery($dataTable, '-', $from, $to, $parents);
         $query->getQuery()->execute();
     }
 
-    /**
-     * Do a -1 display order after the source entity
-     */
-    public function nodesAfterSourceMinusOne(DataTable $dataTable, object $entity): void
+    protected function rearrangeBefore(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
-        $this->bulkModifyOrder($dataTable, $entity, '-', '>');
+        $targetOrder = $targetEntity->getDisplayOrder();
+        $sourceOrder = $sourceEntity->getDisplayOrder();
+
+        if ($targetOrder > $sourceOrder) {
+            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder - 1);
+            $sourceEntity->setDisplayOrder($targetOrder - 1);
+        } else {
+            $this->incrementRange($dataTable, $targetOrder, $sourceOrder);
+            $sourceEntity->setDisplayOrder($targetOrder);
+        }
     }
 
-    /**
-     * Increment the display order of nodes from the target entity by 1.
-     */
-    public function nodesFromTargetPlusOne(DataTable $dataTable, object $entity): void
+    protected function rearrangeAfter(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
-        $this->bulkModifyOrder($dataTable, $entity, '+', '>=');
-    }
+        $sourceOrder = $sourceEntity->getDisplayOrder();
+        $targetOrder = $targetEntity->getDisplayOrder();
 
-    /**
-     * Increment the display order of nodes after the target entity by 1.
-     */
-    public function nodesAfterTargetPlusOne(DataTable $dataTable, object $entity): void
-    {
-        $this->bulkModifyOrder($dataTable, $entity, '+', '>');
-    }
-
-    /**
-     * Modifies the display order of entities in bulk based on the specified operator and modification type.
-     */
-    public function bulkModifyOrder(DataTable $dataTable, object $entity, string $mod, string $operator): void
-    {
-        $query = $this->getBulkModifyOrderQuery($dataTable, $entity, $mod, $operator);
-        $query->getQuery()->execute();
+        if ($targetOrder > $sourceOrder) {
+            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder);
+            $sourceEntity->setDisplayOrder($targetOrder);
+        } else {
+            $this->incrementRange($dataTable, $targetOrder + 1, $sourceOrder - 1);
+            $sourceEntity->setDisplayOrder($targetOrder + 1);
+        }
     }
 }

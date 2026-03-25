@@ -30,32 +30,4 @@ readonly class RearrangeService extends AbstractRearrangeService
 
         return (int) $query->getQuery()->getSingleScalarResult();
     }
-
-    private function rearrangeBefore(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
-    {
-        $targetOrder = $targetEntity->getDisplayOrder();
-        $sourceOrder = $sourceEntity->getDisplayOrder();
-
-        if ($targetOrder > $sourceOrder) {
-            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder - 1);
-            $sourceEntity->setDisplayOrder($targetOrder - 1);
-        } else {
-            $this->incrementRange($dataTable, $targetOrder, $sourceOrder);
-            $sourceEntity->setDisplayOrder($targetOrder);
-        }
-    }
-
-    private function rearrangeAfter(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
-    {
-        $sourceOrder = $sourceEntity->getDisplayOrder();
-        $targetOrder = $targetEntity->getDisplayOrder();
-
-        if ($targetOrder > $sourceOrder) {
-            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder);
-            $sourceEntity->setDisplayOrder($targetOrder);
-        } else {
-            $this->incrementRange($dataTable, $targetOrder + 1, $sourceOrder - 1);
-            $sourceEntity->setDisplayOrder($targetOrder + 1);
-        }
-    }
 }

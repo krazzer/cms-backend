@@ -20,7 +20,8 @@ class Page
     const string FIELD_CHILDREN      = 'children'; // not an actual field, but derived from other data
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\CustomIdGenerator(class: "Doctrine\ORM\Id\IdentityGenerator")]
     #[ORM\Column]
     private ?int $id = null;
 

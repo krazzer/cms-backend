@@ -42,23 +42,6 @@ readonly class TreeRearrangeService extends AbstractRearrangeService
         $this->entityManager->flush();
     }
 
-    /**
-     * Modifies the display order of entities in bulk based on the specified operator and modification type.
-     */
-    public function bulkModifyOrder(DataTable $dataTable, object $entity, string $mod, string $operator): void
-    {
-        $query = $this->getBulkModifyOrderQuery($dataTable, $entity, $mod, $operator);
-
-        if ($entity->getParents()) {
-            $query->andWhere('e.parents = :parents')
-                ->setParameter('parents', json_encode($entity->getParents()));
-        } else {
-            $query->andWhere('e.parents IS NULL');
-        }
-
-        $query->getQuery()->execute();
-    }
-
     public function getTargetChildMaxDisplayOrder(Page $targetEntity): int
     {
         $parents = $this->getParentsValueInsideNode($targetEntity);
@@ -102,48 +85,49 @@ readonly class TreeRearrangeService extends AbstractRearrangeService
         ]);
     }
 
-    private function rearrangeBefore(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
+    protected function rearrangeBefore(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
         $sourceOrder = $sourceEntity->getDisplayOrder();
         $targetOrder = $targetEntity->getDisplayOrder();
 
-        if ($sourceOrder < $targetOrder) {
-            $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder - 1);
-            $sourceEntity->setDisplayOrder($targetOrder - 1);
+        $sourceParents = $sourceEntity->getParents();
+        $targetParents = $targetEntity->getParents();
+
+        if ($sourceParents === $targetParents) {
+            parent::rearrangeBefore($dataTable, $sourceEntity, $targetEntity);
         } else {
-            $this->incrementRange($dataTable, $targetOrder, $sourceOrder - 1);
+            $this->decrementRange($dataTable, $sourceOrder + 1, PHP_INT_MAX, $sourceParents);
+            $this->incrementRange($dataTable, $targetOrder, PHP_INT_MAX, $targetParents);
             $sourceEntity->setDisplayOrder($targetOrder);
         }
 
         $sourceEntity->setParents($targetEntity->getParents());
     }
 
-    private function rearrangeAfter(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
+    protected function rearrangeAfter(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
         $sourceOrder = $sourceEntity->getDisplayOrder();
         $targetOrder = $targetEntity->getDisplayOrder();
 
-        if ($sourceEntity->getParents() === $targetEntity->getParents()) {
-            if ($sourceOrder < $targetOrder) {
-                $this->decrementRange($dataTable, $sourceOrder + 1, $targetOrder);
-                $sourceEntity->setDisplayOrder($targetOrder);
-            } else {
-                $this->incrementRange($dataTable, $targetOrder + 1, $sourceOrder - 1);
-                $sourceEntity->setDisplayOrder($targetOrder + 1);
-            }
+        $sourceParents = $sourceEntity->getParents();
+        $targetParents = $targetEntity->getParents();
+
+        if ($sourceParents === $targetParents) {
+            parent::rearrangeAfter($dataTable, $sourceEntity, $targetEntity);
         } else {
-            $maxOrder = $this->getTargetChildMaxDisplayOrder($targetEntity);
-            $sourceEntity->setDisplayOrder($maxOrder + 1);
+            $this->decrementRange($dataTable, $sourceOrder + 1, PHP_INT_MAX, $sourceParents);
+            $this->incrementRange($dataTable, $targetOrder + 1, PHP_INT_MAX, $targetParents);
+            $sourceEntity->setDisplayOrder($targetOrder + 1);
         }
 
-        $sourceEntity->setParents($targetEntity->getParents());
+        $sourceEntity->setParents($targetParents);
     }
 
     private function rearrangeInside(DataTable $dataTable, mixed $sourceEntity, mixed $targetEntity): void
     {
         $sourceOrder = $sourceEntity->getDisplayOrder();
 
-        $this->decrementRange($dataTable, $sourceOrder + 1, PHP_INT_MAX);
+        $this->decrementRange($dataTable, $sourceOrder + 1, PHP_INT_MAX, $sourceEntity->getParents());
 
         $parents  = $this->getParentsValueInsideNode($targetEntity);
         $maxOrder = $this->getTargetChildMaxDisplayOrder($targetEntity);
