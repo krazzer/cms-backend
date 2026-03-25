@@ -15,7 +15,7 @@ class KeyValue
     #[ORM\Column(name: "item_data", type: "blob", nullable: false)]
     private mixed $data = null;
 
-    #[ORM\Column(name: "item_json", type: "json", nullable: true)]
+    #[ORM\Column(name: "item_json", type: "json_pretty", nullable: true)]
     private mixed $json = null;
 
     #[ORM\Column(name: "item_lifetime", type: "integer", nullable: true, options: ["unsigned" => true])]
