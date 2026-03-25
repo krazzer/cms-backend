@@ -29,7 +29,7 @@ readonly class KeyValueService
         $prefixedKey = $this->getPrefixedKey($key);
 
         if($keyValueEntity = $this->entityManager->find(KeyValue::class, $prefixedKey)){
-            $keyValueEntity->setItemJson(json_encode($value, JSON_PRETTY_PRINT));
+            $keyValueEntity->setItemJson($value);
 
             $this->entityManager->persist($keyValueEntity);
             $this->entityManager->flush();

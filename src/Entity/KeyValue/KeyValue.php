@@ -13,10 +13,10 @@ class KeyValue
     private string $id;
 
     #[ORM\Column(name: "item_data", type: "blob", nullable: false)]
-    private ?string $data = null;
+    private mixed $data = null;
 
     #[ORM\Column(name: "item_json", type: "json", nullable: true)]
-    private ?array $json = null;
+    private mixed $json = null;
 
     #[ORM\Column(name: "item_lifetime", type: "integer", nullable: true, options: ["unsigned" => true])]
     private ?int $lifetime = null;
@@ -29,7 +29,7 @@ class KeyValue
         return $this->id;
     }
 
-    public function setId(string $id): KeyValue
+    public function setId(string $id): static
     {
         $this->id = $id;
         return $this;
@@ -40,7 +40,7 @@ class KeyValue
         return $this->data;
     }
 
-    public function setData(?string $data): KeyValue
+    public function setData(?string $data): static
     {
         $this->data = $data;
         return $this;
@@ -51,7 +51,7 @@ class KeyValue
         return $this->json;
     }
 
-    public function setJson(?array $json): KeyValue
+    public function setJson(?array $json): static
     {
         $this->json = $json;
         return $this;
@@ -62,7 +62,7 @@ class KeyValue
         return $this->lifetime;
     }
 
-    public function setLifetime(?int $lifetime): KeyValue
+    public function setLifetime(?int $lifetime): static
     {
         $this->lifetime = $lifetime;
         return $this;
@@ -73,9 +73,20 @@ class KeyValue
         return $this->time;
     }
 
-    public function setTime(int $time): KeyValue
+    public function setTime(int $time): static
     {
         $this->time = $time;
         return $this;
+    }
+
+    public function setItemJson(mixed $item = null): static
+    {
+        $this->json = $item;
+        return $this;
+    }
+
+    public function getItemJson(): mixed
+    {
+        return $this->json;
     }
 }
