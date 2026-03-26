@@ -8,6 +8,13 @@ general:
     slug: Slug
     active: Active
 
+forms:
+    page:
+        seo:
+            title: SEO Title
+            description: SEO Description
+            keywords: SEO Keywords
+
 roles:
     dev: Developer
     admin: Admin

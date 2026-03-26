@@ -13,6 +13,7 @@ use KikCMS\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class FormConfigService
 {
@@ -20,7 +21,7 @@ readonly class FormConfigService
         private KernelInterface $kernel,
         private Parser $yamlParser,
         private FieldService $fieldService,
-        private ConfigProviderRegistry $providerRegistry
+        private ConfigProviderRegistry $providerRegistry, private TranslatorInterface $translator
     ) {}
 
     public function getConfigFromFile(string $name): array
@@ -58,6 +59,7 @@ readonly class FormConfigService
             ->setName($name);
 
         $this->resolveReferences($form, $context);
+        $this->translateFields($form);
 
         return $form;
     }
@@ -89,5 +91,16 @@ readonly class FormConfigService
         }
 
         return $config[FormConfig::FIELDS] ?? [];
+    }
+
+    private function translateFields(Form $form): void
+    {
+        $this->fieldService->walk($form, function ($field): array {
+            if (array_key_exists(FieldConfig::LABEL_TRANS, $field)) {
+                $field[FieldConfig::LABEL] = $this->translator->trans($field[FieldConfig::LABEL_TRANS]);
+            }
+
+            return $field;
+        });
     }
 }

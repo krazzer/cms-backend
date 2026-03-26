@@ -8,15 +8,15 @@ tabs:
             seo_title:
                 field: seo.*.title
                 type: text
-                label: SEO title
+                labelTrans: forms.page.seo.title
             seo_keywords:
                 field: seo.*.keywords
                 type: textarea
-                label: SEO keywords
+                labelTrans: forms.page.seo.keywords
             seo_description:
                 field: seo.*.description
                 type: textarea
-                label: SEO description
+                labelTrans: forms.page.seo.description
     -   key: advanced
         name: Advanced
         fields:
