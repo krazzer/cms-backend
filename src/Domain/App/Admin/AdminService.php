@@ -15,18 +15,37 @@ readonly class AdminService
 
     public function update(string $adminDir, SymfonyStyle $io): void
     {
-        $io->text('Updating latest admin release from ' . $this->latestDistUrl . '...');
+        $io->comment('Updating latest admin release from ' . $this->latestDistUrl . '...');
+
+        $data = file_get_contents($this->latestDistUrl);
 
         $zipFilePath = $adminDir . '.zip';
 
-        file_put_contents($zipFilePath, file_get_contents($this->latestDistUrl));
+        if ($data === false) {
+            $io->error('Download failed');
+            return;
+        }
 
+        $result = file_put_contents($zipFilePath, $data);
+
+        if ($result === false) {
+            $io->error('Failed to store zip file locally');
+            return;
+        }
+
+        // Open zip
         $zip = new ZipArchive();
+        $res = $zip->open($zipFilePath);
 
-        $zip->open($zipFilePath);
-        $zip->extractTo($adminDir);
+        if ($res !== true || ! $zip->extractTo($adminDir)) {
+            $io->error('Failed to extract zip file');
+            return;
+        }
+
         $zip->close();
 
         unlink($zipFilePath);
+
+        $io->success('Admin updated');
     }
 }
