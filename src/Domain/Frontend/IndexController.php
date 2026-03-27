@@ -23,6 +23,8 @@ class IndexController extends AbstractController
     #[Route('/api/translations')]
     public function translations(): JsonResponse
     {
-        return new JsonResponse($this->translator->getCatalogue()->all('frontend'));
+        return new JsonResponse([
+            'translations' => $this->translator->getCatalogue()->all('frontend'),
+        ]);
     }
 }

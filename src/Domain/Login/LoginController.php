@@ -3,6 +3,7 @@
 namespace KikCMS\Domain\Login;
 
 use Exception;
+use KikCMS\Entity\User\User;
 use KikCMS\Entity\User\UserService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class LoginController extends AbstractController
 {
@@ -23,9 +24,9 @@ class LoginController extends AbstractController
     ) {}
 
     #[Route('/api/login', name: 'login')]
-    public function login(): Response
+    public function login(#[CurrentUser] ?User $user): Response
     {
-        throw new AuthenticationException('This route is handled by the LoginAuthenticator');
+        return $this->json(['success' => (bool) $user]);
     }
 
     #[Route('/api/logout', name: 'logout')]
