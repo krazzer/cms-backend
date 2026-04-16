@@ -6,7 +6,7 @@ buttons:
 headers:
     id: "Id"
     name: "Name"
-mobileColumns:
+mobile_columns:
     - id
     - name
 actions:

@@ -1,4 +1,4 @@
-searchColumns: ['name']
+search_columns: ['name']
 buttons:
     -   label: Add color
         action: add
@@ -13,7 +13,7 @@ headers:
 cells:
     active:
         type: 'checkbox'
-mobileColumns:
+mobile_columns:
     - name
 form:
     fields:

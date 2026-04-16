@@ -1,9 +1,9 @@
-headersTranslate:
+headers_translate:
     id: general.id
     email: general.email
     role: general.role
     blocked: general.blocked
-mobileColumns:
+mobile_columns:
     - id
     - email
 buttons:

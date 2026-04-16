@@ -8,7 +8,7 @@ buttons:
 headers:
     id: Id
     type: Type
-mobileColumns:
+mobile_columns:
     - type
 form:
     fields:

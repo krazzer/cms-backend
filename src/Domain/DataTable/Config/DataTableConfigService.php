@@ -28,17 +28,17 @@ readonly class DataTableConfigService
         }
 
         $form             = $config['form'] ?? [];
-        $formProvider     = $config['formProvider'] ?? null;
+        $formProvider     = $config['form_provider'] ?? null;
         $actions          = $config['actions'] ?? [];
         $source           = $config['source'];
         $headers          = $config['headers'] ?? [];
-        $headersTranslate = $config['headersTranslate'] ?? [];
+        $headersTranslate = $config['headers_translate'] ?? [];
         $buttons          = $config['buttons'] ?? [];
-        $mobileColumns    = $config['mobileColumns'] ?? [];
+        $mobileColumns    = $config['mobile_columns'] ?? [];
         $cells            = $config['cells'] ?? [];
         $class            = $config['class'] ?? null;
-        $searchColumns    = $config['searchColumns'] ?? [];
-        $typeForms        = $config['typeForms'] ?? [];
+        $searchColumns    = $config['search_columns'] ?? [];
+        $typeForms        = $config['type_forms'] ?? [];
         $rearrange        = $config['rearrange'] ?? false;
 
         $sourceType = SourceType::tryFrom($source['type'] ?? '') ?? SourceType::Pdo;

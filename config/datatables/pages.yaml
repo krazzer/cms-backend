@@ -1,6 +1,6 @@
 class: pages
-searchColumns: ['name.*']
-headersTranslate:
+search_columns: ['name.*']
+headers_translate:
     name.*: general.name
     template: general.template
     slug.*: general.slug
@@ -11,7 +11,7 @@ cells:
         type: 'page'
     active.*:
         type: 'checkbox'
-mobileColumns:
+mobile_columns:
     - name.*
 buttons:
     -   label: Add page
@@ -32,6 +32,6 @@ buttons:
                 icon: 'mdi-menu'
                 action: 'add'
                 addType: 'menu'
-formProvider: pageForm
+form_provider: pageForm
 source:
     model: KikCMS\Entity\Page\Page
