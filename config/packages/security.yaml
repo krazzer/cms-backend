@@ -48,5 +48,5 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/home, roles: PUBLIC_ACCESS }
         - { path: ^/api/translations, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/cms, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED }
+        - { path: ^/cms, roles: IS_AUTHENTICATED }
