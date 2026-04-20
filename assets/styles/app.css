@@ -1,4 +1,27 @@
+:root {
+    --white-space: 20px;
+}
+
 body {
-    background-color: skyblue;
+    margin: var(--white-space);
     text-align: center;
+    font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Trebuchet MS, sans-serif;
+}
+
+header{
+    margin-bottom: var(--white-space);
+
+    img{
+        margin-bottom: var(--white-space);
+        width: 300px;
+    }
+}
+
+main{
+    max-width: 600px;
+    margin: var(--white-space) auto;
 }
