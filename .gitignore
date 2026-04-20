@@ -12,6 +12,11 @@
 /tests/.phpunit.cache/
 ###< phpunit/phpunit ###
 
+###> symfony/asset-mapper ###
+/public_html/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
+
 .idea
 public_html/cms
 public_html/apcu.php

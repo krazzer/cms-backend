@@ -15,9 +15,9 @@ class IndexController extends AbstractController
     #[Route('/')]
     public function index(): Response
     {
-        return new Response(
-            '<html lang=""><body>This is the index. Yet to be filled!</body></html>'
-        );
+        return $this->render('theme/templates/default.twig', [
+            'title' => 'KikCMS',
+        ]);
     }
 
     #[Route('/api/translations')]

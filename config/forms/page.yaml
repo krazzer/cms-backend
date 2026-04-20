@@ -29,9 +29,9 @@ tabs:
                 type: text
                 label: Slug
                 field: slug.*
-            key:
+            identifier:
                 type: text
-                label: Key
+                label: Identifier
             active:
                 type: checkbox
                 label: Active
