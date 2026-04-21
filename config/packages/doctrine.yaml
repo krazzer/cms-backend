@@ -21,6 +21,7 @@ doctrine:
             string_functions:
                 JSON_EXTRACT: KikCMS\Doctrine\Dql\JsonExtract
                 JSON_UNQUOTE: KikCMS\Doctrine\Dql\JsonUnquote
+                JSON_CONTAINS: KikCMS\Doctrine\Dql\JsonContains
 
 when@test:
     doctrine:
