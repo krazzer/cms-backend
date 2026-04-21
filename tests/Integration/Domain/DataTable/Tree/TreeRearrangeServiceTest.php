@@ -2,31 +2,21 @@
 
 namespace KikCMS\Tests\Integration\Domain\DataTable\Tree;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\Tree\TreeRearrangeService;
 use KikCMS\Entity\Page\Page;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use KikCMS\Tests\Integration\DbKernelTestCase;
 
-class TreeRearrangeServiceTest extends KernelTestCase
+class TreeRearrangeServiceTest extends DbKernelTestCase
 {
-    private EntityManagerInterface $em;
     private TreeRearrangeService $service;
 
     protected function setUp(): void
     {
-        self::bootKernel();
+        parent::setUp();
 
-        $this->em      = self::getContainer()->get(EntityManagerInterface::class);
         $this->service = self::getContainer()->get(TreeRearrangeService::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $metadata   = $this->em->getMetadataFactory()->getAllMetadata();
-
-        $schemaTool->dropSchema($metadata);
-        $schemaTool->createSchema($metadata);
     }
 
     public function testRearrangeInsideConflict(): void
