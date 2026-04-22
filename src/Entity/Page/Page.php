@@ -18,6 +18,7 @@ class Page
     const string FIELD_DISPLAY_ORDER = 'display_order';
     const string FIELD_TYPE          = 'type';
     const string FIELD_CHILDREN      = 'children'; // not an actual field, but derived from other data
+    const string FIELD_SLUG          = 'slug';
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
@@ -36,6 +37,9 @@ class Page
 
     #[ORM\Column(nullable: true)]
     private ?array $slug = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $path = null;
 
     #[ORM\Column(nullable: true)]
     private ?array $seo = null;
@@ -236,6 +240,17 @@ class Page
     public function setSlug(?array $slug): static
     {
         $this->slug = $slug;
+        return $this;
+    }
+
+    public function getPath(): ?array
+    {
+        return $this->path;
+    }
+
+    public function setPath(?array $path): static
+    {
+        $this->path = $path;
         return $this;
     }
 
