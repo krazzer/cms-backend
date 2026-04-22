@@ -22,6 +22,7 @@ doctrine:
                 JSON_EXTRACT: KikCMS\Doctrine\Dql\JsonExtract
                 JSON_UNQUOTE: KikCMS\Doctrine\Dql\JsonUnquote
                 JSON_CONTAINS: KikCMS\Doctrine\Dql\JsonContains
+                JSON_LENGTH: KikCMS\Doctrine\Dql\JsonLength
 
 when@test:
     doctrine:

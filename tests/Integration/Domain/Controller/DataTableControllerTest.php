@@ -80,6 +80,7 @@ class DataTableControllerTest extends DbKernelTestCase
             'seo_title'       => null,
             'seo_keywords'    => null,
             'seo_description' => null,
+            'identifier'      => null
         ], $responseData['data']);
     }
 
