@@ -7,6 +7,7 @@
 parameters:
     app.default_email_from: '%env(DEFAULT_EMAIL_FROM)%'
     app.default_cms_content_language: '%env(default:app.en:APP_DEFAULT_CMS_CONTENT_LANGUAGE)%'
+    app.default_frontend_language: '%env(default:app.en:APP_DEFAULT_FRONTEND_LANGUAGE)%'
     app.company.name: 'Kiksaus'
     app.company.email: 'info@kiksaus.nl'
     app.company.address: 'Koningin Wilhelminaweg 16'

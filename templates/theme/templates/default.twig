@@ -6,11 +6,21 @@
 
 {% block body %}
     <header>
-        <img src="/images/logo.svg" alt="Logo"/>
-        <nav>Nav here</nav>
+        <a href="/">
+            <img src="/images/logo.svg" alt="Logo"/>
+        </a>
+        <nav>
+            <ul>
+                {% for item in menu() %}
+                    <li>
+                        <a href="{{ item.url }}">{{ item.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
     </header>
     <main>
-        <h1>Welcome!</h1>
+        <h1 align="center">Welcome!</h1>
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec aliquet lobortis lorem, eu rutrum leo
             aliquam in. Nullam dapibus posuere ornare. Nunc feugiat volutpat magna non elementum. Vivamus tristique

@@ -3,6 +3,8 @@ controllers_domain:
         path: ../src/Domain
         namespace: KikCMS\Domain
     type: attribute
+    defaults:
+        _locale: '%app.default_frontend_language%'
 
 controllers_entity:
     resource:

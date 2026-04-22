@@ -17,11 +17,23 @@ header{
 
     img{
         margin-bottom: var(--white-space);
-        width: 300px;
+        width: 280px;
     }
 }
 
 main{
     max-width: 600px;
     margin: var(--white-space) auto;
+}
+
+nav{
+    ul{
+        padding: 0;
+        list-style: none;
+        display: flex;
+        margin: 0 auto;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
 }
