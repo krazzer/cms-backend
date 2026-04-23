@@ -13,14 +13,14 @@ readonly class MenuService
         private RequestStack $requestStack,
     ) {}
 
-    public function get(string|int $id = FrontendConfig::MENU_MAIN): array
+    public function get(string|int $id = FrontendConfig::MENU_MAIN, ?int $maxLevel = null): array
     {
         $locale = $this->requestStack->getCurrentRequest()->getLocale();
 
         if (is_int($id)) {
-            $pages = $this->pageRepository->findByMenuId($id);
+            $pages = $this->pageRepository->findByMenuId($id, $maxLevel);
         } else {
-            $pages = $this->pageRepository->findByMenuIdentifier($id);
+            $pages = $this->pageRepository->findByMenuIdentifier($id, $maxLevel);
         }
 
         return array_map(fn($page) => [

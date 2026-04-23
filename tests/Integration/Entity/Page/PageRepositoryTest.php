@@ -26,7 +26,7 @@ class PageRepositoryTest extends DbKernelTestCase
         $this->addPage(5, [1, 2]);
 
         // test 1 level
-        $this->assertEquals([2, 3], $this->getPageIds($this->repository->findByMenuIdentifier()));
+        $this->assertEquals([2, 3], $this->getPageIds($this->repository->findByMenuIdentifier('main', 1)));
 
         // test 2 levels
         $this->assertEquals([2, 3, 4, 5], $this->getPageIds($this->repository->findByMenuIdentifier('main', 2)));

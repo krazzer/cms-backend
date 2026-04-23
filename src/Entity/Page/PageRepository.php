@@ -15,7 +15,7 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
-    public function findByMenuIdentifier(string $identifier = 'main', int $maxLevel = 1): array
+    public function findByMenuIdentifier(string $identifier = 'main', ?int $maxLevel = null): array
     {
         if ( ! $menu = $this->findOneBy(['identifier' => $identifier])) {
             return [];
@@ -24,7 +24,7 @@ class PageRepository extends ServiceEntityRepository
         return $this->findByParent($menu, $maxLevel);
     }
 
-    public function findByMenuId(int $id, int $maxLevel = 1): array
+    public function findByMenuId(int $id, ?int $maxLevel = null): array
     {
         if ( ! $menu = $this->find($id)) {
             return [];
@@ -33,14 +33,17 @@ class PageRepository extends ServiceEntityRepository
         return $this->findByParent($menu, $maxLevel);
     }
 
-    public function findByParent(Page $parent, int $maxLevel = 1): array
+    public function findByParent(Page $parent, ?int $maxLevel = null): array
     {
         $startLevel = $parent->getParents() ? count($parent->getParents()) : 0;
 
         $qb = $this->createQueryBuilder('p');
 
         $qb->where('JSON_CONTAINS(p.parents, :value) = 1')->setParameter('value', $parent->getId());
-        $qb->andWhere('JSON_LENGTH(p.parents) <= :count')->setParameter('count', $startLevel + $maxLevel);
+
+        if ($maxLevel !== null) {
+            $qb->andWhere('JSON_LENGTH(p.parents) <= :count')->setParameter('count', $startLevel + $maxLevel);
+        }
 
         return $qb->getQuery()->getResult();
     }

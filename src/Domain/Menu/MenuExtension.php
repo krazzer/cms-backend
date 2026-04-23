@@ -17,8 +17,8 @@ class MenuExtension extends AbstractExtension
         ];
     }
 
-    public function getMainMenu(string|int $id = FrontendConfig::MENU_MAIN): array
+    public function getMainMenu(string|int $id = FrontendConfig::MENU_MAIN, ?int $maxLevel = 1): array
     {
-        return $this->menuService->get($id);
+        return $this->menuService->get($id, $maxLevel);
     }
 }
