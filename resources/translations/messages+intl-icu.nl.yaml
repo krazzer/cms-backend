@@ -1,0 +1,34 @@
+general:
+    id: Id
+    name: Naam
+    email: E-mail
+    role: Rol
+    blocked: Geblokkeerd
+    template: Sjabloon
+    slug: Slug
+    active: Actief
+
+forms:
+    page:
+        seo:
+            title: SEO-titel
+            description: SEO-beschrijving
+            keywords: SEO-zoekwoorden
+
+roles:
+    dev: Ontwikkelaar
+    admin: Beheerder
+    user: Gebruiker
+    client: Klant
+
+entityName:
+    PageImage: Pagina-afbeelding
+
+dataTable:
+    objectNotFound: Object met ID {id} niet gevonden
+    deleteRelations: |
+        Het verwijderen van dit item zal ook het volgende verwijderen:
+        
+        {relations}
+        
+        Weet je zeker dat je wilt doorgaan?

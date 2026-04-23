@@ -1,0 +1,55 @@
+datatable:
+    deleteSingle: Weet je zeker dat je dit item wilt verwijderen?
+    deleteMultiple: Weet je zeker dat je deze :amount items wilt verwijderen?
+
+general:
+    search: Zoeken
+    cancel: Annuleren
+    loading: laden...
+    language: Taal
+    save: Opslaan
+    saveAndClose: Opslaan & sluiten
+    saved: Opgeslagen
+    close: Sluiten
+    closeWarning: Je hebt niet-opgeslagen wijzigingen, weet je zeker dat je dit venster wilt sluiten?
+    logout: Uitloggen
+
+media:
+    editKeyPrompt: Geef een naam voor de sleutel van dit bestand
+    editNamePrompt: Geef een nieuwe naam voor dit bestand
+    newFolderPrompt: Geef een naam voor de nieuwe map
+    newFolderPlaceholder: Nieuwe map
+    upload: Uploaden
+    newFolder: Nieuwe map
+    cut: Knippen
+    editKey: Sleutel bewerken
+    paste: Plakken
+    delete: Verwijderen
+    pickFile: Bestand kiezen
+    deleteConfirm: Weet je zeker dat je de geselecteerde bestanden wilt verwijderen?
+
+login:
+    login: Inloggen
+    emailAddress: E-mailadres
+    password: Wachtwoord
+    remember: Onthoud mij
+    passwordLost: Wachtwoord vergeten?
+    wrongLogin: Onjuist e-mailadres of wachtwoord
+    sendResetLink: Verstuur wachtwoordherstel-link
+    backToLogin: Terug naar inloggen
+    resetLinkSendSuccess: Als je e-mailadres geregistreerd is, ontvang je binnenkort een wachtwoordherstel-link.
+    resetLinkSendError: Er ging iets mis bij het versturen van de herstelmail. Probeer het later opnieuw.
+    resetMail:
+        subject: Wachtwoord resetten
+        message: Klik op de knop hieronder of kopieer de URL naar je browser om je wachtwoord te resetten. Deze link is
+            2 uur geldig vanaf het moment dat dit bericht is verzonden
+
+    repeatPassword: Herhaal wachtwoord
+    resetPasswordButton: Nieuw wachtwoord instellen
+    enterNewPassword: Voer een nieuw wachtwoord in
+    passwordMismatch: Wachtwoorden komen niet overeen
+
+validation:
+    email: Ongeldig e-mailadres
+    emailRequired: E-mailadres is verplicht
+    inputRequired: Dit veld is verplicht

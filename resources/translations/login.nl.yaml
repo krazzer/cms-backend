@@ -1,0 +1,9 @@
+resetMail:
+    subject: Wachtwoord resetten
+    message: Klik op de knop hieronder of kopieer en plak de URL in je browser om je wachtwoord te resetten. Deze link is
+        2 uur geldig vanaf het moment dat dit bericht is verzonden
+    button: Resetten
+
+setPassword:
+    invalidOrExpiredUrl: De URL is ongeldig of is verlopen
+    length: Het wachtwoord moet minimaal 12 tekens lang zijn
