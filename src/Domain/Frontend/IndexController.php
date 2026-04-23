@@ -33,7 +33,7 @@ class IndexController extends AbstractController
         ]);
     }
 
-    #[Route('/{path}', name: 'page', requirements: ['path' => '[a-z0-9-/]+'])]
+    #[Route('/{path}', name: 'page', requirements: ['path' => '[a-z0-9-/]+'], priority: -1)]
     public function page(string $path): Response
     {
         $locale = $this->requestStack->getCurrentRequest()->getLocale();
