@@ -15,7 +15,7 @@ class PageSection
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Page::class, inversedBy: 'pageSections')]
+    #[ORM\ManyToOne(targetEntity: Page::class, inversedBy: 'sections')]
     #[ORM\JoinColumn(name: 'page_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Page $page;
 

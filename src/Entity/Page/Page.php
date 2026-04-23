@@ -6,7 +6,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use KikCMS\Entity\PageImage\PageImage;
 use KikCMS\Entity\PageSection\PageSection;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
@@ -74,15 +73,11 @@ class Page
     #[ORM\Column]
     private ?DateTimeImmutable $updated_at;
 
-    #[ORM\OneToMany(targetEntity: PageImage::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $images;
-
     #[ORM\OneToMany(targetEntity: PageSection::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $sections;
 
     public function __construct()
     {
-        $this->images   = new ArrayCollection();
         $this->sections = new ArrayCollection();
 
         $this->type = 'page';
@@ -276,23 +271,6 @@ class Page
         return $this;
     }
 
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
-    public function setImages(iterable $images): static
-    {
-        $this->images = new ArrayCollection();
-
-        foreach ($images as $image) {
-            $image->setPage($this);
-            $this->images->add($image);
-        }
-
-        return $this;
-    }
-
     public function getSections(): Collection
     {
         return $this->sections;
@@ -300,7 +278,7 @@ class Page
 
     public function setSections(iterable $sections): static
     {
-        $this->images = new ArrayCollection();
+        $this->sections = new ArrayCollection();
 
         foreach ($sections as $section) {
             $section->setPage($this);
