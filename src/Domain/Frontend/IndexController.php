@@ -2,21 +2,49 @@
 
 namespace KikCMS\Domain\Frontend;
 
+use KikCMS\Entity\Page\PageRepository;
+use KikCMS\Entity\Page\Path\PathService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IndexController extends AbstractController
 {
-    public function __construct(private readonly TranslatorInterface $translator) {}
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        private readonly PathService $pathService,
+        private readonly RequestStack $requestStack,
+        private readonly PageRepository $pageRepository,
+    ) {}
 
     #[Route('/')]
     public function index(): Response
     {
+        $locale = $this->requestStack->getCurrentRequest()->getLocale();
+        $page   = $this->pageRepository->findOneBy(['identifier' => FrontendConfig::DEFAULT_IDENTIFIER]);
+
         return $this->render('theme/templates/default.twig', [
-            'title' => 'KikCMS',
+            'title' => $page->getName()[$locale],
+            'page'  => $page,
+        ]);
+    }
+
+    #[Route('/{path}', name: 'page', requirements: ['path' => '[a-z0-9-/]+'])]
+    public function page(string $path): Response
+    {
+        $locale = $this->requestStack->getCurrentRequest()->getLocale();
+
+        if ( ! $page = $this->pathService->getPageByPath($path, $locale)) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('theme/templates/default.twig', [
+            'title' => $page->getName()[$locale],
+            'page'  => $page,
         ]);
     }
 

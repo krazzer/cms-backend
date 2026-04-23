@@ -20,22 +20,12 @@
         </nav>
     </header>
     <main>
-        <h1 align="center">Welcome!</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec aliquet lobortis lorem, eu rutrum leo
-            aliquam in. Nullam dapibus posuere ornare. Nunc feugiat volutpat magna non elementum. Vivamus tristique
-            facilisis elit quis imperdiet. Pellentesque gravida eros nec lectus eleifend tempor.
-        </p>
-        <p>
-            Maecenas sed pellentesque sem. Quisque pharetra lacus vitae tortor rhoncus lacinia. Orci varius natoque
-            penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur ultrices, nisi ac consequat
-            gravida, nisi urna ultricies velit, ut tempus elit lectus eu libero. Integer volutpat aliquet tristique.
-        </p>
-        <p>
-            Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer blandit
-            massa odio, non gravida elit fermentum a. Etiam vitae mattis ante. Vivamus vitae metus viverra, tristique
-            est id, fringilla purus. Suspendisse nec dapibus elit. Sed vestibulum lacus vitae rutrum pulvinar.
-        </p>
+        <h1 align="center">{{ title }}</h1>
+        {% for section in page.sections|default([]) %}
+            <section>
+                {{ section.content.text|default('')|nl2br }}
+            </section>
+        {% endfor %}
     </main>
     <footer>
         Footer here

@@ -45,6 +45,8 @@ class PageRepository extends ServiceEntityRepository
             $qb->andWhere('JSON_LENGTH(p.parents) <= :count')->setParameter('count', $startLevel + $maxLevel);
         }
 
+        $qb->orderBy('p.display_order', 'ASC');
+
         return $qb->getQuery()->getResult();
     }
 }

@@ -4,5 +4,7 @@ namespace KikCMS\Domain\Frontend;
 
 class FrontendConfig
 {
-    const MENU_MAIN = 'main';
+    const string MENU_MAIN = 'main';
+
+    const string DEFAULT_IDENTIFIER = 'default';
 }

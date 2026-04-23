@@ -58,4 +58,15 @@ readonly class PathService
 
         return false;
     }
+
+    public function getPageByPath(string $path, string $lang): ?Page
+    {
+        $qb = $this->pageRepository->createQueryBuilder('p');
+
+        $qb->andWhere("JSON_UNQUOTE(JSON_EXTRACT(p.path, :jsonPath)) = :path")
+            ->setParameter('path', $path)
+            ->setParameter('jsonPath', '$.' . $lang);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }
