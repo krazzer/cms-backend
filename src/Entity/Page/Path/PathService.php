@@ -2,27 +2,32 @@
 
 namespace KikCMS\Entity\Page\Path;
 
-use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Entity\Page\Page;
 use KikCMS\Entity\Page\PageRepository;
 
 readonly class PathService
 {
-    public function __construct(
-        private PageRepository $pageRepository,
-        private EntityManagerInterface $entityManager
-    ) {}
+    public function __construct(private PageRepository $pageRepository) {}
 
     public function getPagesWithoutPath(): array
     {
         return $this->pageRepository->findBy(['path' => null]);
     }
 
+    public function updateChildren(Page $page): array
+    {
+        $children = $this->pageRepository->findByParent($page);
+
+        foreach ($children as $child) {
+            $this->updatePath($child);
+        }
+
+        return $children;
+    }
+
     public function updatePath(Page $page): bool
     {
-        if ( ! $parentIds = $page->getParents()) {
-            return false;
-        }
+        $parentIds = $page->getParents() ?: [];
 
         $parts = [];
 
@@ -48,10 +53,6 @@ readonly class PathService
 
         if ($path) {
             $page->setPath($path);
-
-            $this->entityManager->persist($page);
-            $this->entityManager->flush();
-
             return true;
         }
 
