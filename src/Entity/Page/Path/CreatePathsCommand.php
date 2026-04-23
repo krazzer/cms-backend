@@ -30,9 +30,12 @@ class CreatePathsCommand extends Command
 
         foreach ($pagesWithoutPath as $page) {
             if ($this->pathService->updatePath($page)) {
+                $this->entityManager->persist($page);
                 $pagesUpdated++;
             }
         }
+
+        $this->entityManager->flush();
 
         $io->success(sprintf('Updated %d page%s', $pagesUpdated, $pagesUpdated === 1 ? '' : 's'));
 
