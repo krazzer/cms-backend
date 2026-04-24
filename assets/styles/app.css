@@ -24,6 +24,10 @@ header{
 main{
     max-width: 600px;
     margin: var(--white-space) auto;
+
+    > h1{
+        text-align: center;
+    }
 }
 
 nav{
@@ -36,4 +40,8 @@ nav{
         gap: 15px;
         flex-wrap: wrap;
     }
+}
+
+footer, footer a{
+    color: #999;
 }
