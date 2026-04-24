@@ -1,0 +1,23 @@
+sections:
+    richtext:
+        label_trans: Tekst
+        fields:
+            - content
+    richtext_image:
+        label_trans: Tekst + afbeelding
+        fields:
+            - content
+            - image
+    image:
+        label_trans: Afbeelding
+        fields:
+            - image
+    overview:
+        label_trans: Overzicht van sub-pagina's
+fields:
+    content:
+        label_trans: Inhoud
+        type: richtext
+    image:
+        label_trans: Afbeelding
+        type: image

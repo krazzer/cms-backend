@@ -32,3 +32,13 @@ dataTable:
         {relations}
         
         Are you sure you want to continue?
+
+sections:
+    richtext: Rich text
+    richtext_image: Rich text with image
+    image: Image
+    overview: Overview of sub-pages
+
+section_fields:
+    content: Content
+    image: Image

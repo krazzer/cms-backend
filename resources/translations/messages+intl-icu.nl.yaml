@@ -32,3 +32,13 @@ dataTable:
         {relations}
         
         Weet je zeker dat je wilt doorgaan?
+
+sections:
+    richtext: Tekst
+    richtext_image: Tekst met afbeelding
+    image: Afbeelding
+    overview: Overzicht van subpagina's
+
+section_fields:
+    content: Inhoud
+    image: Afbeelding
