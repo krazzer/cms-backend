@@ -20,8 +20,7 @@ class Page
     const string FIELD_SLUG          = 'slug';
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: "Doctrine\ORM\Id\IdentityGenerator")]
+    #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 

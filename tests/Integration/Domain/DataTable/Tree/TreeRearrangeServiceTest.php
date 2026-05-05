@@ -23,8 +23,11 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
     {
         $pages = $this->buildTree();
 
+        $id20 = $this->getPageIdByIdentifier(20);
+        $id23 = $this->getPageIdByIdentifier(23);
+
         // should not be possible to move a parent into its own child
-        $this->service->rearrange($this->getDataTable(), 20, 23, Location::INSIDE);
+        $this->service->rearrange($this->getDataTable(), $id20, $id23, Location::INSIDE);
 
         $expectedOrders = [
             // parents
@@ -42,7 +45,10 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
     {
         $pages = $this->buildTree();
 
-        $this->service->rearrange($this->getDataTable(), 13, 23, Location::AFTER);
+        $id13 = $this->getPageIdByIdentifier(13);
+        $id23 = $this->getPageIdByIdentifier(23);
+
+        $this->service->rearrange($this->getDataTable(), $id13, $id23, Location::AFTER);
 
         $expectedOrders = [
             // parents
@@ -60,7 +66,10 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
     {
         $pages = $this->buildTree();
 
-        $this->service->rearrange($this->getDataTable(), 13, 23, Location::BEFORE);
+        $id13 = $this->getPageIdByIdentifier(13);
+        $id23 = $this->getPageIdByIdentifier(23);
+
+        $this->service->rearrange($this->getDataTable(), $id13, $id23, Location::BEFORE);
 
         $expectedOrders = [
             // parents
@@ -78,7 +87,10 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
     {
         $pages = $this->buildTree();
 
-        $this->service->rearrange($this->getDataTable(), 11, 15, Location::BEFORE);
+        $id11 = $this->getPageIdByIdentifier(11);
+        $id15 = $this->getPageIdByIdentifier(15);
+
+        $this->service->rearrange($this->getDataTable(), $id11, $id15, Location::BEFORE);
 
         $expectedOrders = [
             // parents
@@ -96,7 +108,10 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
     {
         $pages = $this->buildTree();
 
-        $this->service->rearrange($this->getDataTable(), 11, 15, Location::AFTER);
+        $id11 = $this->getPageIdByIdentifier(11);
+        $id15 = $this->getPageIdByIdentifier(15);
+
+        $this->service->rearrange($this->getDataTable(), $id11, $id15, Location::AFTER);
 
         $expectedOrders = [
             // parents
@@ -114,7 +129,10 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
     {
         $pages = $this->buildTree();
 
-        $this->service->rearrange($this->getDataTable(), 13, 20, Location::INSIDE);
+        $id13 = $this->getPageIdByIdentifier(13);
+        $id20 = $this->getPageIdByIdentifier(20);
+
+        $this->service->rearrange($this->getDataTable(), $id13, $id20, Location::INSIDE);
 
         $expectedOrders = [
             // parents
@@ -155,13 +173,18 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
         return $dataTable;
     }
 
+    private function getPageIdByIdentifier(int $identifier): int
+    {
+        return $this->em->getRepository(Page::class)->findOneBy(['identifier' => $identifier])->getId();
+    }
+
     private function getPage(int $order, ?int $id = null, ?int $parent = null): Page
     {
         $entity = new Page();
         $entity->setDisplayOrder($order);
 
         if ($id) {
-            $entity->setId($order);
+            $entity->setIdentifier($id);
         }
 
         if ($parent) {
@@ -180,7 +203,7 @@ class TreeRearrangeServiceTest extends DbKernelTestCase
 
         foreach ($pages as $page) {
             $this->em->refresh($page);
-            $orderMap[$page->getId()] = $page->getDisplayOrder();
+            $orderMap[$page->getIdentifier()] = $page->getDisplayOrder();
         }
 
         return $orderMap;
