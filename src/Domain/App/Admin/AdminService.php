@@ -2,6 +2,8 @@
 
 namespace KikCMS\Domain\App\Admin;
 
+use DateTime;
+use DateTimeZone;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use ZipArchive;
@@ -16,6 +18,15 @@ readonly class AdminService
     public function update(string $adminDir, SymfonyStyle $io): void
     {
         $io->comment('Updating latest admin release from ' . $this->latestDistUrl . '...');
+
+        $headers = get_headers($this->latestDistUrl, 1);
+
+        if (isset($headers['Last-Modified'])) {
+            $date = new DateTime($headers['Last-Modified']);
+            $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
+
+            $io->comment('Last modified: ' . $date->format('D, d M Y H:i:s T'));
+        }
 
         $data = file_get_contents($this->latestDistUrl);
 
