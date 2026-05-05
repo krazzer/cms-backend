@@ -58,7 +58,7 @@ class Page
     #[ORM\Column(length: 255)]
     private ?string $type;
 
-    #[ORM\Column(length: 255, nullable: true, options: ['comment' => 'Id string to identify this page'])]
+    #[ORM\Column(length: 255, nullable: true, options: ['comment' => 'String to identify this page'])]
     private ?string $identifier = null;
 
     #[ORM\Column(length: 255, nullable: true)]

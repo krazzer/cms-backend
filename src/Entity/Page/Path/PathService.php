@@ -41,9 +41,11 @@ readonly class PathService
             }
         }
 
-        foreach ($page->getSlug() as $lang => $slug) {
-            if ($slug) {
-                $parts[$lang][] = $slug;
+        if($page->getSlug()) {
+            foreach ($page->getSlug() as $lang => $slug) {
+                if ($slug) {
+                    $parts[$lang][] = $slug;
+                }
             }
         }
 

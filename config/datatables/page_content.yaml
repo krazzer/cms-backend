@@ -11,16 +11,18 @@ headers:
 mobile_columns:
     - type
 form:
+    field_provider: section_type_fields
+    field_provider_add: true
     fields:
         type:
-            type: 'text'
-            label: 'Type'
+            type: select
+            label: Type
+            item_provider: 'section_type_options'
+            is_form_modifier: true
             validator:
                 name: presence
-        content:
-            type: 'textarea'
-            label: 'Content'
-            field: content.text
+                parameters:
+                required: true
 rearrange: true
 source:
     type: pdo

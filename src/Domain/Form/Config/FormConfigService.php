@@ -21,7 +21,8 @@ readonly class FormConfigService
         private KernelInterface $kernel,
         private Parser $yamlParser,
         private FieldService $fieldService,
-        private ConfigProviderRegistry $providerRegistry, private TranslatorInterface $translator
+        private ConfigProviderRegistry $providerRegistry,
+        private TranslatorInterface $translator
     ) {}
 
     public function getConfigFromFile(string $name): array
@@ -86,11 +87,17 @@ readonly class FormConfigService
 
     private function resolveFields(array $config, ?Context $context): array
     {
-        if ($fieldProviderKey = $config[FormConfig::FIELD_PROVIDER] ?? null) {
-            return $this->providerRegistry->getConfig($fieldProviderKey, $context);
+        $fields           = $config[FormConfig::FIELDS] ?? [];
+        $fieldProviderKey = $config[FormConfig::FIELD_PROVIDER] ?? null;
+        $fieldProviderAdd = $config[FormConfig::FIELD_PROVIDER_ADD] ?? false;
+
+        if ( ! $fieldProviderKey) {
+            return $fields;
         }
 
-        return $config[FormConfig::FIELDS] ?? [];
+        $providedFields = $this->providerRegistry->getConfig($fieldProviderKey, $context);
+
+        return $fieldProviderAdd ? $fields + $providedFields : $providedFields;
     }
 
     private function translateFields(Form $form): void

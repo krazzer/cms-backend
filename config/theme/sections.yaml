@@ -1,19 +1,19 @@
 sections:
     richtext:
-        label_trans: Tekst
+        label_trans: sections.richtext
         fields:
             - content
     richtext_image:
-        label_trans: Tekst + afbeelding
+        label_trans: sections.richtext_image
         fields:
             - content
             - image
     image:
-        label_trans: Afbeelding
+        label_trans: sections.image
         fields:
             - image
     overview:
-        label_trans: Overzicht van sub-pagina's
+        label_trans: sections.overview
 fields:
     content:
         label_trans: Inhoud
