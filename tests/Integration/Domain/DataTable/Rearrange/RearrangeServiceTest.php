@@ -7,7 +7,8 @@ use Doctrine\ORM\Tools\SchemaTool;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
-use KikCMS\Entity\PageImage\PageImage;
+use KikCMS\Entity\Page\Page;
+use KikCMS\Entity\PageSection\PageSection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -70,16 +71,24 @@ class RearrangeServiceTest extends KernelTestCase
     private function getDataTable(): DataTable
     {
         $dataTable = new DataTable();
-        $dataTable->setPdoModel(PageImage::class);
+        $dataTable->setPdoModel(PageSection::class);
 
         return $dataTable;
     }
 
-    private function getPageWithOrder(int $order): PageImage
+    private function getPageWithOrder(int $order): PageSection
     {
-        $entity = new PageImage();
+        if( ! $page = $this->em->find(Page::class, 1)){
+            $page = new Page();
+            $page->setId(1);
+            $this->em->persist($page);
+            $this->em->flush();
+        }
+
+        $entity = new PageSection();
         $entity->setDisplayOrder($order);
-        $entity->setImageId(1);
+        $entity->setType('');
+        $entity->setPage($page);
 
         $this->em->persist($entity);
         $this->em->flush();

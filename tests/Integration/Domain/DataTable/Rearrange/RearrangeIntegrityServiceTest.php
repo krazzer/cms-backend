@@ -4,14 +4,15 @@ namespace KikCMS\Tests\Integration\Domain\DataTable\Rearrange;
 
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeIntegrityService;
-use KikCMS\Entity\PageImage\PageImage;
+use KikCMS\Entity\Page\Page;
+use KikCMS\Entity\PageSection\PageSection;
 use KikCMS\Tests\Integration\DbKernelTestCase;
 
 class RearrangeIntegrityServiceTest extends DbKernelTestCase
 {
     private RearrangeIntegrityService $service;
 
-    const string ENTITY_CLASS = PageImage::class;
+    const string ENTITY_CLASS = PageSection::class;
 
     protected function setUp(): void
     {
@@ -54,9 +55,17 @@ class RearrangeIntegrityServiceTest extends DbKernelTestCase
 
     private function createEntityWithOrder(int $order): void
     {
+        if( ! $page = $this->em->find(Page::class, 1)){
+            $page = new Page();
+            $page->setId(1);
+            $this->em->persist($page);
+            $this->em->flush();
+        }
+
         $entity = new (self::ENTITY_CLASS)();
         $entity->setDisplayOrder($order);
-        $entity->setImageId(1);
+        $entity->setType('');
+        $entity->setPage($page);
 
         $this->em->persist($entity);
         $this->em->flush();

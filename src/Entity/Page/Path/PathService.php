@@ -34,15 +34,17 @@ readonly class PathService
         foreach ($parentIds as $id) {
             $parentPage = $this->pageRepository->find($id);
 
-            foreach ($parentPage->getSlug() as $lang => $slug) {
-                if ($slug) {
-                    $parts[$lang][] = $slug;
+            if($slugParts = $parentPage->getSlug()) {
+                foreach ($slugParts as $lang => $slug) {
+                    if ($slug) {
+                        $parts[$lang][] = $slug;
+                    }
                 }
             }
         }
 
-        if($page->getSlug()) {
-            foreach ($page->getSlug() as $lang => $slug) {
+        if($slugParts = $page->getSlug()) {
+            foreach ($slugParts as $lang => $slug) {
                 if ($slug) {
                     $parts[$lang][] = $slug;
                 }

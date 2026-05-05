@@ -16,7 +16,7 @@ use KikCMS\Domain\DataTable\Dto\ShowDto;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation;
 use KikCMS\Entity\Page\Page;
-use KikCMS\Entity\PageImage\PageImage;
+use KikCMS\Entity\PageSection\PageSection;
 use KikCMS\Tests\Integration\DbKernelTestCase;
 
 class DataTableControllerTest extends DbKernelTestCase
@@ -147,17 +147,18 @@ class DataTableControllerTest extends DbKernelTestCase
 
     public function testSave()
     {
-        $dataTable = $this->dataTableService->getByInstance('page_images');
+        $dataTable = $this->dataTableService->getByInstance('page_content');
+        $pagesDataTable = $this->dataTableService->getByInstance('pages');
 
         // Must be null, nothing is created
-        $pageImageId1 = $this->em->find(PageImage::class, 1);
-        $this->assertNull($pageImageId1);
+        $pageSectionId1 = $this->em->find(PageSection::class, 1);
+        $this->assertNull($pageSectionId1);
 
         $saveDto = new SaveDto();
 
         $saveDto->dataTable = $dataTable;
-        $saveDto->filters   = new DataTableFilters()->setLangCode('nl');
-        $saveDto->formData  = ['image_id' => 1];
+        $saveDto->filters   = new DataTableFilters()->setLangCode('nl')->setParentId(1)->setParentDataTable($pagesDataTable);
+        $saveDto->formData  = ['type' => 'richtext'];
         $saveDto->id        = null;
 
         $response = $this->controller->save($saveDto);
@@ -165,24 +166,31 @@ class DataTableControllerTest extends DbKernelTestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         // Must not be null, new item is created
-        $pageImageId1 = $this->em->find(PageImage::class, 1);
-        $this->assertNotNull($pageImageId1);
+        $pageSectionId1 = $this->em->find(PageSection::class, 1);
+        $this->assertNotNull($pageSectionId1);
     }
 
     public function testDelete()
     {
-        $dataTable = $this->dataTableService->getByInstance('page_images');
+        $dataTable = $this->dataTableService->getByInstance('page_content');
 
-        $pageImage = new PageImage();
-        $pageImage->setId(1);
-        $pageImage->setImageId(1);
+        $page = new Page();
+        $page->setId(1);
 
-        $this->em->persist($pageImage);
+        $this->em->persist($page);
+        $this->em->flush();
+
+        $section = new PageSection();
+        $section->setId(1);
+        $section->setType('type');
+        $section->setPage($page);
+
+        $this->em->persist($section);
         $this->em->flush();
 
         // Must exist
-        $pageImageId1 = $this->em->find(PageImage::class, 1);
-        $this->assertNotNull($pageImageId1);
+        $section = $this->em->find(PageSection::class, 1);
+        $this->assertNotNull($section);
 
         $deleteDto = new DeleteDto();
 
@@ -195,27 +203,36 @@ class DataTableControllerTest extends DbKernelTestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         // Must be null, item is deleted
-        $pageImageId1 = $this->em->find(PageImage::class, 1);
-        $this->assertNull($pageImageId1);
+        $section = $this->em->find(PageSection::class, 1);
+        $this->assertNull($section);
     }
 
     public function testRearrange()
     {
-        $dataTable = $this->dataTableService->getByInstance('page_images');
+        $dataTable = $this->dataTableService->getByInstance('page_content');
 
-        $pageImage1 = new PageImage();
+        $page = new Page();
+        $page->setId(1);
+
+        $this->em->persist($page);
+        $this->em->flush();
+
+        $pageImage1 = new PageSection();
         $pageImage1->setId(1);
-        $pageImage1->setImageId(1);
+        $pageImage1->setType('x');
+        $pageImage1->setPage($page);
         $pageImage1->setDisplayOrder(1);
 
-        $pageImage2 = new PageImage();
+        $pageImage2 = new PageSection();
         $pageImage2->setId(2);
-        $pageImage2->setImageId(2);
+        $pageImage2->setType('x');
+        $pageImage2->setPage($page);
         $pageImage2->setDisplayOrder(2);
 
-        $pageImage3 = new PageImage();
+        $pageImage3 = new PageSection();
         $pageImage3->setId(3);
-        $pageImage3->setImageId(3);
+        $pageImage3->setType('x');
+        $pageImage3->setPage($page);
         $pageImage3->setDisplayOrder(3);
 
         $this->em->persist($pageImage1);
@@ -224,8 +241,8 @@ class DataTableControllerTest extends DbKernelTestCase
         $this->em->flush();
 
         // Display order should be 1, 2, 3
-        $pageImageId1 = $this->em->find(PageImage::class, 3);
-        $this->assertEquals(3, $pageImageId1->getDisplayOrder());
+        $section = $this->em->find(PageSection::class, 3);
+        $this->assertEquals(3, $section->getDisplayOrder());
 
         $rearrangeDto = new RearrangeDto();
 
@@ -240,7 +257,7 @@ class DataTableControllerTest extends DbKernelTestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         // Display order should be 1, 3, 2
-        $pageImageId1 = $this->em->find(PageImage::class, 3);
-        $this->assertEquals(1, $pageImageId1->getDisplayOrder());
+        $section = $this->em->find(PageSection::class, 3);
+        $this->assertEquals(1, $section->getDisplayOrder());
     }
 }
