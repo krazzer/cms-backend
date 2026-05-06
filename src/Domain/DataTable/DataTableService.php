@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 readonly class DataTableService
 {
     public function __construct(
-        #[Autowire('%cms.name%')] private string $tinyMceApiKey,
+        #[Autowire('%cms.tinymce.api_key%')] private string $tinyMceApiKey,
         private DataTableConfigService $configService,
         private DataTableSourceServiceResolver $resolver,
         private DataTablePdoFilterService $dataTableFilterService,
