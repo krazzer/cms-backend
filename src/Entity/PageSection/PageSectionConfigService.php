@@ -49,12 +49,16 @@ readonly class PageSectionConfigService
             $returnFields[$field] = $allFields[$field];
         }
 
+        foreach($returnFields as $key => $field) {
+            $returnFields[$key]['label'] = $this->getLabel($field);
+        }
+
         return $returnFields;
     }
 
-    private function getLabel(array $section): string
+    private function getLabel(array $data): string
     {
-        return $section['label'] ?? $this->translator->trans($section['label_trans']);
+        return $data['label'] ?? $this->translator->trans($data['label_trans']);
     }
 
 }
