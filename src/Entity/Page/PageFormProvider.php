@@ -4,7 +4,7 @@ namespace KikCMS\Entity\Page;
 
 use KikCMS\Domain\App\Config\Provider\ConfigProviderInterface;
 use KikCMS\Domain\App\Config\Provider\Context;
-use KikCMS\Domain\DataTable\Dto\Context\FormContext;
+use KikCMS\Domain\DataTable\Context\FormContext;
 use KikCMS\Domain\Form\Config\FormConfigService;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 

@@ -6,7 +6,7 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Config\SourceType;
-use KikCMS\Domain\DataTable\Dto\Context\FormContext;
+use KikCMS\Domain\DataTable\Context\FormContext;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Form\DataTableFormService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeService;

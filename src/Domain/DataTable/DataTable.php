@@ -10,6 +10,7 @@ class DataTable
     private string $instance;
     private array $form;
     private ?string $formProvider = null;
+    private ?string $rowViewProvider = null;
     private ?string $pdoModel = null;
     private string $cachePool;
     private array $actions;
@@ -213,6 +214,17 @@ class DataTable
     public function setFormProvider(?string $formProvider): DataTable
     {
         $this->formProvider = $formProvider;
+        return $this;
+    }
+
+    public function getRowViewProvider(): ?string
+    {
+        return $this->rowViewProvider;
+    }
+
+    public function setRowViewProvider(?string $rowViewProvider): DataTable
+    {
+        $this->rowViewProvider = $rowViewProvider;
         return $this;
     }
 }

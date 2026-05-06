@@ -1,13 +1,12 @@
 <?php
 
-namespace KikCMS\Entity\PageSection;
+namespace KikCMS\Entity\PageSection\Provider;
 
 use KikCMS\Domain\App\Config\Provider\ConfigProviderInterface;
 use KikCMS\Domain\App\Config\Provider\Context;
-use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
+use KikCMS\Entity\PageSection\PageSectionConfigService;
 
-#[AsTaggedItem('section_type_options')]
-readonly class TypeOptionsProvider implements ConfigProviderInterface
+readonly class PageSectionTypeOptionsProvider implements ConfigProviderInterface
 {
     public function __construct(
         private PageSectionConfigService $pageSectionConfigService

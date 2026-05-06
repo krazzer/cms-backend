@@ -3,10 +3,12 @@
 namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Doctrine\Service\RelationService;
+use KikCMS\Domain\App\Config\Provider\ConfigProviderRegistry;
 use KikCMS\Domain\App\Config\Provider\Context;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\SourceType;
+use KikCMS\Domain\DataTable\Context\DataContext;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\Filter\DataTablePdoFilterService;
 use KikCMS\Domain\DataTable\Form\DataTableFormService;
@@ -22,6 +24,7 @@ readonly class DataTableService
 {
     public function __construct(
         #[Autowire('%cms.tinymce.api_key%')] private string $tinyMceApiKey,
+        private ConfigProviderRegistry $providerRegistry,
         private DataTableConfigService $configService,
         private DataTableSourceServiceResolver $resolver,
         private DataTablePdoFilterService $dataTableFilterService,
@@ -32,7 +35,13 @@ readonly class DataTableService
 
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
     {
-        return $this->source($dataTable, $filters)->getData($dataTable, $filters, $storeData);
+        $data = $this->source($dataTable, $filters)->getData($dataTable, $filters, $storeData);
+
+        if ($rowViewProvider = $dataTable->getRowViewProvider()) {
+            return $this->providerRegistry->getConfig($rowViewProvider, new DataContext($dataTable, $data));
+        }
+
+        return $data;
     }
 
     public function getForm(DataTable $dataTable, ?Context $context = null): Form

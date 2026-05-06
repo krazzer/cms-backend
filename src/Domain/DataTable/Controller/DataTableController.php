@@ -2,12 +2,12 @@
 
 namespace KikCMS\Domain\DataTable\Controller;
 
+use KikCMS\Domain\DataTable\Context\FormContext;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Delete\DeleteImpactCalculator;
 use KikCMS\Domain\DataTable\Delete\DeleteImpactMessageBuilder;
 use KikCMS\Domain\DataTable\Dto\AddDto;
 use KikCMS\Domain\DataTable\Dto\CheckDto;
-use KikCMS\Domain\DataTable\Dto\Context\FormContext;
 use KikCMS\Domain\DataTable\Dto\DeleteDto;
 use KikCMS\Domain\DataTable\Dto\EditDto;
 use KikCMS\Domain\DataTable\Dto\FilterDto;

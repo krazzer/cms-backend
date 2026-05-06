@@ -18,6 +18,8 @@ fields:
     content:
         label_trans: Inhoud
         type: richtext
+        field: content.text
     image:
         label_trans: Afbeelding
         type: image
+        field: content.image

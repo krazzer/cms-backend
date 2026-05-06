@@ -1,17 +1,18 @@
 <?php
 
-namespace KikCMS\Entity\PageSection;
+namespace KikCMS\Entity\PageSection\Provider;
 
 use KikCMS\Domain\App\Config\Provider\ConfigProviderInterface;
 use KikCMS\Domain\App\Config\Provider\Context;
-use KikCMS\Domain\DataTable\Dto\Context\FormContext;
-use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
+use KikCMS\Domain\DataTable\Context\FormContext;
+use KikCMS\Entity\PageSection\PageSectionConfigService;
+use KikCMS\Entity\PageSection\PageSectionRepository;
 
-#[AsTaggedItem('section_type_fields')]
 readonly class PageSectionTypeFieldsProvider implements ConfigProviderInterface
 {
     public function __construct(
-        private PageSectionRepository $repository, private PageSectionConfigService $pageSectionConfigService
+        private PageSectionRepository $repository,
+        private PageSectionConfigService $pageSectionConfigService
     ) {}
 
     public function getConfig(FormContext|Context $context): array

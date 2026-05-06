@@ -1,6 +1,6 @@
 <?php
 
-namespace KikCMS\Domain\DataTable\Dto\Context;
+namespace KikCMS\Domain\DataTable\Context;
 
 use KikCMS\Domain\App\Config\Provider\Context;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;

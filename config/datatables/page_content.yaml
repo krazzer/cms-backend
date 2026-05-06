@@ -10,19 +10,20 @@ headers:
     type: Type
 mobile_columns:
     - type
+row_view_provider: KikCMS\Entity\PageSection\Provider\PageSectionRowViewProvider
 form:
-    field_provider: section_type_fields
+    field_provider: KikCMS\Entity\PageSection\Provider\PageSectionTypeFieldsProvider
     field_provider_add: true
     fields:
         type:
             type: select
             label: Type
-            item_provider: 'section_type_options'
+            item_provider: KikCMS\Entity\PageSection\Provider\PageSectionTypeOptionsProvider
             is_form_modifier: true
             validator:
                 name: presence
                 parameters:
-                required: true
+                    required: true
 rearrange: true
 source:
     type: pdo
