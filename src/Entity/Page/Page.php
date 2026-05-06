@@ -27,19 +27,19 @@ class Page
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $parents = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $name = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $active = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $slug = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $path = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $seo = null;
 
     #[ORM\Column(type: 'json_pretty', nullable: true)]

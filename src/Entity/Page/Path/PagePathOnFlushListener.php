@@ -56,14 +56,5 @@ readonly class PagePathOnFlushListener
                 $uow->recomputeSingleEntityChangeSet($meta, $child);
             }
         }
-
-        foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ( ! $entity instanceof Page) {
-                continue;
-            }
-
-            $this->pathService->updatePath($entity);
-            $uow->computeChangeSet($meta, $entity);
-        }
     }
 }

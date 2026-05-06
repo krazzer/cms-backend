@@ -13,7 +13,7 @@ class MenuExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('menu', [$this, 'getMainMenu']),
+            new TwigFunction('menu', $this->getMainMenu(...)),
         ];
     }
 

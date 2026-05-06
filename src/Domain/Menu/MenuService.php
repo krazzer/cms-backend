@@ -25,7 +25,7 @@ readonly class MenuService
 
         return array_map(fn($page) => [
             'name'    => $page->getName()[$locale],
-            'url'     => '/' . $page->getSlug()[$locale],
+            'url'     => '/' . ($page->getSlug()[$locale] ?? null),
             'content' => $page->getContent()[$locale] ?? null,
         ], $pages);
     }
