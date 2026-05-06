@@ -39,6 +39,8 @@ parameters:
     cms.thumbnail.width: '200'
     cms.thumbnail.height: '200'
 
+    cms.tinymce.api_key: '%env(TINYMCE_API_KEY)%'
+
 services:
     Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher: ~
     Symfony\Component\String\ByteString: ~

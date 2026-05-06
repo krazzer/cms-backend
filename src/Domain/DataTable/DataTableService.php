@@ -16,10 +16,12 @@ use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 readonly class DataTableService
 {
     public function __construct(
+        #[Autowire('%cms.name%')] private string $tinyMceApiKey,
         private DataTableConfigService $configService,
         private DataTableSourceServiceResolver $resolver,
         private DataTablePdoFilterService $dataTableFilterService,
@@ -136,6 +138,16 @@ readonly class DataTableService
         $this->source($dataTable)->updateCheckbox($dataTable, $filters, $id, $field, $value, $storeData);
     }
 
+    public function getHelperData(DataTable $dataTable, Form $form, ?string $id = null, ?array $editData = null): array
+    {
+        $helperData = [];
+
+        $helperData += $this->getSubDataTableHelperData($dataTable, $form, $id, $editData);
+        $helperData += $this->getRichTextHelperData($form);
+
+        return $helperData;
+    }
+
     public function getSubDataTableHelperData(DataTable $dataTable, Form $form, ?string $id = null, ?array $editData = null): array
     {
         $subData = [];
@@ -151,6 +163,19 @@ readonly class DataTableService
         }
 
         return $subData;
+    }
+
+    public function getRichTextHelperData(Form $form): array
+    {
+        $helperData = [];
+
+        $fieldMap = $this->fieldService->getByForm($form, DataTableConfig::FIELD_TYPE_RICHTEXT);
+
+        foreach ($fieldMap as $key => $field) {
+            $helperData[$key] = [DataTableConfig::HELPER_TINYMCE_API_KEY => $this->tinyMceApiKey];
+        }
+
+        return $helperData;
     }
 
     public function getSubDataTableFieldHelperData(array $field, array $editData = [], ?Filters $filters = null): array

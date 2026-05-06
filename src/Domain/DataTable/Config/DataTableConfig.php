@@ -6,6 +6,7 @@ class DataTableConfig
 {
     const string FIELD_TYPE_SELECT    = 'select';
     const string FIELD_TYPE_DATATABLE = 'datatable';
+    const string FIELD_TYPE_RICHTEXT  = 'richtext';
 
     const string CELL_TYPE_CHECKBOX = 'checkbox';
 
@@ -19,6 +20,8 @@ class DataTableConfig
 
     const string HELPER_DATA     = 'data';
     const string HELPER_SETTINGS = 'settings';
+
+    const string HELPER_TINYMCE_API_KEY = 'tinyMceApiKey';
 
     const string SESSION_KEY_LANG = 'dataTableLang';
 

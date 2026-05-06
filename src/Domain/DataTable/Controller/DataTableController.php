@@ -55,7 +55,7 @@ class DataTableController extends AbstractController
 
         $form       = $this->dataTableService->getForm($dataTable, $context);
         $editData   = $this->dataTableService->getEditData($dataTable, $form, $filters, $id, $storeData);
-        $helperData = $this->dataTableService->getSubDataTableHelperData($dataTable, $form, $id, $editData);
+        $helperData = $this->dataTableService->getHelperData($dataTable, $form, $id, $editData);
 
         return new JsonResponse([
             'form'       => $this->formService->getFullConfig($form),
@@ -70,7 +70,7 @@ class DataTableController extends AbstractController
         $context = new FormContext([FormContext::TYPE => $dto->getType()]);
 
         $form        = $this->dataTableService->getForm($dto->getDataTable(), $context);
-        $helperData  = $this->dataTableService->getSubDataTableHelperData($dto->getDataTable(), $form);
+        $helperData  = $this->dataTableService->getHelperData($dto->getDataTable(), $form);
         $defaultData = $this->dataTableService->getDefaultData($form);
 
         return new JsonResponse([
@@ -167,10 +167,12 @@ class DataTableController extends AbstractController
     {
         $context = new FormContext($dto->getData(), $dto->getTrigger());
 
-        $form = $this->dataTableService->getForm($dto->getDataTable(), $context);
+        $form       = $this->dataTableService->getForm($dto->getDataTable(), $context);
+        $helperData = $this->dataTableService->getHelperData($dto->getDataTable(), $form);
 
         return new JsonResponse([
-            'form' => $this->formService->getFullConfig($form),
+            'form'       => $this->formService->getFullConfig($form),
+            'helperData' => $helperData,
         ]);
     }
 }
