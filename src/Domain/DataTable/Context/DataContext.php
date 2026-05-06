@@ -21,6 +21,12 @@ class DataContext extends Context
         return $this->data;
     }
 
+    public function setData(array $data): static
+    {
+        $this->data = $data;
+        return $this;
+    }
+
     public function getDataTable(): DataTable
     {
         return $this->dataTable;
