@@ -25,6 +25,10 @@ readonly class PageListener
 
     private function getSlugs(Page $page): array
     {
+        if( ! $page->getName()){
+            return [];
+        }
+
         return array_map(function ($name) {
             return $this->slugger->slug($name)->lower()->toString();
         }, $page->getName());
