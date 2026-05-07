@@ -10,7 +10,7 @@ headers:
     type: Type
 mobile_columns:
     - type
-row_view_provider: KikCMS\Entity\PageSection\Provider\PageSectionRowViewProvider
+row_view_modifier: KikCMS\Entity\PageSection\Modifier\PageSectionRowViewModifier
 form:
     field_provider: KikCMS\Entity\PageSection\Provider\PageSectionTypeFieldsProvider
     field_provider_add: true

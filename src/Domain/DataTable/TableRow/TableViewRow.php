@@ -47,6 +47,6 @@ class TableViewRow
 
     public function toArray(): array
     {
-        return ['id' => $this->id, 'data' => $this->filteredRow];
+        return ['id' => $this->id, 'data' => array_values($this->filteredRow)];
     }
 }

@@ -2,22 +2,16 @@
 
 namespace KikCMS\Domain\DataTable\Modifier;
 
-use KikCMS\Domain\DataTable\Context\DataContext;
+use KikCMS\Domain\DataTable\TableRow\TableViewRow;
 
 class DataTableCellModifier
 {
-    public function modify(DataContext $context, string $index, callable $callable): void
+    public function modify(TableViewRow $tableViewRow, string $key, callable $callable): void
     {
-        $rows          = $context->getData();
-        $headers       = array_keys($context->getDataTable()->getHeaders());
-        $headerIndexes = array_flip($headers);
+        $row = $tableViewRow->getFilteredRow();
 
-        foreach ($rows as $i => $row) {
-            $rowMap = array_combine($headers, $row['data']);
+        $row[$key] = $callable($row[$key], $row);
 
-            $rows[$i]['data'][$headerIndexes[$index]] = $callable($rowMap[$index], $rowMap, $context->getDataTable());
-        }
-
-        $context->setData($rows);
+        $tableViewRow->setFilteredRow($row);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace KikCMS\Entity\PageSection;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use KikCMS\Entity\Page\Page;
 
@@ -10,6 +9,12 @@ use KikCMS\Entity\Page\Page;
 #[ORM\Table(name: 'cms_page_section')]
 class PageSection
 {
+    const string FIELD_ID            = 'id';
+    const string FIELD_PAGE_ID       = 'page_id';
+    const string FIELD_TYPE          = 'type';
+    const string FIELD_CONTENT       = 'content';
+    const string FIELD_DISPLAY_ORDER = 'display_order';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

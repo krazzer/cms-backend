@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\DataTable;
 
+use KikCMS\Domain\App\Modifier\ModifierRegistry;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Domain\DataTable\Config\SourceType;
@@ -16,6 +17,7 @@ readonly class DataTableRowService
         private EntityManagerInterface $entityManager,
         private DataTableDataService $dataService,
         private DataTableModifierService $dataTableModifierService,
+        private ModifierRegistry $modifierRegistry,
     ) {}
 
     public function getRowView(mixed $rawRow, DataTable $dataTable, Filters $filters, string|int|null $id = null): TableViewRow
@@ -24,6 +26,10 @@ readonly class DataTableRowService
         $filteredRow = $this->filterRowData($rawRow, $dataTable, $filters);
 
         $viewRow = new TableViewRow($id, $rawRow, $filteredRow);
+
+        if ($rowViewProvider = $dataTable->getRowViewModifier()) {
+            $this->modifierRegistry->modify($rowViewProvider, $viewRow);
+        }
 
         if ($modifier = $this->dataTableModifierService->resolve($dataTable, ViewRowDataModifierInterface::class)) {
             $viewRow = $modifier->modify($viewRow, $dataTable, $filters);
@@ -63,7 +69,7 @@ readonly class DataTableRowService
             $value = $this->dataService->resolveValue($row, $headerKey, $filters->getLangCode());
             $value = $this->transformValueByType($value, $cellType);
 
-            $filteredData[] = $value;
+            $filteredData[$headerKey] = $value;
         }
 
         return $filteredData;
