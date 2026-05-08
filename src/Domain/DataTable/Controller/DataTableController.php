@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\DataTable\Controller;
 
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Context\FormContext;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\DataTable\Delete\DeleteImpactCalculator;
@@ -167,8 +168,10 @@ class DataTableController extends AbstractController
     {
         $context = new FormContext($dto->getData(), $dto->getTrigger());
 
+        $id = $dto->getData()[DataTableConfig::ID] ?? null;
+
         $form       = $this->dataTableService->getForm($dto->getDataTable(), $context);
-        $helperData = $this->dataTableService->getHelperData($dto->getDataTable(), $form);
+        $helperData = $this->dataTableService->getHelperData($dto->getDataTable(), $form, $id, $dto->getData());
 
         return new JsonResponse([
             'form'       => $this->formService->getFullConfig($form),
