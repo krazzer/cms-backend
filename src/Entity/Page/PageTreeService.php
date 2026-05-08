@@ -2,8 +2,15 @@
 
 namespace KikCMS\Entity\Page;
 
-class PageTreeService
+use Doctrine\ORM\EntityManagerInterface;
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
+
+readonly class PageTreeService
 {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+    ) {}
+
     /**
      * Sorts a flat list of hierarchical items into a depth-first, display-order-aware structure.
      *
@@ -60,17 +67,35 @@ class PageTreeService
             $parents = $item[Page::FIELD_PARENTS] ?? [];
 
             if ( ! empty($parents)) {
-                $lastParent = end($parents);
+                $lastParent                       = end($parents);
                 $parentsWithChildren[$lastParent] = true;
             }
         }
 
         // Add 'haschildren' to each item
         foreach ($data as &$item) {
-            $itemId = $item[Page::FIELD_ID];
+            $itemId                     = $item[Page::FIELD_ID];
             $item[Page::FIELD_CHILDREN] = isset($parentsWithChildren[$itemId]);
         }
 
         return $data;
+    }
+
+    public function getMaxDisplayOrder(?array $parents = null): int
+    {
+        $query = $this->entityManager->createQueryBuilder()
+            ->select('MAX(e.' . DataTableConfig::DISPLAY_ORDER . ')')
+            ->from(Page::class, DataTableConfig::DEFAULT_TABLE_ALIAS);
+
+        if ($parents === null) {
+            $query->where('e.parents IS NULL');
+        } else {
+            $query->where('e.parents = :parents')
+                ->setParameter('parents', json_encode($parents));
+        }
+
+        $max = (int) $query->getQuery()->getSingleScalarResult();
+
+        return $max ?: 0;
     }
 }

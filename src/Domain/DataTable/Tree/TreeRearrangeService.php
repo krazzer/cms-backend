@@ -2,14 +2,22 @@
 
 namespace KikCMS\Domain\DataTable\Tree;
 
-use KikCMS\Domain\DataTable\Config\DataTableConfig;
+use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Domain\DataTable\DataTable;
 use KikCMS\Domain\DataTable\Rearrange\AbstractRearrangeService;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation as Location;
 use KikCMS\Entity\Page\Page;
+use KikCMS\Entity\Page\PageTreeService;
 
 readonly class TreeRearrangeService extends AbstractRearrangeService
 {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        private PageTreeService $pageTreeService,
+    ) {
+        parent::__construct($entityManager);
+    }
+
     public function rearrange(DataTable $dataTable, int $sourceId, int $targetId, Location $location): void
     {
         list($sourceEntity, $targetEntity) = $this->getEntities($dataTable, $sourceId, $targetId);
@@ -46,15 +54,7 @@ readonly class TreeRearrangeService extends AbstractRearrangeService
     {
         $parents = $this->getParentsValueInsideNode($targetEntity);
 
-        $query = $this->entityManager->createQueryBuilder()
-            ->select('MAX(e.' . DataTableConfig::DISPLAY_ORDER . ')')
-            ->from(Page::class, DataTableConfig::DEFAULT_TABLE_ALIAS)
-            ->where('e.parents = :parents')
-            ->setParameter('parents', json_encode($parents));
-
-        $max = (int) $query->getQuery()->getSingleScalarResult();
-
-        return $max ?: 0;
+        return $this->pageTreeService->getMaxDisplayOrder($parents);
     }
 
     public function getParentsValueInsideNode(Page $targetEntity): array
