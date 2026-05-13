@@ -3,6 +3,8 @@
 namespace KikCMS\Domain\App\Modifier;
 
 use InvalidArgumentException;
+use KikCMS\Domain\DataTable\DataTable;
+use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 readonly class ModifierRegistry
@@ -20,8 +22,8 @@ readonly class ModifierRegistry
         throw new InvalidArgumentException("No modifier found for key: '$key'");
     }
 
-    public function modify(string $key, mixed $object = null): void
+    public function modify(string $key, mixed $object, DataTable $dataTable, DataTableFilters $filters): mixed
     {
-        $this->get($key)->modify($object);
+        return $this->get($key)->modify($object, $dataTable, $filters);
     }
 }

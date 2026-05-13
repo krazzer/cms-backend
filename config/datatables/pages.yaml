@@ -33,5 +33,6 @@ buttons:
                 action: 'add'
                 addType: 'menu'
 form_provider: KikCMS\Entity\Page\PageFormProvider
+row_view_modifier: KikCMS\Entity\Page\DataTableModifier\PageViewRowDataModifier
 source:
     model: KikCMS\Entity\Page\Page

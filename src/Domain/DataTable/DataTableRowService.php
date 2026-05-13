@@ -7,8 +7,6 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
-use KikCMS\Domain\DataTable\Modifier\DataTableModifierService;
-use KikCMS\Domain\DataTable\Modifier\ViewRowDataModifierInterface;
 use KikCMS\Domain\DataTable\TableRow\TableViewRow;
 
 readonly class DataTableRowService
@@ -16,7 +14,6 @@ readonly class DataTableRowService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private DataTableDataService $dataService,
-        private DataTableModifierService $dataTableModifierService,
         private ModifierRegistry $modifierRegistry,
     ) {}
 
@@ -28,11 +25,7 @@ readonly class DataTableRowService
         $viewRow = new TableViewRow($id, $rawRow, $filteredRow);
 
         if ($rowViewProvider = $dataTable->getRowViewModifier()) {
-            $this->modifierRegistry->modify($rowViewProvider, $viewRow);
-        }
-
-        if ($modifier = $this->dataTableModifierService->resolve($dataTable, ViewRowDataModifierInterface::class)) {
-            $viewRow = $modifier->modify($viewRow, $dataTable, $filters);
+            $viewRow = $this->modifierRegistry->modify($rowViewProvider, $viewRow, $dataTable, $filters);
         }
 
         return $viewRow;
