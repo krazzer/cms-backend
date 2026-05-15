@@ -2,8 +2,12 @@
 
 namespace KikCMS\Domain\Frontend;
 
+use KikCMS\Entity\Page\Page;
 use KikCMS\Entity\Page\PageRepository;
 use KikCMS\Entity\Page\Path\PathService;
+use KikCMS\Entity\Page\Renderer\GlobalVariables\GlobalVariableResolver;
+use KikCMS\Entity\Page\Renderer\PageRendererResolver;
+use KikCMS\Entity\Page\Renderer\RenderType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,33 +21,18 @@ class IndexController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly PathService $pathService,
         private readonly PageRepository $pageRepository,
+        private readonly PageRendererResolver $pageRendererResolver,
+        private readonly GlobalVariableResolver $globalVariableResolver,
     ) {}
 
     #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
-        $locale = $request->getLocale();
-        $page   = $this->pageRepository->findOneBy(['identifier' => FrontendConfig::DEFAULT_IDENTIFIER]);
-
-        return $this->render('theme/templates/default.twig', [
-            'title' => $page->getName()[$locale],
-            'page'  => $page,
-        ]);
-    }
-
-    #[Route('/{path}', name: 'page', requirements: ['path' => '[a-z0-9-/]+'], priority: -1)]
-    public function page(string $path, Request $request): Response
-    {
-        $locale = $request->getLocale();
-
-        if ( ! $page = $this->pathService->getPageByPath($path, $locale)) {
+        if ( ! $page = $this->pageRepository->findOneBy(['identifier' => FrontendConfig::DEFAULT_IDENTIFIER])) {
             throw $this->createNotFoundException();
         }
 
-        return $this->render('theme/templates/default.twig', [
-            'title' => $page->getName()[$locale],
-            'page'  => $page,
-        ]);
+        return $this->resolveByPage($page, $request);
     }
 
     #[Route('/api/translations')]
@@ -52,5 +41,26 @@ class IndexController extends AbstractController
         return new JsonResponse([
             'translations' => $this->translator->getCatalogue()->all('frontend'),
         ]);
+    }
+
+    #[Route('/{path}', name: 'page', requirements: ['path' => '[a-z0-9-/]+'], priority: -1)]
+    public function page(string $path, Request $request): Response
+    {
+        if ( ! $page = $this->pathService->getPageByPath($path, $request->getLocale())) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->resolveByPage($page, $request);
+    }
+
+    private function resolveByPage(Page $page, Request $request): Response
+    {
+        $result  = $this->pageRendererResolver->resolve($page)->render($page, $request);
+        $globals = $this->globalVariableResolver->resolve($request, $page);
+
+        return match ($result->type) {
+            RenderType::VIEW => $this->render($result->template, array_replace_recursive($globals, $result->context)),
+            RenderType::RESPONSE => $result->response,
+        };
     }
 }

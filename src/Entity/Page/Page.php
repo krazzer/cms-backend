@@ -73,6 +73,7 @@ class Page
     private ?DateTimeImmutable $updated_at;
 
     #[ORM\OneToMany(targetEntity: PageSection::class, mappedBy: 'page', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['display_order' => 'ASC'])]
     private Collection $sections;
 
     public function __construct()
