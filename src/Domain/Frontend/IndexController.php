@@ -58,8 +58,10 @@ class IndexController extends AbstractController
         $result  = $this->pageRendererResolver->resolve($page)->render($page, $request);
         $globals = $this->globalVariableResolver->resolve($request, $page);
 
+        $params = array_replace_recursive(['lang' => $request->getLocale()], $globals, $result->context);
+
         return match ($result->type) {
-            RenderType::VIEW => $this->render($result->template, array_replace_recursive($globals, $result->context)),
+            RenderType::VIEW => $this->render($result->template, $params),
             RenderType::RESPONSE => $result->response,
         };
     }

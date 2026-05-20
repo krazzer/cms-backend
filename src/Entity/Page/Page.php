@@ -298,4 +298,16 @@ class Page
         $this->identifier = $identifier;
         return $this;
     }
+
+    public function hasSectionType(string $type): bool
+    {
+        /** @var PageSection $section */
+        foreach ($this->getSections() as $section) {
+            if ($section->getType() == $type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
