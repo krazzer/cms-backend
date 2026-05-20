@@ -28,3 +28,29 @@ default:
         type: datatable
         label: Content
         instance: page_content
+
+project:
+    title:
+        type: text
+        field: name.*
+        label: Name
+        validator:
+            name: presence
+
+    content:
+        type: richtext
+        field: content.*.content
+        label: Project omschrijving
+
+blog:
+    title:
+        type: text
+        field: name.*
+        label: Name
+        validator:
+            name: presence
+
+    content:
+        type: richtext
+        field: content.*.content
+        label: Bericht

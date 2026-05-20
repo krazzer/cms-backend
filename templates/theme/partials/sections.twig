@@ -1,0 +1,16 @@
+{% for section in page.sections|default([]) %}
+    {% if section.type == 'overview' %}
+        <div class="overview">
+            {% for child in children|default([]) %}
+                <a href="{{ child.path[lang] }}">
+                    {{ child.name[lang] }}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if section.type == 'richtext' or section.type == 'content' %}
+        <section>
+            {{ section.content.text|default('')|raw }}
+        </section>
+    {% endif %}
+{% endfor %}

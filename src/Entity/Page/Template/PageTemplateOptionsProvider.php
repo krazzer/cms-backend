@@ -14,6 +14,8 @@ class PageTemplateOptionsProvider implements ConfigProviderInterface
         return [
             'home'    => 'Home',
             'default' => 'Default',
+            'project' => 'Project',
+            'blog'    => 'Blogbericht',
         ];
     }
 }
