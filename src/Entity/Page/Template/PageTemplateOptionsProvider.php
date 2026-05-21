@@ -7,15 +7,12 @@ use KikCMS\Domain\App\Config\Provider\Context;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
 #[AsTaggedItem('page_template_options')]
-class PageTemplateOptionsProvider implements ConfigProviderInterface
+readonly class PageTemplateOptionsProvider implements ConfigProviderInterface
 {
+    public function __construct(private TemplateService $templateService) {}
+
     public function getConfig(Context $context): array
     {
-        return [
-            'home'    => 'Home',
-            'default' => 'Default',
-            'project' => 'Project',
-            'blog'    => 'Blogbericht',
-        ];
+        return $this->templateService->getMap();
     }
 }

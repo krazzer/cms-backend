@@ -5,7 +5,6 @@ namespace KikCMS\Entity\Page\Template;
 use KikCMS\Domain\App\Config\Provider\ConfigProviderInterface;
 use KikCMS\Domain\App\Config\Provider\Context;
 use KikCMS\Domain\DataTable\Context\FormContext;
-use KikCMS\Domain\Form\Config\FormConfigService;
 use KikCMS\Entity\Page\PageRepository;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
@@ -13,8 +12,8 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 readonly class PageTemplateFieldsProvider implements ConfigProviderInterface
 {
     public function __construct(
-        private FormConfigService $formConfigService,
-        private PageRepository $pageRepository
+        private PageRepository $pageRepository,
+        private TemplateService $templateService
     ) {}
 
     public function getConfig(FormContext|Context $context): array
@@ -25,8 +24,6 @@ readonly class PageTemplateFieldsProvider implements ConfigProviderInterface
             $template = $page->getTemplate();
         }
 
-        $templates = $this->formConfigService->getConfigFromFile('templates');
-
-        return $templates[$template] ?? $templates['default'];
+        return $this->templateService->getFieldsByTemplate($template);
     }
 }

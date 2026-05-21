@@ -1,56 +1,41 @@
-home:
+templates:
+    home:
+        name: Home
+        fields:
+            - title
+            - hero
+            - sections
+    default:
+        name: Default
+        fields:
+            - title
+            - sections
+    project:
+        name: Project
+        fields:
+            - title
+            - content
+    blog:
+        name: Blog
+        fields:
+            - title
+            - content
+fields:
     title:
         type: text
         field: name.*
         label: Name
         validator:
             name: presence
-
     hero:
         type: text
         field: content.*.hero
         label: Hero image text
-
     sections:
         type: datatable
         label: Content
         instance: page_content
-
-default:
-    title:
-        type: text
-        field: name.*
-        label: Name
-        validator:
-            name: presence
-
-    sections:
-        type: datatable
-        label: Content
-        instance: page_content
-
-project:
-    title:
-        type: text
-        field: name.*
-        label: Name
-        validator:
-            name: presence
-
     content:
         type: richtext
         field: content.*.content
-        label: Project omschrijving
-
-blog:
-    title:
-        type: text
-        field: name.*
-        label: Name
-        validator:
-            name: presence
-
-    content:
-        type: richtext
-        field: content.*.content
-        label: Bericht
+        label: Inhoud pagina
