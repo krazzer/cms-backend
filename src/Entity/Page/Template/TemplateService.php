@@ -33,7 +33,13 @@ readonly class TemplateService
         $fields       = $this->getTemplateConfig($template)['fields'] ?? [];
         $fieldsConfig = $this->getFieldsConfig();
 
-        return array_intersect_key($fieldsConfig, array_flip($fields));
+        $result = [];
+
+        foreach ($fields as $field) {
+            $result[$field] = $fieldsConfig[$field];
+        }
+
+        return $result;
     }
 
     public function getMap(): array
