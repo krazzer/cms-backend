@@ -9,7 +9,7 @@ templates:
 
     project:
         name: Project
-        fields: [title, content]
+        fields: [title, image, content]
 
     blog:
         name: Blog
@@ -37,3 +37,8 @@ fields:
         type: richtext
         field: content.*.content
         label: Inhoud pagina
+
+    image:
+        type: filepicker
+        field: content.*.image
+        label: Afbeelding
