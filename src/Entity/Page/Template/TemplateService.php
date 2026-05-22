@@ -15,7 +15,7 @@ readonly class TemplateService
 
     public function getTemplateConfig(string $template): array
     {
-        return $this->getTemplatesConfig()[$template];
+        return $this->getTemplatesConfig()[$template] ?? [];
     }
 
     public function getTemplatesConfig(): array
