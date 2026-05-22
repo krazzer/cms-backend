@@ -40,22 +40,23 @@ readonly class FileThumbnailService
         }
     }
 
-
     public function getThumb(File $file): ?string
     {
-        if (!$file->isImage()) {
+        if ( ! $file->isImage()) {
             return null;
         }
 
         $thumbFileName = $file->getHash() . '.' . $this->thumbnailExt;
-        return '/' . $this->publicMediaUrlPrefix . '/' . $this->thumbnailDir . '/' . $this->thumbnailType . '/' . $thumbFileName;
+
+        return '/' . $this->publicMediaUrlPrefix . '/' . $this->thumbnailDir . '/' . $this->thumbnailType . '/' .
+            $thumbFileName;
     }
 
     public function deleteThumbnails(File $file): void
     {
-        $fullThumbDir = $this->publicMediaDir . '/' . $this->thumbnailDir . '/' . $this->thumbnailType;
+        $fullThumbDir  = $this->publicMediaDir . '/' . $this->thumbnailDir . '/' . $this->thumbnailType;
         $thumbFileName = $file->getHash() . '.' . $this->thumbnailExt;
-        $thumbPath = $fullThumbDir . '/' . $thumbFileName;
+        $thumbPath     = $fullThumbDir . '/' . $thumbFileName;
 
         if ($this->filesystem->exists($thumbPath)) {
             $this->filesystem->remove($thumbPath);

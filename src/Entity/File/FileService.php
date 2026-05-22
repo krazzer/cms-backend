@@ -45,7 +45,7 @@ readonly class FileService
     {
         $folderId = $folder?->getId();
 
-        $file = (new File())
+        $file = (new File)
             ->setName($uploadedFile->getClientOriginalName())
             ->setExtension($uploadedFile->guessExtension() ?? $uploadedFile->getClientOriginalExtension())
             ->setMimetype($uploadedFile->getMimeType())
@@ -71,7 +71,7 @@ readonly class FileService
         $folderId = $this->normalizeFolderId($folderIdParam);
         $parent   = $folderId ? $this->fileRepository->find($folderId) : null;
 
-        $folder = (new File())
+        $folder = (new File)
             ->setName($name)
             ->setCreated(new DateTimeImmutable())
             ->setUpdated(new DateTimeImmutable())
@@ -160,6 +160,7 @@ readonly class FileService
     private function deleteFolderRecursively(File $folder, bool $flush = true): void
     {
         $children = $this->getFilesInFolder($folder->getId());
+
         foreach ($children as $child) {
             if ($child->isFolder()) {
                 $this->deleteFolderRecursively($child, false);
@@ -167,7 +168,9 @@ readonly class FileService
                 $this->deleteFileAndStorage($child, false);
             }
         }
+
         $this->entityManager->remove($folder);
+
         if ($flush) {
             $this->entityManager->flush();
         }
@@ -180,6 +183,7 @@ readonly class FileService
         $this->fileThumbnailService->deleteThumbnails($file);
 
         $this->entityManager->remove($file);
+
         if ($flush) {
             $this->entityManager->flush();
         }
@@ -191,6 +195,7 @@ readonly class FileService
         $targetFolder   = $targetFolderId ? $this->fileRepository->find($targetFolderId) : null;
 
         $this->entityManager->beginTransaction();
+
         try {
             foreach ($ids as $id) {
                 $file = $this->fileRepository->find($id);
@@ -207,6 +212,7 @@ readonly class FileService
                 $file->setFolder($targetFolder);
                 $file->setUpdated(new DateTimeImmutable());
             }
+
             $this->entityManager->flush();
             $this->entityManager->commit();
         } catch (Exception $e) {
@@ -215,22 +221,28 @@ readonly class FileService
         }
 
         $allFiles = $this->getFilesInFolder($targetFolderId);
+
         return $this->buildResponse($allFiles, $targetFolderId);
     }
 
     private function isAncestorOf(int $ancestorId, int $descendantId): bool
     {
         $currentId = $descendantId;
+
         while ($currentId !== null) {
             if ($currentId === $ancestorId) {
                 return true;
             }
+
             $folder = $this->fileRepository->find($currentId);
+
             if ( ! $folder) {
                 break;
             }
+
             $currentId = $folder->getFolder() ? $folder->getFolder()->getId() : null;
         }
+
         return false;
     }
 

@@ -16,6 +16,8 @@ use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceInterface;
 use KikCMS\Domain\DataTable\SourceService\DataTableSourceServiceResolver;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
+use KikCMS\Entity\File\FileRepository;
+use KikCMS\Entity\File\FileThumbnailService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 readonly class DataTableService
@@ -28,6 +30,8 @@ readonly class DataTableService
         private RelationService $relationService,
         private FieldService $fieldService,
         private DataTableFormService $dataTableFormService,
+        private FileRepository $fileRepository,
+        private FileThumbnailService $fileThumbnailService,
     ) {}
 
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
@@ -144,6 +148,7 @@ readonly class DataTableService
 
         $helperData += $this->getSubDataTableHelperData($dataTable, $form, $id, $editData);
         $helperData += $this->getRichTextHelperData($form);
+        $helperData += $this->getFilePickerHelperData($form, $editData);
 
         return $helperData;
     }
@@ -163,6 +168,27 @@ readonly class DataTableService
         }
 
         return $subData;
+    }
+
+    public function getFilePickerHelperData(Form $form, array $editData): array
+    {
+        $helperData = [];
+
+        $fieldMap = $this->fieldService->getByForm($form, DataTableConfig::FIELD_TYPE_FILEPICKER);
+
+        foreach ($fieldMap as $key => $field) {
+            if( ! $id = $editData[$key] ?? null){
+                continue;
+            }
+
+            if( ! $file = $this->fileRepository->find($id)){
+                continue;
+            }
+
+            $helperData[$key] = [DataTableConfig::HELPER_THUMB => $this->fileThumbnailService->getThumb($file)];
+        }
+
+        return $helperData;
     }
 
     public function getRichTextHelperData(Form $form): array
