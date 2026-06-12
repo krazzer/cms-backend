@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\App;
 
+use KikCMS\Domain\App\CmsMenu\CmsMenuService;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\Form\FormService;
 use KikCMS\Entity\File\FileService;
@@ -19,7 +20,8 @@ class HomeController extends AbstractController
         private readonly DataTableService $dataTableService,
         private readonly FormService $formService,
         private readonly FileService $fileService,
-        private readonly CsrfTokenManagerInterface $csrfTokenManager
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly CmsMenuService $cmsMenuService
     ) {}
 
     #[Route('/api/home')]
@@ -28,17 +30,9 @@ class HomeController extends AbstractController
         $user     = $this->security->getUser();
         $loggedIn = (bool) $this->security->getUser();
 
-        $menu = [
-            'pages'      => ['label' => "Pages", 'icon' => 'view-grid'],
-            'users'      => ['label' => "Users", 'icon' => 'account-multiple-outline'],
-            'media'      => ['label' => "Media", 'icon' => 'image-outline'],
-            'statistics' => ['label' => "Statistieken", 'icon' => 'google-analytics'],
-            'settings'   => ['label' => "Settings"],
-        ];
-
         return new JsonResponse([
             'loggedIn' => $loggedIn,
-            'menu'     => $menu,
+            'menu'     => $this->cmsMenuService->getMenu(),
             'role'     => $user ? implode(',', $user->getRoles()) : null,
         ]);
     }
