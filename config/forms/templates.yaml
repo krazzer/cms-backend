@@ -15,6 +15,10 @@ templates:
         name: Blog
         fields: [title, content]
 
+    overview:
+        name: Overview
+        fields: [title]
+
 fields:
     title:
         type: text

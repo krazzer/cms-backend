@@ -1,3 +1,17 @@
+## CMS with project files (recommended for most non-trivial projects)
+
+Use this guide to set up the CMS as part of a project. This is the recommended setup for most projects.
+
+### Useful commands
+
+#### Load/unload dev env
+- `php bin/console kikcms:app:up`
+- `php bin/console kikcms:app:down`
+
+#### Do a composer update while having a linked CMS
+
+1. Run `rm -rf vendor/kiksaus && composer update && rm -rf vendor/kiksaus && ln -s ../../KikCMS vendor/kiksaus`
+
 ## CMS standalone setup
 
 Use this guide to set up the CMS as standalone. This can be useful for development on the CMS itself without needing to
