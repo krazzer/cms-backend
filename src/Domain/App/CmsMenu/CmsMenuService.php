@@ -15,8 +15,25 @@ readonly class CmsMenuService
 
     public function getMenu(): array
     {
-        $filePath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
+        $cmsMenuPath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
+        $appMenuPath = $this->kernel->getAppDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
 
-        return $this->yamlParser->parseFile($filePath);
+        $baseMenu = $this->yamlParser->parseFile($cmsMenuPath);
+
+        if ( ! file_exists($appMenuPath)) {
+            return $baseMenu;
+        }
+
+        $customMenu = $this->yamlParser->parseFile($appMenuPath);
+        $finalMenu  = [];
+
+        foreach ($customMenu as $key => $customProps) {
+            $customProps = $customProps ?? [];
+            $baseProps   = $baseMenu[$key] ?? [];
+
+            $finalMenu[$key] = array_merge($baseProps, $customProps);
+        }
+
+        return $finalMenu;
     }
 }
