@@ -148,7 +148,7 @@ readonly class DataTableService
 
         $helperData += $this->getSubDataTableHelperData($dataTable, $form, $id, $editData);
         $helperData += $this->getRichTextHelperData($form);
-        $helperData += $this->getFilePickerHelperData($form, $editData);
+        $helperData += $this->getFilePickerHelperData($form, $editData ?: []);
 
         return $helperData;
     }

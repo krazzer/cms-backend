@@ -179,6 +179,12 @@ readonly class PdoDataTableSourceService implements DataTableSourceServiceInterf
 
         $dataToStore = $this->dataTableStoreService->getDataArrayToStore($dataTable, $filters, $createData);
 
+        if ($dataTable->isRearrange()) {
+            $maxDisplayOrder = $this->rearrangeService->getMaxDisplayOrder($dataTable->getPdoModel());
+
+            $dataToStore[DataTableConfig::DISPLAY_ORDER] = $maxDisplayOrder + 1;
+        }
+
         $this->updateEntityByArray($entity, $dataToStore);
 
         if ($parentId = $filters->getParentId()) {

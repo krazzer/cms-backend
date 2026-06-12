@@ -2,14 +2,12 @@
 
 namespace KikCMS\Domain\DataTable;
 
-use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Context\FormContext;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Form\DataTableFormService;
-use KikCMS\Domain\DataTable\Rearrange\RearrangeService;
 use KikCMS\Domain\Form\Field\Field;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Field\Types\DatatableField;
@@ -20,7 +18,6 @@ readonly class DataTableStoreService
         private FieldService $fieldService,
         private DataTablePathService $dataTablePathService,
         private DataTableConfigService $dataTableConfigService,
-        private RearrangeService $rearrangeService,
         private DataTableFormService $dataTableFormService,
     ) {}
 
@@ -43,12 +40,6 @@ readonly class DataTableStoreService
             $fieldWithValue = $this->dataTablePathService->convertPathToArray($field, $value, $langCode);
 
             $storeData = array_replace_recursive($storeData, $fieldWithValue);
-        }
-
-        if ($dataTable->isRearrange() && $dataTable->getSource() === SourceType::Pdo) {
-            $maxDisplayOrder = $this->rearrangeService->getMaxDisplayOrder($dataTable->getPdoModel());
-
-            $storeData[DataTableConfig::DISPLAY_ORDER] = $maxDisplayOrder + 1;
         }
 
         return $storeData;
