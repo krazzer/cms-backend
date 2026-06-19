@@ -16,11 +16,16 @@ readonly class CmsMenuService
     public function getMenu(): array
     {
         $cmsMenuPath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
-        $appMenuPath = $this->kernel->getAppDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
 
         $baseMenu = $this->yamlParser->parseFile($cmsMenuPath);
 
-        if ( ! file_exists($appMenuPath)) {
+        if ( ! $this->kernel->isProject()) {
+            return $baseMenu;
+        }
+
+        $appMenuPath = $this->kernel->getAppDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
+
+        if( ! file_exists($appMenuPath)){
             return $baseMenu;
         }
 
