@@ -18,7 +18,7 @@ class DefaultPageRenderer implements PageRendererInterface
     {
         return new ViewRenderResult('theme/templates/default.twig', [
             'page'  => $page,
-            'title' => $page->getName()[$request->getLocale()],
+            'title' => $page->getName()[$request->getLocale()] ?? null,
         ]);
     }
 }
