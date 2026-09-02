@@ -23,6 +23,13 @@ readonly class DockerComposeService
         return (bool) $process->getOutput();
     }
 
+    public function showLog(string $dockerFile, string $name): string
+    {
+        $process = $this->runCompose($dockerFile, $name, ['logs', '--tail=5'], [], false);
+
+        return trim($process->getOutput());
+    }
+
     public function getContainerName(string $dockerFile, string $name): string
     {
         $process = $this->runCompose($dockerFile, $name, ['ps', '--status', 'running', '--format', '{{.Name}}'], [], false);

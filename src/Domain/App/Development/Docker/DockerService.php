@@ -25,10 +25,17 @@ readonly class DockerService
             $isRunning = true;
         } else {
             $this->dockerComposeService->up($dockerFile, $name, [Config::ENV_PORT => $port, Config::ENV_ALIAS => $name]);
+
+            // sleep for one second in case it crashes
+            sleep(1);
+
             $isRunning = $this->dockerComposeService->isRunning($dockerFile, $name);
         }
 
         if ( ! $isRunning) {
+            $io->error("Docker container $name failed to start");
+            $io->error($this->dockerComposeService->showLog($dockerFile, $name));
+
             return Command::FAILURE;
         }
 
