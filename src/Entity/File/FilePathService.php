@@ -2,17 +2,16 @@
 
 namespace KikCMS\Entity\File;
 
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use KikCMS\Kernel;
 
-class FilePathService
+readonly class FilePathService
 {
     public function __construct(
-        #[Autowire('%cms.storage.dir%')] public string $storageDir,
+        private Kernel $kernel,
     ) {}
 
     public function getFilePath($file): string
     {
-        $targetFilename = $file->getFileName();
-        return $this->storageDir . '/' . $targetFilename;
+        return $this->kernel->getDir(Kernel::DIR_STORAGE . DIRECTORY_SEPARATOR . $file->getFileName());
     }
 }

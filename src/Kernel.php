@@ -14,22 +14,31 @@ class Kernel extends BaseKernel
 
     private bool $project = false;
 
-    const string DIR_VENDOR_KIKSAUS  = 'vendor/kiksaus';
-    const string DIR_SRC             = 'src';
+    const string DIR_VENDOR_KIKSAUS = 'vendor/kiksaus';
+    const string DIR_SRC            = 'src';
+
+    const string DIR_CERTS   = 'var/certs';
+    const string DIR_STORAGE = 'var/storage';
+
     const string DIR_CONFIG          = 'config';
     const string DIR_CONFIG_FORMS    = 'config/forms';
     const string DIR_CONFIG_THEME    = 'config/theme';
-    const string DIR_CERTS           = 'var/certs';
     const string DIR_CONFIG_PACKAGES = 'config/packages';
-    const string DIR_PUBLIC          = 'public_html';
-    const string DIR_ADMIN           = 'public_html/cms';
+
+    const string DIR_PUBLIC = 'public_html';
+
+    const string SUBDIR_ADMIN                = 'cms';
+    const string SUBDIR_MEDIA                = 'media';
+    const string SUBDIR_MEDIA_FILES          = 'media/files';
+    const string SUBDIR_MEDIA_THUMBS         = 'media/thumbs';
+    const string SUBDIR_MEDIA_THUMBS_DEFAULT = 'media/thumbs/default';
 
     const string FILE_DOCKER_COMPOSE_SERVICES = 'resources/docker/docker-compose-services.yml';
     const string FILE_DOCKER_COMPOSE_SITE     = 'resources/docker/docker-compose-site.yml';
     const string FILE_DOCKER_COMPOSE          = 'resources/docker/docker-compose.yml';
 
-    const string FILE_CERT         = 'var/certs/cert.crt';
-    const string FILE_CERT_KEY     = 'var/certs/cert.key';
+    const string FILE_CERT     = 'var/certs/cert.crt';
+    const string FILE_CERT_KEY = 'var/certs/cert.key';
 
     const string FILE_SNAKE_CERT     = 'resources/certs/snakeoil.crt';
     const string FILE_SNAKE_CERT_KEY = 'resources/certs/snakeoil.key';
@@ -98,6 +107,22 @@ class Kernel extends BaseKernel
         if (file_exists($projectRoutes)) {
             $routes->import($projectRoutes);
         }
+    }
+
+    public function getDir(?string $path = null): string
+    {
+        return $this->isProject() ? $this->getAppDir($path) : $this->getCmsDir($path);
+    }
+
+    public function getPublicDir(?string $path = null): string
+    {
+        if( ! $path){
+            $path = self::DIR_PUBLIC;
+        } else {
+            $path = self::DIR_PUBLIC . DIRECTORY_SEPARATOR . $path;
+        }
+
+        return $this->isProject() ? $this->getAppDir($path) : $this->getCmsDir($path);
     }
 
     public function getAppDir(?string $path = null): string

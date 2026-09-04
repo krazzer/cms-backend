@@ -185,7 +185,7 @@ readonly class DataTableService
                 continue;
             }
 
-            $helperData[$key] = [DataTableConfig::HELPER_THUMB => $this->fileThumbnailService->getThumb($file)];
+            $helperData[$key] = [DataTableConfig::HELPER_THUMB => $this->fileThumbnailService->getOrGenerateUrl($file)];
         }
 
         return $helperData;

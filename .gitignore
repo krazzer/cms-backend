@@ -20,6 +20,5 @@
 .idea
 public_html/cms
 public_html/apcu.php
-public_html/media/files
-public_html/media/thumbs
+public_html/media
 composer.lock

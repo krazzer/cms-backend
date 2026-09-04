@@ -29,6 +29,7 @@ readonly class FileService
     public function uploadFiles(array $files, ?File $folder = null): array
     {
         $newFiles = [];
+
         foreach ($files as $uploadedFile) {
             $newFiles[] = $this->uploadFile($uploadedFile, $folder);
         }
@@ -61,7 +62,7 @@ readonly class FileService
 
         $this->fileStorageService->storeUploadedFile($uploadedFile, $file);
         $this->fileHashService->updateHash($file);
-        $this->fileThumbnailService->generateThumbnail($file);
+        $this->fileThumbnailService->generate($file);
 
         return $file;
     }
@@ -83,6 +84,7 @@ readonly class FileService
         $this->entityManager->flush();
 
         $allFiles = $this->getFilesInFolder($folderId);
+
         return $this->buildResponse($allFiles, $folderId);
     }
 
@@ -90,12 +92,14 @@ readonly class FileService
     {
         $folderId = $this->normalizeFolderId($folderIdParam);
         $allFiles = $this->getFilesInFolder($folderId);
+
         return $this->buildResponse($allFiles, $folderId);
     }
 
     public function changeFilename(string $newFileName, int $fileId): array
     {
         $file = $this->fileRepository->find($fileId);
+
         if ($file instanceof File) {
             $this->filePublicService->deletePublicFiles($file);
         }
@@ -111,6 +115,7 @@ readonly class FileService
         $folderId = $file->getFolder() ? $file->getFolder()->getId() : null;
 
         $allFiles = $this->getFilesInFolder($folderId);
+
         return $this->buildResponse($allFiles, $folderId);
     }
 
@@ -134,6 +139,7 @@ readonly class FileService
         $folderId = $this->normalizeFolderId($folderIdParam);
 
         $this->entityManager->beginTransaction();
+
         try {
             foreach ($ids as $id) {
                 $file = $this->fileRepository->find($id);
@@ -154,6 +160,7 @@ readonly class FileService
         }
 
         $allFiles = $this->getFilesInFolder($folderId);
+
         return $this->buildResponse($allFiles, $folderId);
     }
 
@@ -268,7 +275,7 @@ readonly class FileService
         return [
             'id'    => $file->getId(),
             'name'  => $file->getName(),
-            'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getThumb($file),
+            'thumb' => $file->isFolder() ? null : $this->fileThumbnailService->getOrGenerateUrl($file),
             'url'   => $file->isFolder() ? null : $this->filePublicService->getUrlCreateIfMissing($file),
             'isDir' => $file->isFolder(),
             'key'   => $file->getKey(),

@@ -2,6 +2,10 @@
 
 Use this guide to set up the CMS as part of a project. This is the recommended setup for most projects.
 
+### Set up CMS
+
+1. t.b.d.
+
 ### Useful commands
 
 #### Load/unload dev env

@@ -2,6 +2,8 @@
 
 namespace KikCMS\Entity\File;
 
+use KikCMS\Kernel;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -13,25 +15,28 @@ class FilePublicService
         #[Autowire('%cms.media.public_dir%')] public string $publicMediaDir,
         #[Autowire('%cms.media.public_subdir%')] public string $publicMediaSubDir,
         #[Autowire('%cms.media.url_prefix%')] public string $publicMediaUrlPrefix,
+        private readonly Kernel $kernel,
         private readonly Filesystem $filesystem,
         private readonly SluggerInterface $slugger,
+        private readonly Packages $assetPackages,
     ) {}
 
     public function getUrlCreateIfMissing(File $file, bool $private = false): string
     {
         $fileName = $private ? $file->getFileName(true) : $this->getPublicFileName($file);
 
-        $publicFilePath = $this->publicMediaDir . '/' . $this->publicMediaSubDir . '/' . $fileName;
+        $publicFilePath = $this->kernel->getPublicDir(Kernel::SUBDIR_MEDIA_FILES . DIRECTORY_SEPARATOR . $fileName);
 
         $this->filesystem->mkdir(dirname($publicFilePath));
 
         if ( ! file_exists($publicFilePath)) {
-            $targetPath = $this->storageDir . '/' . $file->getFileName($private);
+            $privateFileName = $file->getFileName($private);
+            $targetPath      = $this->kernel->getDir(Kernel::DIR_STORAGE . DIRECTORY_SEPARATOR . $privateFileName);
 
             $this->filesystem->symlink($targetPath, $publicFilePath);
         }
 
-        $url = '/' . $this->publicMediaUrlPrefix . '/' . $this->publicMediaSubDir . '/' . $fileName;
+        $url = $this->assetPackages->getUrl(Kernel::SUBDIR_MEDIA_FILES . DIRECTORY_SEPARATOR . $fileName);
 
         if ($secondsUpdated = $file->secondsUpdated()) {
             $url .= '?u=' . $secondsUpdated;
@@ -43,7 +48,7 @@ class FilePublicService
     public function deletePublicFiles(File $file): void
     {
         $publicDir = $this->publicMediaDir . '/' . $this->publicMediaSubDir;
-        $pattern = $publicDir . '/' . $file->getId() . '-*';
+        $pattern   = $publicDir . '/' . $file->getId() . '-*';
 
         foreach (glob($pattern) as $publicFile) {
             if (is_link($publicFile) || is_file($publicFile)) {
