@@ -1,13 +1,13 @@
 <?php
 
-namespace KikCMS\Services\Analytics;
+namespace KikCMS\Entity\Analytics;
 
 use Doctrine\DBAL\Connection;
 
-class AnalyticsBulkInsertService
+readonly class AnalyticsBulkInsertService
 {
     public function __construct(
-        private readonly Connection $connection,
+        private Connection $connection,
     ) {}
 
     /**

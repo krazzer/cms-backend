@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace KikCMS\Services\Analytics;
+namespace KikCMS\Entity\Analytics;
 
 use DateTime;
 use Google_Service_AnalyticsReporting;
@@ -11,11 +11,11 @@ use Google_Service_AnalyticsReporting_Metric;
 use Google_Service_AnalyticsReporting_ReportRequest;
 use KikCMS\Config\StatisticsConfig;
 
-class AnalyticsGoogleService
+readonly class AnalyticsGoogleService
 {
     public function __construct(
-        private readonly Google_Service_AnalyticsReporting $analytics,
-        private readonly string $viewId
+        private Google_Service_AnalyticsReporting $analytics,
+        private string $viewId
     ) {}
 
     public function getVisitData(): array

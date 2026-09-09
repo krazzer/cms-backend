@@ -1,15 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace KikCMS\Services\Analytics;
+namespace KikCMS\Entity\Analytics;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use KikCMS\Entity\Analytics\GaVisitData;
 
-class AnalyticsDateService
+readonly class AnalyticsDateService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
     ) {}
 
     /**

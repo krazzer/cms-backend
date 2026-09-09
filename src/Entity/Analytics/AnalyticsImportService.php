@@ -1,23 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace KikCMS\Services\Analytics;
+namespace KikCMS\Entity\Analytics;
 
 use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Entity\Analytics\GaVisitData;
 
 /**
  * Service for importing various visitor metrics from Google Analytics.
  */
-class AnalyticsImportService
+readonly class AnalyticsImportService
 {
     public function __construct(
-        private readonly Connection $connection,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly AnalyticsGoogleService $analyticsGoogleService,
-        private readonly AnalyticsBulkInsertService $analyticsBulkInsertService,
+        private Connection $connection,
+        private EntityManagerInterface $entityManager,
+        private AnalyticsGoogleService $analyticsGoogleService,
+        private AnalyticsBulkInsertService $analyticsBulkInsertService,
     ) {}
 
     /**

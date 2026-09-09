@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace KikCMS\Services\Analytics;
+namespace KikCMS\Entity\Analytics;
 
 use DateInterval;
 use DatePeriod;
@@ -10,8 +10,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use KikCMS\Config\CacheConfig;
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Entity\Analytics\GaDayVisit;
-use KikCMS\Entity\Analytics\GaVisitData;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -19,17 +17,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Core analytics service handling Google Analytics data import and reporting.
  */
-class AnalyticsService
+readonly class AnalyticsService
 {
     public function __construct(
-        private readonly Connection $connection,
-        private readonly CacheInterface $cache,
-        private readonly TranslatorInterface $translator,
-        private readonly LoggerInterface $logger,
-        private readonly AnalyticsImportService $analyticsImportService,
-        private readonly AnalyticsGoogleService $analyticsGoogleService,
-        private readonly AnalyticsDataService $analyticsDataService,
-        private readonly AnalyticsBulkInsertService $analyticsBulkInsertService,
+        private Connection $connection,
+        private CacheInterface $cache,
+        private TranslatorInterface $translator,
+        private LoggerInterface $logger,
+        private AnalyticsImportService $analyticsImportService,
+        private AnalyticsGoogleService $analyticsGoogleService,
+        private AnalyticsDataService $analyticsDataService,
+        private AnalyticsBulkInsertService $analyticsBulkInsertService,
     ) {}
 
     /**

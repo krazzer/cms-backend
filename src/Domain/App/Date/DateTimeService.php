@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace KikCMS\Services\Util;
+namespace KikCMS\Domain\App\Date;
 
 use DateTime;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -8,10 +8,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Utility Service for handling DateTime objects
  */
-class DateTimeService
+readonly class DateTimeService
 {
     public function __construct(
-        private readonly TranslatorInterface $translator
+        private TranslatorInterface $translator
     ) {}
 
     /**

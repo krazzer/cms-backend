@@ -1,17 +1,16 @@
 <?php
 
-namespace KikCMS\Domain\App\Statistics;
+namespace KikCMS\Entity\Analytics;
 
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Services\Analytics\AnalyticsService;
-use KikCMS\Services\Util\DateTimeService;
+use KikCMS\Domain\App\Date\DateTimeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class StatisticsController extends AbstractController
+class AnalyticsController extends AbstractController
 {
     public function __construct(
         private readonly AnalyticsService $analyticsService,

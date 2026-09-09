@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace KikCMS\Services\Analytics;
+namespace KikCMS\Entity\Analytics;
 
 use Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
@@ -11,18 +11,16 @@ use Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy;
 use Google\Analytics\Data\V1beta\RunReportRequest;
 use KikCMS\Config\GaConfig;
 use KikCMS\Config\StatisticsConfig;
-use KikCMS\Entity\Analytics\GaDayVisit;
-use KikCMS\Entity\Analytics\GaVisitData;
 
 /**
  * Service for handling the analytics v4 using the new (2022) Analytics Data API.
  */
-class AnalyticsDataService
+readonly class AnalyticsDataService
 {
     public function __construct(
-        private readonly AnalyticsDateService $analyticsDateService,
-        private readonly BetaAnalyticsDataClient $betaAnalyticsDataClient,
-        private readonly string $propertyId,
+        private AnalyticsDateService $analyticsDateService,
+        private BetaAnalyticsDataClient $betaAnalyticsDataClient,
+        private string $propertyId,
     ) {}
 
     public function getVisitData(): array

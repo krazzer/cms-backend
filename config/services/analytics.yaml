@@ -20,7 +20,7 @@ services:
             -   credentials: '%analytics.credentials_path%'
                 transport: 'rest'
 
-    KikCMS\Services\Analytics\AnalyticsDataService:
+    KikCMS\Entity\Analytics\AnalyticsDataService:
         arguments:
             $betaAnalyticsDataClient: '@Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient'
             $propertyId: '%analytics.property_id%'
@@ -30,7 +30,7 @@ services:
         arguments:
             - '@Google_Client_UA'
 
-    KikCMS\Services\Analytics\AnalyticsGoogleService:
+    KikCMS\Entity\Analytics\AnalyticsGoogleService:
         arguments:
             $analytics: '@Google_Service_AnalyticsReporting'
             $viewId: '%analytics.view_id%'
