@@ -3,7 +3,7 @@
 namespace KikCMS\Command\App;
 
 use KikCMS\Domain\App\Development\Docker\DockerService;
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,7 +27,7 @@ class AttachCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SITE);
+        $dockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE_SITE);
 
         return $this->dockerService->attach($dockerFile, $this->name);
     }

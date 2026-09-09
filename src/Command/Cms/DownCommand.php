@@ -3,7 +3,7 @@
 namespace KikCMS\Command\Cms;
 
 use KikCMS\Domain\App\Development\Docker\DockerComposeService;
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +28,7 @@ class DownCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE);
+        $dockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE);
 
         $this->dockerComposeService->down($dockerFile, $this->name, $this->port);
 

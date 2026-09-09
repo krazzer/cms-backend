@@ -5,11 +5,11 @@ namespace KikCMS\Domain\Form\Config;
 use Exception;
 use KikCMS\Domain\App\Config\Provider\ConfigProviderRegistry;
 use KikCMS\Domain\App\Config\Provider\Context;
+use KikCMS\Domain\App\Path\PathConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\Form\Field\Config\FieldConfig;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
-use KikCMS\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -27,7 +27,7 @@ readonly class FormConfigService
 
     public function getConfigFromFile(string $name): array
     {
-        $filePath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG_FORMS . DIRECTORY_SEPARATOR . $name . '.yaml');
+        $filePath = $this->kernel->getCmsDir(PathConfig::DIR_CONFIG_FORMS . DIRECTORY_SEPARATOR . $name . '.yaml');
 
         if ($config = $this->yamlParser->parseFile($filePath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
             return $config;

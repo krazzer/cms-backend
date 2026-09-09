@@ -5,7 +5,7 @@ namespace KikCMS\Command\Cms;
 use KikCMS\Domain\App\Admin\AdminService;
 use KikCMS\Domain\App\Development\Cert\CmsCertService;
 use KikCMS\Domain\App\Development\Docker\DockerService;
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,8 +35,8 @@ class UpCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $dockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE);
-        $adminDir   = $this->kernel->getCmsDir(Kernel::DIR_ADMIN);
+        $dockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE);
+        $adminDir   = $this->kernel->getCmsDir(PathConfig::DIR_ADMIN);
 
         if ( ! $this->certService->certsAreInPlace($this->name)) {
             $this->certService->showCertWarning($io, $this->name);

@@ -2,6 +2,7 @@
 
 namespace KikCMS\Entity\File;
 
+use KikCMS\Domain\App\Path\PathConfig;
 use KikCMS\Kernel;
 
 readonly class FilePathService
@@ -12,6 +13,6 @@ readonly class FilePathService
 
     public function getFilePath($file): string
     {
-        return $this->kernel->getDir(Kernel::DIR_STORAGE . DIRECTORY_SEPARATOR . $file->getFileName());
+        return $this->kernel->getDir(PathConfig::DIR_STORAGE . DIRECTORY_SEPARATOR . $file->getFileName());
     }
 }

@@ -3,7 +3,7 @@
 namespace KikCMS\Entity\PageSection;
 
 use Exception;
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
@@ -21,7 +21,7 @@ readonly class PageSectionConfigService
     {
         $name = 'sections';
 
-        $filePath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG_THEME . DIRECTORY_SEPARATOR . $name . '.yaml');
+        $filePath = $this->kernel->getCmsDir(PathConfig::DIR_CONFIG_THEME . '/' . $name . '.yaml');
 
         if ($config = $this->yamlParser->parseFile($filePath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
             return $config;

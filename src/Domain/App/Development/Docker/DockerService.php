@@ -2,7 +2,7 @@
 
 namespace KikCMS\Domain\App\Development\Docker;
 
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -14,7 +14,7 @@ readonly class DockerService
 
     public function up(string $dockerFile, string $name, int $port, SymfonyStyle $io): int
     {
-        $servicesDockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SERVICES);
+        $servicesDockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE_SERVICES);
 
         if ( ! $this->dockerComposeService->isRunning($servicesDockerFile, Config::SERVICES)) {
             $this->setUpServices($io);
@@ -61,7 +61,7 @@ readonly class DockerService
 
     public function setUpServices(SymfonyStyle $io): void
     {
-        $servicesDockerFile = $this->kernel->getCmsDir(Kernel::FILE_DOCKER_COMPOSE_SERVICES);
+        $servicesDockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE_SERVICES);
 
         $password = $io->askHidden('Enter the desired password for the local DB: ');
         $this->dockerComposeService->up($servicesDockerFile, Config::SERVICES, [Config::ENV_PASS => $password]);

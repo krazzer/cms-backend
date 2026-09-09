@@ -3,7 +3,7 @@
 namespace KikCMS\Command\App;
 
 use KikCMS\Domain\App\Admin\AdminService;
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +26,7 @@ class UpdateAdminCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $adminDir = $this->kernel->getAppDir(Kernel::DIR_ADMIN);
+        $adminDir = $this->kernel->getAppDir(PathConfig::DIR_ADMIN);
 
         $this->adminService->update($adminDir, $io);
 

@@ -2,7 +2,7 @@
 
 namespace KikCMS\Domain\App\CmsMenu;
 
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
 
@@ -15,7 +15,7 @@ readonly class CmsMenuService
 
     public function getMenu(): array
     {
-        $cmsMenuPath = $this->kernel->getCmsDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
+        $cmsMenuPath = $this->kernel->getCmsDir(PathConfig::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
 
         $baseMenu = $this->yamlParser->parseFile($cmsMenuPath);
 
@@ -23,7 +23,7 @@ readonly class CmsMenuService
             return $baseMenu;
         }
 
-        $appMenuPath = $this->kernel->getAppDir(Kernel::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
+        $appMenuPath = $this->kernel->getAppDir(PathConfig::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
 
         if( ! file_exists($appMenuPath)){
             return $baseMenu;

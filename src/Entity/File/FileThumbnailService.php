@@ -4,6 +4,7 @@ namespace KikCMS\Entity\File;
 
 use Imagine\Image\Box;
 use Imagine\Imagick\Imagine;
+use KikCMS\Domain\App\Path\PathConfig;
 use KikCMS\Kernel;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -59,12 +60,12 @@ readonly class FileThumbnailService
 
         $thumbFileName = $this->getFileName($file);
 
-        return $this->assetPackages->getUrl(Kernel::SUBDIR_MEDIA_THUMBS_DEFAULT . '/' . $thumbFileName);
+        return $this->assetPackages->getUrl(PathConfig::SUBDIR_MEDIA_THUMBS_DEFAULT . '/' . $thumbFileName);
     }
 
     public function getPath(File $file): ?string
     {
-        return $this->kernel->getPublicDir(Kernel::SUBDIR_MEDIA_THUMBS_DEFAULT . '/' . $this->getFileName($file));
+        return $this->kernel->getPublicDir(PathConfig::SUBDIR_MEDIA_THUMBS_DEFAULT . '/' . $this->getFileName($file));
     }
 
     public function getFileName(File $file): ?string

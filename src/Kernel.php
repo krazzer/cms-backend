@@ -2,6 +2,7 @@
 
 namespace KikCMS;
 
+use KikCMS\Domain\App\Path\PathConfig;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -13,35 +14,6 @@ class Kernel extends BaseKernel
     use MicroKernelTrait;
 
     private bool $project = false;
-
-    const string DIR_VENDOR_KIKSAUS = 'vendor/kiksaus';
-    const string DIR_SRC            = 'src';
-
-    const string DIR_CERTS   = 'var/certs';
-    const string DIR_STORAGE = 'var/storage';
-
-    const string DIR_CONFIG          = 'config';
-    const string DIR_CONFIG_FORMS    = 'config/forms';
-    const string DIR_CONFIG_THEME    = 'config/theme';
-    const string DIR_CONFIG_PACKAGES = 'config/packages';
-
-    const string DIR_PUBLIC = 'public_html';
-
-    const string SUBDIR_ADMIN                = 'cms';
-    const string SUBDIR_MEDIA                = 'media';
-    const string SUBDIR_MEDIA_FILES          = 'media/files';
-    const string SUBDIR_MEDIA_THUMBS         = 'media/thumbs';
-    const string SUBDIR_MEDIA_THUMBS_DEFAULT = 'media/thumbs/default';
-
-    const string FILE_DOCKER_COMPOSE_SERVICES = 'resources/docker/docker-compose-services.yml';
-    const string FILE_DOCKER_COMPOSE_SITE     = 'resources/docker/docker-compose-site.yml';
-    const string FILE_DOCKER_COMPOSE          = 'resources/docker/docker-compose.yml';
-
-    const string FILE_CERT     = 'var/certs/cert.crt';
-    const string FILE_CERT_KEY = 'var/certs/cert.key';
-
-    const string FILE_SNAKE_CERT     = 'resources/certs/snakeoil.crt';
-    const string FILE_SNAKE_CERT_KEY = 'resources/certs/snakeoil.key';
 
     public function boot(): void
     {
@@ -57,7 +29,7 @@ class Kernel extends BaseKernel
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
-        $cmsConfigDir = $this->getCmsDir(self::DIR_CONFIG);
+        $cmsConfigDir = $this->getCmsDir(PathConfig::DIR_CONFIG);
 
         // Import CMS services
         $container->import($cmsConfigDir . '/services.yaml');
@@ -66,7 +38,7 @@ class Kernel extends BaseKernel
         $container->import($cmsConfigDir . '/{packages}/*.yaml');
 
         // Load environment-specific config
-        $envPackagesDir = $this->getCmsDir(self::DIR_CONFIG_PACKAGES . DIRECTORY_SEPARATOR . $this->getEnvironment());
+        $envPackagesDir = $this->getCmsDir(PathConfig::DIR_CONFIG_PACKAGES . DIRECTORY_SEPARATOR . $this->getEnvironment());
 
         if (is_dir($envPackagesDir)) {
             $container->import($envPackagesDir . '/*.yaml');
@@ -79,7 +51,7 @@ class Kernel extends BaseKernel
 
         // Add app namespace to autowire
         $container->services()
-            ->load('App\\', $this->getAppDir(self::DIR_SRC) . '/*')
+            ->load('App\\', $this->getAppDir(PathConfig::DIR_SRC) . '/*')
             ->autowire()
             ->autoconfigure();
 
@@ -117,9 +89,9 @@ class Kernel extends BaseKernel
     public function getPublicDir(?string $path = null): string
     {
         if( ! $path){
-            $path = self::DIR_PUBLIC;
+            $path = PathConfig::DIR_PUBLIC;
         } else {
-            $path = self::DIR_PUBLIC . DIRECTORY_SEPARATOR . $path;
+            $path = PathConfig::DIR_PUBLIC . DIRECTORY_SEPARATOR . $path;
         }
 
         return $this->isProject() ? $this->getAppDir($path) : $this->getCmsDir($path);
@@ -141,7 +113,7 @@ class Kernel extends BaseKernel
         // Tests don't need project files
         if ($this->isProject()) {
             $package = basename($this->getProjectDir());
-            $cmsRoot = $this->getAppDir(self::DIR_VENDOR_KIKSAUS . DIRECTORY_SEPARATOR . $package);
+            $cmsRoot = $this->getAppDir(PathConfig::DIR_VENDOR_KIKSAUS . DIRECTORY_SEPARATOR . $package);
         } else {
             $cmsRoot = $this->getProjectDir();
         }

@@ -2,6 +2,7 @@
 
 namespace KikCMS\Entity\File;
 
+use KikCMS\Domain\App\Path\PathConfig;
 use KikCMS\Kernel;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -25,18 +26,18 @@ class FilePublicService
     {
         $fileName = $private ? $file->getFileName(true) : $this->getPublicFileName($file);
 
-        $publicFilePath = $this->kernel->getPublicDir(Kernel::SUBDIR_MEDIA_FILES . DIRECTORY_SEPARATOR . $fileName);
+        $publicFilePath = $this->kernel->getPublicDir(PathConfig::SUBDIR_MEDIA_FILES . '/' . $fileName);
 
         $this->filesystem->mkdir(dirname($publicFilePath));
 
         if ( ! file_exists($publicFilePath)) {
             $privateFileName = $file->getFileName($private);
-            $targetPath      = $this->kernel->getDir(Kernel::DIR_STORAGE . DIRECTORY_SEPARATOR . $privateFileName);
+            $targetPath      = $this->kernel->getDir(PathConfig::DIR_STORAGE . '/' . $privateFileName);
 
             $this->filesystem->symlink($targetPath, $publicFilePath);
         }
 
-        $url = $this->assetPackages->getUrl(Kernel::SUBDIR_MEDIA_FILES . DIRECTORY_SEPARATOR . $fileName);
+        $url = $this->assetPackages->getUrl(PathConfig::SUBDIR_MEDIA_FILES . '/' . $fileName);
 
         if ($secondsUpdated = $file->secondsUpdated()) {
             $url .= '?u=' . $secondsUpdated;

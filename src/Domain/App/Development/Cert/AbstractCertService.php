@@ -2,7 +2,7 @@
 
 namespace KikCMS\Domain\App\Development\Cert;
 
-use KikCMS\Kernel;
+use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
@@ -17,8 +17,8 @@ abstract readonly class AbstractCertService
     {
         list($certsDir, $certFile, $certKeyFile) = $this->getPaths();
 
-        $certSnakeFile    = $this->kernel->getCmsDir(Kernel::FILE_SNAKE_CERT);
-        $certSnakeKeyFile = $this->kernel->getCmsDir(Kernel::FILE_SNAKE_CERT_KEY);
+        $certSnakeFile    = $this->kernel->getCmsDir(PathConfig::FILE_SNAKE_CERT);
+        $certSnakeKeyFile = $this->kernel->getCmsDir(PathConfig::FILE_SNAKE_CERT_KEY);
 
         if (file_exists($certFile) && file_exists($certKeyFile)) {
             return file_get_contents($certFile) !== file_get_contents($certSnakeFile);
