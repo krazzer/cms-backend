@@ -13,8 +13,6 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    private bool $project = false;
-
     public function boot(): void
     {
         parent::boot();
@@ -22,9 +20,6 @@ class Kernel extends BaseKernel
         if (empty($_ENV['DEFAULT_EMAIL_FROM'])) {
             throw new RuntimeException('Required DEFAULT_EMAIL_FROM $_ENV variable is missing');
         }
-
-        // If the ENV variable is set, we're running in a project context, if not, we're running the CMS standalone
-        $this->project = isset($_ENV['PROJECT_ROOT']);
     }
 
     protected function configureContainer(ContainerConfigurator $container): void
@@ -79,6 +74,11 @@ class Kernel extends BaseKernel
         if (file_exists($projectRoutes)) {
             $routes->import($projectRoutes);
         }
+
+        // Allow routes from the project src directory
+        if(is_dir($this->getAppDir(PathConfig::DIR_SRC))) {
+            $routes->import($this->getAppDir(PathConfig::DIR_SRC) . '/', 'attribute');
+        }
     }
 
     public function getDir(?string $path = null): string
@@ -88,7 +88,7 @@ class Kernel extends BaseKernel
 
     public function getPublicDir(?string $path = null): string
     {
-        if( ! $path){
+        if ( ! $path) {
             $path = PathConfig::DIR_PUBLIC;
         } else {
             $path = PathConfig::DIR_PUBLIC . DIRECTORY_SEPARATOR . $path;
@@ -127,6 +127,6 @@ class Kernel extends BaseKernel
 
     public function isProject(): bool
     {
-        return $this->project;
+        return isset($_ENV['PROJECT_ROOT']);
     }
 }
