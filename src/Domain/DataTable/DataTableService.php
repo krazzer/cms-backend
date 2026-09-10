@@ -174,14 +174,16 @@ readonly class DataTableService
     {
         $helperData = [];
 
-        $fieldMap = $this->fieldService->getByForm($form, DataTableConfig::FIELD_TYPE_FILEPICKER);
+        $filterTypes = [DataTableConfig::FIELD_TYPE_FILEPICKER, DataTableConfig::FIELD_TYPE_IMAGE];
+
+        $fieldMap = $this->fieldService->getByForm($form, $filterTypes);
 
         foreach ($fieldMap as $key => $field) {
-            if( ! $id = $editData[$key] ?? null){
+            if ( ! $id = $editData[$key] ?? null) {
                 continue;
             }
 
-            if( ! $file = $this->fileRepository->find($id)){
+            if ( ! $file = $this->fileRepository->find($id)) {
                 continue;
             }
 

@@ -8,6 +8,7 @@ class DataTableConfig
     const string FIELD_TYPE_DATATABLE  = 'datatable';
     const string FIELD_TYPE_RICHTEXT   = 'richtext';
     const string FIELD_TYPE_FILEPICKER = 'filepicker';
+    const string FIELD_TYPE_IMAGE      = 'image';
 
     const string CELL_TYPE_CHECKBOX = 'checkbox';
 

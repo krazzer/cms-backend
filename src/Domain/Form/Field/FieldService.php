@@ -9,12 +9,16 @@ use ReflectionClass;
 
 readonly class FieldService
 {
-    public function getByForm(Form $form, ?string $filterType = null): array
+    public function getByForm(Form $form, string|array|null $filterType = null): array
     {
         $fields = [];
 
+        if(is_string($filterType)){
+            $filterType = [$filterType];
+        }
+
         $this->walk($form, function ($field, $key) use (&$fields, $filterType) {
-            if ($filterType && $field[DataTableConfig::FIELD_TYPE] !== $filterType) {
+            if ($filterType && ! in_array($field[DataTableConfig::FIELD_TYPE], $filterType)) {
                 return;
             }
 
