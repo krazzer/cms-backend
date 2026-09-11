@@ -9,7 +9,7 @@ general:
     active: Actief
 
 form:
-    success: "Thanks! Your form has been submitted successfully."
+    success: "Bedankt! Je bericht is succesvol verzonden."
 
 forms:
     page:
