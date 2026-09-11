@@ -8,6 +8,9 @@ general:
     slug: Slug
     active: Actief
 
+form:
+    success: "Thanks! Your form has been submitted successfully."
+
 forms:
     page:
         seo:

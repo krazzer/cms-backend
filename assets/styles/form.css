@@ -15,6 +15,10 @@
     --kikform-error-margin: 5px;
     --kikform-error-padding: 5px;
 
+    /* success */
+    --kikform-success-margin: var(--kikform-field-margin);
+    --kikform-success-padding: 15px;
+
     /* button */
     --kikform-button-padding: 8px 24px 10px;
     --kikform-button-color: white;
@@ -29,101 +33,112 @@
     --kikform-checkboxes-gap: 5px;
     --kikform-checkboxes-label-gap: 4px;
     --kikform-checkboxes-size: 15px;
+}
 
-    .kikform__errors {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
+.kikform__errors {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
 
-    .kikform__error {
+.kikform__error {
+    border-radius: var(--kikform-border-radius);
+    margin-bottom: var(--kikform-error-margin);
+    padding: var(--kikform-error-padding);
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+
+.kikform__success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+    border-radius: var(--kikform-border-radius);
+    margin-bottom: var(--kikform-success-margin);
+    padding: var(--kikform-success-padding);
+}
+
+.kikform__row {
+    margin-bottom: var(--kikform-field-margin);
+
+    input[type="text"], input[type="email"], input[type="number"], textarea, select {
+        -webkit-appearance: none;
+        border: 1px solid var(--kikform-field-border-color);
         border-radius: var(--kikform-border-radius);
-        margin-bottom: var(--kikform-error-margin);
-        padding: var(--kikform-error-padding);
-        background-color: #f2dede;
-        border-color: #ebccd1;
-        color: #a94442;
-    }
+        padding: var(--kikform-field-padding);
+        box-shadow: none;
+        display: block;
+        width: 100%;
+        font-family: inherit;
+        font-size: inherit;
 
-    .kikform__row {
-        margin-bottom: var(--kikform-field-margin);
-
-        input[type="text"], input[type="email"], input[type="number"], textarea, select {
-            -webkit-appearance: none;
-            border: 1px solid var(--kikform-field-border-color);
-            border-radius: var(--kikform-border-radius);
-            padding: var(--kikform-field-padding);
-            box-shadow: none;
-            display: block;
-            width: 100%;
-
-            &:focus {
-                border-color: var(--kikform-field-outline-color);
-                outline: 0;
-            }
-        }
-
-        > label {
-            display: block;
-        }
-
-        > label + .kikform__options {
-            margin-top: var(--kikform-checkboxes-toplabel-margin);
-        }
-
-        > label + .kikform__errors {
-            margin-top: var(--kikform-error-margin);
-        }
-
-        select {
-            background-image: url("/images/icons/arrow.svg");
-            background-repeat: no-repeat;
-            background-position: right 9px center;
-            background-size: 16px;
+        &:focus {
+            border-color: var(--kikform-field-outline-color);
+            outline: 0;
         }
     }
 
-    .kikform__options {
-        display: inline-flex;
-        flex-direction: column;
-        gap: var(--kikform-checkboxes-gap);
+    > label {
+        display: block;
     }
 
-    .kikform__option {
-        width: auto;
-        display: flex;
-        align-items: center;
-        gap: var(--kikform-checkboxes-label-gap);
-
-        label {
-            cursor: pointer;
-            position: relative;
-            top: var(--kikform-checkboxes-label-correction);
-        }
-
-        input[type="checkbox"] {
-            width: var(--kikform-checkboxes-size);
-            height: var(--kikform-checkboxes-size);
-            margin: 0;
-            border-color: red;
-        }
+    > label + .kikform__options {
+        margin-top: var(--kikform-checkboxes-toplabel-margin);
     }
 
-    button[type="submit"] {
-        background-color: var(--kikform-button-bgcolor);
-        color: var(--kikform-button-color);
-        border-radius: var(--kikform-border-radius);
-        padding: var(--kikform-button-padding);
-        border: none;
+    > label + .kikform__errors {
+        margin-top: var(--kikform-error-margin);
+    }
+
+    select {
+        background-image: url("/images/icons/arrow.svg");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        background-size: 16px;
+    }
+}
+
+.kikform__options {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--kikform-checkboxes-gap);
+}
+
+.kikform__option {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--kikform-checkboxes-label-gap);
+
+    label {
         cursor: pointer;
-        display: inline-block;
+        position: relative;
+        top: var(--kikform-checkboxes-label-correction);
+    }
 
-        &:hover {
-            background-color: var(--kikform-button-bgcolor-hover);
-        }
+    input[type="checkbox"] {
+        width: var(--kikform-checkboxes-size);
+        height: var(--kikform-checkboxes-size);
+        margin: 0;
+        border-color: red;
+    }
+}
 
-        &:active, &:hover:active {
-            background-color: var(--kikform-button-bgcolor-click);
-        }
+button[type="submit"] {
+    background-color: var(--kikform-button-bgcolor);
+    color: var(--kikform-button-color);
+    border-radius: var(--kikform-border-radius);
+    padding: var(--kikform-button-padding);
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+
+    &:hover {
+        background-color: var(--kikform-button-bgcolor-hover);
+    }
+
+    &:active, &:hover:active {
+        background-color: var(--kikform-button-bgcolor-click);
     }
 }

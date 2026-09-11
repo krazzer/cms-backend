@@ -3,6 +3,9 @@
 {%- block form_widget_compound -%}
     {%- if form is rootform -%}
         {{ '<div class="kikform">' }}
+        {% if form_success %}
+            <div class="kikform__success">{{ 'form.success'|trans }}</div>
+        {% endif %}
         {{ form_errors(form) }}
     {%- else -%}
         <div {{ block('widget_container_attributes') }}>

@@ -8,6 +8,9 @@ general:
     slug: Slug
     active: Active
 
+form:
+    success: "Bedankt! Je bericht is succesvol verzonden."
+
 forms:
     page:
         seo:

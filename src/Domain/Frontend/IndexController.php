@@ -103,18 +103,19 @@ class IndexController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $task = $form->getData();
+            dlog($form->getData());
 
-            dlog($task);
+            $request->getSession()->set('form_success', true);
 
-            // ... perform some action, such as saving the task to the database
-
-//            return $this->redirectToRoute('task_success');
+            return $this->redirect($request->getRequestUri());
         }
 
-        $params['form'] = $form;
+        $formView = $form->createView();
+        $formView->vars['form_success'] = $request->getSession()->get('form_success');
+
+        $params['form'] = $formView;
+
+        $request->getSession()->remove('form_success');
 
         return match ($result->type) {
             RenderType::VIEW => $this->render($result->template, $params),
