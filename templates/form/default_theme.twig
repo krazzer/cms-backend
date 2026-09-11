@@ -26,3 +26,21 @@
         </ul>
     {%- endif -%}
 {%- endblock form_errors -%}
+
+{%- block widget_container_attributes -%}
+    {%- if expanded is defined and multiple is defined and expanded and multiple -%}
+        {%- set attr = attr|merge({class: ((attr.class ?? '') ~ ' kikform__options')|trim}) -%}
+    {%- endif -%}
+    {{- parent() -}}
+{%- endblock widget_container_attributes -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form -%}
+            <div class="kikform__option">
+                {{- form_widget(child) -}}
+                {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}

@@ -8,6 +8,9 @@
     --kikform-field-margin: 12px;
     --kikform-field-outline-color: #66afe9;
 
+    /* labels */
+    --kikform-label-margin: 3px;
+
     /* error */
     --kikform-error-margin: 5px;
     --kikform-error-padding: 5px;
@@ -19,13 +22,21 @@
     --kikform-button-bgcolor-hover: #464646;
     --kikform-button-bgcolor-click: #575757;
 
-    .kikform__errors{
+    /* checkboxes */
+    /* noinspection CssNonIntegerLengthInPixels */
+    --kikform-checkboxes-label-correction: 0.5px;
+    --kikform-checkboxes-toplabel-margin: 8px;
+    --kikform-checkboxes-gap: 5px;
+    --kikform-checkboxes-label-gap: 4px;
+    --kikform-checkboxes-size: 15px;
+
+    .kikform__errors {
         margin: 0;
         padding: 0;
         list-style: none;
     }
 
-    .kikform__error{
+    .kikform__error {
         border-radius: var(--kikform-border-radius);
         margin-bottom: var(--kikform-error-margin);
         padding: var(--kikform-error-padding);
@@ -34,10 +45,11 @@
         color: #a94442;
     }
 
-    .kikform__row{
+    .kikform__row {
         margin-bottom: var(--kikform-field-margin);
 
-        input, textarea, select{
+        input[type="text"], input[type="email"], input[type="number"], textarea, select {
+            -webkit-appearance: none;
             border: 1px solid var(--kikform-field-border-color);
             border-radius: var(--kikform-border-radius);
             padding: var(--kikform-field-padding);
@@ -50,9 +62,54 @@
                 outline: 0;
             }
         }
+
+        > label {
+            display: block;
+        }
+
+        > label + .kikform__options {
+            margin-top: var(--kikform-checkboxes-toplabel-margin);
+        }
+
+        > label + .kikform__errors {
+            margin-top: var(--kikform-error-margin);
+        }
+
+        select {
+            background-image: url("/images/icons/arrow.svg");
+            background-repeat: no-repeat;
+            background-position: right 9px center;
+            background-size: 16px;
+        }
     }
 
-    button[type="submit"]{
+    .kikform__options {
+        display: inline-flex;
+        flex-direction: column;
+        gap: var(--kikform-checkboxes-gap);
+    }
+
+    .kikform__option {
+        width: auto;
+        display: flex;
+        align-items: center;
+        gap: var(--kikform-checkboxes-label-gap);
+
+        label {
+            cursor: pointer;
+            position: relative;
+            top: var(--kikform-checkboxes-label-correction);
+        }
+
+        input[type="checkbox"] {
+            width: var(--kikform-checkboxes-size);
+            height: var(--kikform-checkboxes-size);
+            margin: 0;
+            border-color: red;
+        }
+    }
+
+    button[type="submit"] {
         background-color: var(--kikform-button-bgcolor);
         color: var(--kikform-button-color);
         border-radius: var(--kikform-border-radius);
@@ -61,11 +118,11 @@
         cursor: pointer;
         display: inline-block;
 
-        &:hover{
+        &:hover {
             background-color: var(--kikform-button-bgcolor-hover);
         }
 
-        &:active, &:hover:active{
+        &:active, &:hover:active {
             background-color: var(--kikform-button-bgcolor-click);
         }
     }
