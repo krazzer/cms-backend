@@ -13,4 +13,10 @@
             {{ section.content.text|default('')|raw }}
         </section>
     {% endif %}
+    {% if section.type == 'form' %}
+        <section>
+            {{ section.content.text|default('')|raw }}
+            {{ form(form) }}
+        </section>
+    {% endif %}
 {% endfor %}

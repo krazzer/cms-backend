@@ -9,10 +9,16 @@ use KikCMS\Entity\Page\Renderer\GlobalVariables\GlobalVariableResolver;
 use KikCMS\Entity\Page\Renderer\PageRendererResolver;
 use KikCMS\Entity\Page\Renderer\RenderType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IndexController extends AbstractController
@@ -59,6 +65,29 @@ class IndexController extends AbstractController
         $globals = $this->globalVariableResolver->resolve($request, $page);
 
         $params = array_replace_recursive(['lang' => $request->getLocale()], $globals, $result->context);
+
+        $form = $this->createFormBuilder()
+            ->add('name', TextType::class, ['attr' => ['placeholder' => 'Naam'], 'constraints' => [new NotBlank()], 'label' => false])
+            ->add('email', EmailType::class, ['label' => false, 'attr' => ['placeholder' => 'E-mail adres'], 'constraints' => [new NotBlank(), new Email()]])
+            ->add('message', TextareaType::class, ['label' => false, 'attr' => ['placeholder' => 'Bericht', 'rows' => 5],'constraints' => [new NotBlank()]])
+            ->add('send', SubmitType::class, ['label' => 'Versturen'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$task` variable has also been updated
+            $task = $form->getData();
+
+            dlog($task);
+
+            // ... perform some action, such as saving the task to the database
+
+//            return $this->redirectToRoute('task_success');
+        }
+
+        $params['form'] = $form;
 
         return match ($result->type) {
             RenderType::VIEW => $this->render($result->template, $params),

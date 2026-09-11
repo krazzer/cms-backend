@@ -14,12 +14,26 @@ sections:
             - image
     overview:
         label_trans: sections.overview
+    form:
+        label_trans: sections.form
+        fields:
+            - text
+            - form
 fields:
     content:
         label_trans: Inhoud
+        type: richtext
+        field: content.text
+    text:
+        label_trans: Tekst
         type: richtext
         field: content.text
     image:
         label_trans: Afbeelding
         type: image
         field: content.image
+    form:
+        label_trans: Formulier
+        type: select
+        field: content.form
+        items: ['test']

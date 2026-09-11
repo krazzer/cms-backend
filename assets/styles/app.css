@@ -1,5 +1,11 @@
+@import "form.css";
+
 :root {
     --white-space: 20px;
+}
+
+*{
+    box-sizing: border-box;
 }
 
 body {

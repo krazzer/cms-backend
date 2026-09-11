@@ -38,6 +38,7 @@ sections:
     richtext_image: Rich text with image
     image: Image
     overview: Overview of sub-pages
+    form: Text with form
 
 section_fields:
     content: Content

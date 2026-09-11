@@ -1,0 +1,28 @@
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_widget_compound -%}
+    {%- if form is rootform -%}
+        {{ '<div class="kikform">' }}
+        {{ form_errors(form) }}
+    {%- else -%}
+        <div {{ block('widget_container_attributes') }}>
+    {%- endif -%}
+    {{- block('form_rows') -}}
+    {{- form_rest(form) -}}
+    </div>
+{%- endblock form_widget_compound -%}
+
+{%- block form_row_render -%}
+    {%- set row_attr = row_attr|merge({class: ((row_attr.class ?? '') ~ ' kikform__row')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_row_render -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="kikform__errors">
+            {%- for error in errors -%}
+                <li class="kikform__error" id="{{ id ~ '_error' ~ loop.index }}">{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}

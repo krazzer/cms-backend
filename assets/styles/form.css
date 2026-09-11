@@ -1,0 +1,72 @@
+.kikform {
+    /* global */
+    --kikform-border-radius: 4px;
+
+    /* field */
+    --kikform-field-border-color: #e1e1e1;
+    --kikform-field-padding: 8px 12px;
+    --kikform-field-margin: 12px;
+    --kikform-field-outline-color: #66afe9;
+
+    /* error */
+    --kikform-error-margin: 5px;
+    --kikform-error-padding: 5px;
+
+    /* button */
+    --kikform-button-padding: 8px 24px 10px;
+    --kikform-button-color: white;
+    --kikform-button-bgcolor: #353535;
+    --kikform-button-bgcolor-hover: #464646;
+    --kikform-button-bgcolor-click: #575757;
+
+    .kikform__errors{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .kikform__error{
+        border-radius: var(--kikform-border-radius);
+        margin-bottom: var(--kikform-error-margin);
+        padding: var(--kikform-error-padding);
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        color: #a94442;
+    }
+
+    .kikform__row{
+        margin-bottom: var(--kikform-field-margin);
+
+        input, textarea, select{
+            border: 1px solid var(--kikform-field-border-color);
+            border-radius: var(--kikform-border-radius);
+            padding: var(--kikform-field-padding);
+            box-shadow: none;
+            display: block;
+            width: 100%;
+
+            &:focus {
+                border-color: var(--kikform-field-outline-color);
+                outline: 0;
+            }
+        }
+    }
+
+    button[type="submit"]{
+        background-color: var(--kikform-button-bgcolor);
+        color: var(--kikform-button-color);
+        border-radius: var(--kikform-border-radius);
+        padding: var(--kikform-button-padding);
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+
+        &:hover{
+            background-color: var(--kikform-button-bgcolor-hover);
+        }
+
+        &:active, &:hover:active{
+            background-color: var(--kikform-button-bgcolor-click);
+        }
+    }
+}

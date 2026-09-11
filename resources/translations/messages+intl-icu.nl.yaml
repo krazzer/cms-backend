@@ -38,6 +38,7 @@ sections:
     richtext_image: Tekst met afbeelding
     image: Afbeelding
     overview: Overzicht van subpagina's
+    form: Tekst met formulier
 
 section_fields:
     content: Inhoud
