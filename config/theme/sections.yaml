@@ -36,4 +36,5 @@ fields:
         label_trans: Formulier
         type: select
         field: content.form
-        items: ['test']
+        items:
+            contact: Contactformulier

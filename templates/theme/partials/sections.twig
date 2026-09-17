@@ -16,7 +16,7 @@
     {% if section.type == 'form' %}
         <section>
             {{ section.content.text|default('')|raw }}
-            {{ form(form) }}
+            {{ form(renderedForm) }}
         </section>
     {% endif %}
 {% endfor %}
