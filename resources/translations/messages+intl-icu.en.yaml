@@ -9,7 +9,13 @@ general:
     active: Active
 
 form:
-    success: "Thanks! Your form has been submitted successfully."
+    success: Thanks! Your form has been submitted successfully.
+    contact:
+        name: Name
+        email: E-mail address
+        message: Message
+        send: Send
+        subject: Contactform
 
 forms:
     page:

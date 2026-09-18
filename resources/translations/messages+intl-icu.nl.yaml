@@ -9,7 +9,13 @@ general:
     active: Actief
 
 form:
-    success: "Bedankt! Je bericht is succesvol verzonden."
+    success: Bedankt! Je bericht is succesvol verzonden.
+    contact:
+        name: Naam
+        email: E-mail adres
+        message: Bericht
+        send: Versturen
+        subject: Contactformulier
 
 forms:
     page:

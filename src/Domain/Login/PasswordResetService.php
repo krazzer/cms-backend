@@ -35,7 +35,7 @@ readonly class PasswordResetService
 
         $url = $this->generateResetUrl($user);
 
-        $email = (new TemplatedEmail())
+        $email = new TemplatedEmail()
             ->to($email->getEmail())
             ->subject($this->translator->trans('resetMail.subject', domain: 'login'))
             ->htmlTemplate('email/reset.twig')

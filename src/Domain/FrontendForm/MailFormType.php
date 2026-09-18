@@ -2,7 +2,7 @@
 
 namespace KikCMS\Domain\FrontendForm;
 
-class MailFormType extends FormType
+abstract class MailFormType extends FormType
 {
-
+    abstract public function getSubject(): string;
 }

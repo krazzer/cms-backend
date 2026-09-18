@@ -1,0 +1,17 @@
+{% extends 'email/default.twig' %}
+
+{% block body %}
+    <table style="width: 100%; border-collapse: collapse;">
+        {% for label, value in mailData %}
+            {% set border = loop.last ? 'none' : '1px solid #eee' %}
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold; border-bottom: {{ border }}; width: 30%;">
+                    {{ label }}:
+                </td>
+                <td style="padding: 8px 0; border-bottom: {{ border }};">
+                    {{ value|nl2br }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
