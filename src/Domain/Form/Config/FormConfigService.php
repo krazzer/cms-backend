@@ -107,6 +107,16 @@ readonly class FormConfigService
                 $field[FieldConfig::LABEL] = $this->translator->trans($field[FieldConfig::LABEL_TRANS]);
             }
 
+            if (array_key_exists(FieldConfig::ITEMS_TRANS, $field)) {
+                $items = $field[FieldConfig::ITEMS_TRANS];
+
+                foreach ($items as $key => $item) {
+                    $items[$key] = $this->translator->trans($item);
+                }
+
+                $field[FieldConfig::ITEMS] = $items;
+            }
+
             return $field;
         });
     }
