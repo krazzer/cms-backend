@@ -32,7 +32,7 @@ class ContactFormType extends MailFormType
                 'attr'        => ['placeholder' => $this->translator->trans('form.contact.message'), 'rows' => 8],
                 'constraints' => [new NotBlank()]
             ])
-            ->add('spamblock', SpamBlockType::class)
+            ->add('check', SpamBlockType::class)
             ->add('send', SubmitType::class, ['label' => $this->translator->trans('form.contact.send')]);
     }
 
