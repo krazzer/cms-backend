@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\FrontendForm;
 
+use KikCMS\Domain\FrontendForm\SpamBlock\SpamBlockType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -31,6 +32,7 @@ class ContactFormType extends MailFormType
                 'attr'        => ['placeholder' => $this->translator->trans('form.contact.message'), 'rows' => 8],
                 'constraints' => [new NotBlank()]
             ])
+            ->add('spamblock', SpamBlockType::class)
             ->add('send', SubmitType::class, ['label' => $this->translator->trans('form.contact.send')]);
     }
 

@@ -17,6 +17,48 @@ form:
         send: Send
         subject: Contactform
 
+    spamBlock:
+        q1: "Color of a clear sky?"
+        q2: "Color of blueberries?"
+
+        q3: "Color of grass?"
+        q4: "Color of lettuce?"
+        q5: "Color when yellow and blue mix?"
+        q6: "Color of crocodiles?"
+        q7: "Color of an avocado?"
+
+        q8: "Color of a banana?"
+        q9: "Color of a lemon?"
+        q10: "Color of the sun?"
+        q11: "Color of a tennis ball?"
+
+        q12: "Color of oranges?"
+        q13: "Color of a carrot?"
+
+        q14: "Color of a tomato?"
+        q15: "Color of a strawberry?"
+        q16: "Color of cherries?"
+        q17: "Color of roses?"
+        q18: "Color of a fire truck?"
+        q19: "Color of ketchup?"
+        q20: "Color of a ladybug?"
+
+        q21: "Color of snow?"
+        q22: "Color of milk?"
+
+        q23: "Color of a tree trunk?"
+        q24: "Color of chocolate?"
+        q25: "Color of autumn leaves?"
+        q26: "Color of a walnut?"
+        q27: "Color of an autumn leaf?"
+
+        q28: "Color when blue and red mix?"
+        q29: "Color of an eggplant?"
+
+        q30: "Color of space?"
+
+        check: Bot check
+
 forms:
     page:
         seo:

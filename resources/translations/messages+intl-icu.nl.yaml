@@ -17,6 +17,48 @@ form:
         send: Versturen
         subject: Contactformulier
 
+    spamBlock:
+        q1: "Kleur van heldere lucht?"
+        q2: "Kleur van blauwe bessen?"
+
+        q3: "Kleur van gras?"
+        q4: "Kleur van sla?"
+        q5: "Kleur als geel en blauw mengt?"
+        q6: "Kleur van krokodillen?"
+        q7: "Kleur van een avocado?"
+
+        q8: "Kleur van een banaan?"
+        q9: "Kleur van een citroen?"
+        q10: "Kleur van de zon?"
+        q11: "Kleur van een tennisbal?"
+
+        q12: "Kleur van sinaasappels?"
+        q13: "Kleur van een wortel?"
+
+        q14: "Kleur van een tomaat?"
+        q15: "Kleur van een aardbei?"
+        q16: "Kleur van kersen?"
+        q17: "Kleur van rozen?"
+        q18: "Kleur van een brandweerwagen?"
+        q19: "Kleur van ketchup?"
+        q20: "Kleur van een lieveheersbeestje?"
+
+        q21: "Kleur van sneeuw?"
+        q22: "Kleur van melk?"
+
+        q23: "Kleur van een boomstam?"
+        q24: "Kleur van chocola?"
+        q25: "Kleur van herfstbladeren?"
+        q26: "Kleur van een walnoot?"
+        q27: "Kleur van een herfstblad?"
+
+        q28: "Kleur als blauw en rood mengt?"
+        q29: "Kleur van een aubergine?"
+
+        q30: "Kleur van de ruimte?"
+
+        check: Bot controle
+
 forms:
     page:
         seo:
