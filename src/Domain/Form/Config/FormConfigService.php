@@ -2,7 +2,7 @@
 
 namespace KikCMS\Domain\Form\Config;
 
-use Exception;
+use KikCMS\Domain\App\Config\ConfigService;
 use KikCMS\Domain\App\Config\Provider\ConfigProviderRegistry;
 use KikCMS\Domain\App\Config\Provider\Context;
 use KikCMS\Domain\App\Path\PathConfig;
@@ -10,30 +10,20 @@ use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\Form\Field\Config\FieldConfig;
 use KikCMS\Domain\Form\Field\FieldService;
 use KikCMS\Domain\Form\Form;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class FormConfigService
 {
     public function __construct(
-        private KernelInterface $kernel,
-        private Parser $yamlParser,
         private FieldService $fieldService,
         private ConfigProviderRegistry $providerRegistry,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private ConfigService $configService,
     ) {}
 
     public function getConfigFromFile(string $name): array
     {
-        $filePath = $this->kernel->getCmsDir(PathConfig::DIR_CONFIG_FORMS . DIRECTORY_SEPARATOR . $name . '.yaml');
-
-        if ($config = $this->yamlParser->parseFile($filePath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
-            return $config;
-        }
-
-        throw new Exception("No config found for Form '$name'");
+        return $this->configService->getConfigFromFile(PathConfig::SUBDIR_FORMS . '/' . $name);
     }
 
     public function getObjectByName(string $name): Form

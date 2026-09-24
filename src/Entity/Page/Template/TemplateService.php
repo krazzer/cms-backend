@@ -2,15 +2,16 @@
 
 namespace KikCMS\Entity\Page\Template;
 
-use KikCMS\Domain\Form\Config\FormConfigService;
+use KikCMS\Domain\App\Config\ConfigService;
+use KikCMS\Domain\App\Path\PathConfig;
 
 readonly class TemplateService
 {
-    public function __construct(private FormConfigService $formConfigService) {}
+    public function __construct(private ConfigService $configService) {}
 
     public function getConfig(): array
     {
-        return $this->formConfigService->getConfigFromFile('templates');
+        return $this->configService->getConfigFromFile(PathConfig::SUBDIR_THEME . '/templates');
     }
 
     public function getTemplateConfig(string $template): array

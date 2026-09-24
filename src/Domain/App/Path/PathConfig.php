@@ -11,9 +11,13 @@ class PathConfig
     const string DIR_STORAGE = 'var/storage';
 
     const string DIR_CONFIG          = 'config';
-    const string DIR_CONFIG_FORMS    = 'config/forms';
-    const string DIR_CONFIG_THEME    = 'config/theme';
-    const string DIR_CONFIG_PACKAGES = 'config/packages';
+    const string DIR_CONFIG_FORMS    = self::DIR_CONFIG . '/' . self::SUBDIR_FORMS;
+    const string DIR_CONFIG_THEME    = self::DIR_CONFIG . '/' . self::SUBDIR_THEME;
+    const string DIR_CONFIG_PACKAGES = self::DIR_CONFIG . '/' . self::SUBDIR_PACKAGES;
+
+    const string SUBDIR_FORMS    = 'forms';
+    const string SUBDIR_THEME    = 'theme';
+    const string SUBDIR_PACKAGES = 'packages';
 
     const string DIR_PUBLIC = 'public_html';
 
