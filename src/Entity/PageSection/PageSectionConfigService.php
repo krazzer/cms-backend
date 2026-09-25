@@ -2,32 +2,20 @@
 
 namespace KikCMS\Entity\PageSection;
 
-use Exception;
+use KikCMS\Domain\App\Config\ConfigService;
 use KikCMS\Domain\App\Path\PathConfig;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class PageSectionConfigService
 {
     public function __construct(
-        private KernelInterface $kernel,
-        private Parser $yamlParser,
         private TranslatorInterface $translator,
+        private ConfigService $configService,
     ) {}
 
     public function getSectionsConfig(): array
     {
-        $name = 'sections';
-
-        $filePath = $this->kernel->getCmsDir(PathConfig::DIR_CONFIG_THEME . '/' . $name . '.yaml');
-
-        if ($config = $this->yamlParser->parseFile($filePath, Yaml::PARSE_CUSTOM_TAGS) ?? null) {
-            return $config;
-        }
-
-        throw new Exception("No config found for Form '$name'");
+        return $this->configService->getMerged(PathConfig::SUBDIR_THEME . '/sections', false, ['sections', 'fields']);
     }
 
     public function getSectionNameMap(): array

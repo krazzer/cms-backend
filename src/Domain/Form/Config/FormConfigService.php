@@ -23,7 +23,7 @@ readonly class FormConfigService
 
     public function getConfigFromFile(string $name): array
     {
-        return $this->configService->getConfigFromFile(PathConfig::SUBDIR_FORMS . '/' . $name);
+        return $this->configService->getByName(PathConfig::SUBDIR_FORMS . '/' . $name);
     }
 
     public function getObjectByName(string $name): Form

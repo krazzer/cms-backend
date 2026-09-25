@@ -7,11 +7,13 @@ use KikCMS\Domain\App\Path\PathConfig;
 
 readonly class TemplateService
 {
-    public function __construct(private ConfigService $configService) {}
+    public function __construct(
+        private ConfigService $configService,
+    ) {}
 
     public function getConfig(): array
     {
-        return $this->configService->getConfigFromFile(PathConfig::SUBDIR_THEME . '/templates');
+        return $this->configService->getMerged(PathConfig::SUBDIR_THEME . '/templates', false, ['templates', 'fields']);
     }
 
     public function getTemplateConfig(string $template): array

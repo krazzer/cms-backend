@@ -2,43 +2,16 @@
 
 namespace KikCMS\Domain\App\CmsMenu;
 
-use KikCMS\Domain\App\Path\PathConfig;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Yaml\Parser;
+use KikCMS\Domain\App\Config\ConfigService;
 
 readonly class CmsMenuService
 {
     public function __construct(
-        private KernelInterface $kernel,
-        private Parser $yamlParser,
+        private ConfigService $configService,
     ) {}
 
     public function getMenu(): array
     {
-        $cmsMenuPath = $this->kernel->getCmsDir(PathConfig::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
-
-        $baseMenu = $this->yamlParser->parseFile($cmsMenuPath);
-
-        if ( ! $this->kernel->isProject()) {
-            return $baseMenu;
-        }
-
-        $appMenuPath = $this->kernel->getAppDir(PathConfig::DIR_CONFIG . DIRECTORY_SEPARATOR . 'menu.yaml');
-
-        if( ! file_exists($appMenuPath)){
-            return $baseMenu;
-        }
-
-        $customMenu = $this->yamlParser->parseFile($appMenuPath);
-        $finalMenu  = [];
-
-        foreach ($customMenu as $key => $customProps) {
-            $customProps = $customProps ?? [];
-            $baseProps   = $baseMenu[$key] ?? [];
-
-            $finalMenu[$key] = array_merge($baseProps, $customProps);
-        }
-
-        return $finalMenu;
+        return $this->configService->getMerged('menu');
     }
 }
