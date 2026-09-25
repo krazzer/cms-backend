@@ -94,3 +94,12 @@ sections:
 section_fields:
     content: Content
     image: Image
+    text: Text
+    form: Form
+
+templates:
+    home: Home
+    default: Default
+    project: Project
+    blog: Blog
+    overview: Overview

@@ -13,6 +13,6 @@ readonly class PageTemplateOptionsProvider implements ConfigProviderInterface
 
     public function getConfig(Context $context): array
     {
-        return $this->templateService->getMap();
+        return $this->templateService->getNameMap();
     }
 }

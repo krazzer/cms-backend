@@ -1,23 +1,23 @@
 templates:
     home:
-        name: Home
-        fields: [title, hero, sections]
+        label_trans: templates.home
+        fields: [ title, hero, sections ]
 
     default:
-        name: Default
-        fields: [title, sections]
+        label_trans: templates.default
+        fields: [ title, sections ]
 
     project:
-        name: Project
-        fields: [title, image, content]
+        label_trans: templates.project
+        fields: [ title, image, content ]
 
     blog:
-        name: Blog
-        fields: [title, content]
+        label_trans: templates.blog
+        fields: [ title, content ]
 
     overview:
-        name: Overview
-        fields: [title]
+        label_trans: templates.overview
+        fields: [ title ]
 
 fields:
     title:

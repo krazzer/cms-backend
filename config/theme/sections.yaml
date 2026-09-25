@@ -21,19 +21,19 @@ sections:
             - form
 fields:
     content:
-        label_trans: Inhoud
+        label_trans: section_fields.content
         type: richtext
         field: content.text
     text:
-        label_trans: Tekst
+        label_trans: section_fields.text
         type: richtext
         field: content.text
     image:
-        label_trans: Afbeelding
+        label_trans: section_fields.image
         type: image
         field: content.image
     form:
-        label_trans: Formulier
+        label_trans: section_fields.form
         type: select
         field: content.form
         items_trans:

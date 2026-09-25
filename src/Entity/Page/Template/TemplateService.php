@@ -4,11 +4,13 @@ namespace KikCMS\Entity\Page\Template;
 
 use KikCMS\Domain\App\Config\ConfigService;
 use KikCMS\Domain\App\Path\PathConfig;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class TemplateService
 {
     public function __construct(
         private ConfigService $configService,
+        private TranslatorInterface $translator,
     ) {}
 
     public function getConfig(): array
@@ -45,10 +47,22 @@ readonly class TemplateService
         return $result;
     }
 
-    public function getMap(): array
+    public function getNameMap(): array
     {
         $templatesConfig = $this->getTemplatesConfig();
 
-        return array_map(fn($template) => $template['name'], $templatesConfig);
+        $nameMap = [];
+
+        foreach ($templatesConfig as $key => $template) {
+            if (isset($template['label_trans'])) {
+                $name = $this->translator->trans($template['label_trans']);
+            } else {
+                $name = $template['label'];
+            }
+
+            $nameMap[$key] = $name;
+        }
+
+        return $nameMap;
     }
 }

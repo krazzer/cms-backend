@@ -94,3 +94,12 @@ sections:
 section_fields:
     content: Inhoud
     image: Afbeelding
+    text: Tekst
+    form: Formulier
+
+templates:
+    home: Home
+    default: Standaard
+    project: Project
+    blog: Blog
+    overview: Overzicht
