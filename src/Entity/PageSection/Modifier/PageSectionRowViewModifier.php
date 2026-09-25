@@ -19,7 +19,7 @@ readonly class PageSectionRowViewModifier implements DataTableRowViewModifierInt
 
     public function modify(TableViewRow $tableViewRow, DataTable $dataTable, DataTableFilters $filters): TableViewRow
     {
-        $sectionNameMap = $this->pageSectionConfigService->getSectionNameMap();
+        $sectionNameMap = $this->pageSectionConfigService->getNameMap();
 
         $this->dataTableCellModifier->modify($tableViewRow, PageSection::FIELD_TYPE, function ($value) use ($sectionNameMap) {
             return $sectionNameMap[$value] ?? $value;

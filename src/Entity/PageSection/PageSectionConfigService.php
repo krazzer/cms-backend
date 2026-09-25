@@ -4,49 +4,29 @@ namespace KikCMS\Entity\PageSection;
 
 use KikCMS\Domain\App\Config\ConfigService;
 use KikCMS\Domain\App\Path\PathConfig;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use KikCMS\Entity\Page\Field\FieldService;
 
 readonly class PageSectionConfigService
 {
     public function __construct(
-        private TranslatorInterface $translator,
         private ConfigService $configService,
+        private FieldService $fieldService,
     ) {}
 
-    public function getSectionsConfig(): array
+    public function getConfig(): array
     {
-        return $this->configService->getMerged(PathConfig::SUBDIR_THEME . '/sections', false, ['sections', 'fields']);
-    }
-
-    public function getSectionNameMap(): array
-    {
-        return array_map([$this, 'getLabel'], $this->getSectionsConfig()['sections']);
+        return $this->configService->getMerged(PathConfig::SUBDIR_THEME . '/sections');
     }
 
     public function getFieldsByType(string $type): array
     {
-        $config = $this->getSectionsConfig();
+        $fields = $this->getConfig()[$type]['fields'] ?? [];
 
-        $allFields = $config['fields'];
-
-        $fields = $config['sections'][$type]['fields'] ?? [];
-
-        $returnFields = [];
-
-        foreach ($fields as $field) {
-            $returnFields[$field] = $allFields[$field];
-        }
-
-        foreach($returnFields as $key => $field) {
-            $returnFields[$key]['label'] = $this->getLabel($field);
-        }
-
-        return $returnFields;
+        return $this->fieldService->getFilteredConfig($fields);
     }
 
-    private function getLabel(array $data): string
+    public function getNameMap(): array
     {
-        return $data['label'] ?? $this->translator->trans($data['label_trans']);
+        return array_map(fn($template) => $template['label'], $this->getConfig());
     }
-
 }

@@ -14,6 +14,6 @@ readonly class PageSectionTypeOptionsProvider implements ConfigProviderInterface
 
     public function getConfig(Context $context): array
     {
-        return $this->pageSectionConfigService->getSectionNameMap();
+        return $this->pageSectionConfigService->getNameMap();
     }
 }

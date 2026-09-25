@@ -1,0 +1,32 @@
+content:
+    label_trans: section_fields.content
+    type: richtext
+    field: content.*.content
+text:
+    label_trans: section_fields.text
+    type: richtext
+    field: content.*.text
+image:
+    label_trans: section_fields.image
+    type: image
+    field: content.image
+form:
+    label_trans: section_fields.form
+    type: select
+    field: content.form
+    items_trans:
+        contact: form.contact.subject
+title:
+    type: text
+    field: name.*
+    label: Name
+    validator:
+        name: presence
+hero:
+    type: text
+    field: content.*.hero
+    label: Hero image text
+sections:
+    type: datatable
+    label: Content
+    instance: page_content

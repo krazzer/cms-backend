@@ -7,12 +7,14 @@ use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class ConfigService
 {
     public function __construct(
         private KernelInterface $kernel,
         private Parser $yamlParser,
+        private TranslatorInterface $translator,
     ) {}
 
     public function getByName(string $name): array
@@ -22,7 +24,11 @@ readonly class ConfigService
         return $this->getByPath($filePath);
     }
 
-    public function getMerged(string $name, bool $mergeRoot = true, array $mergeKeys = []): array
+    /**
+     * Merges the base CMS config with the app config if it exists.
+     * If $mergeAdd is true, adds all base config properties that are not set in the app config
+     */
+    public function getMerged(string $name, bool $mergeAdd = false): array
     {
         $baseConfig = $this->getByName($name);
 
@@ -40,21 +46,24 @@ readonly class ConfigService
 
         $finalConfig = [];
 
-        foreach ($mergeKeys as $mergeKey) {
-            foreach ($appConfig[$mergeKey] ?? [] as $key => $customProps) {
-                $customProps = $customProps ?? [];
-                $baseProps   = $baseConfig[$mergeKey][$key] ?? [];
+        foreach ($appConfig as $key => $customProps) {
+            $customProps = $customProps ?? [];
+            $baseProps   = $baseConfig[$key] ?? [];
 
-                $finalConfig[$mergeKey][$key] = array_merge($baseProps, $customProps);
+            $finalConfig[$key] = array_merge($baseProps, $customProps);
+        }
+
+        if($mergeAdd){
+            foreach ($baseConfig as $key => $baseProps) {
+                if ( ! isset($finalConfig[$key])) {
+                    $finalConfig[$key] = $baseProps;
+                }
             }
         }
 
-        if ($mergeRoot) {
-            foreach ($appConfig as $key => $customProps) {
-                $customProps = $customProps ?? [];
-                $baseProps   = $baseConfig[$key] ?? [];
-
-                $finalConfig[$key] = array_merge($baseProps, $customProps);
+        foreach ($finalConfig as &$item) {
+            if (isset($item['label_trans'])) {
+                $item['label'] = $this->translator->trans($item['label_trans']);
             }
         }
 

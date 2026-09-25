@@ -1,40 +1,20 @@
-sections:
-    richtext:
-        label_trans: sections.richtext
-        fields:
-            - content
-    richtext_image:
-        label_trans: sections.richtext_image
-        fields:
-            - content
-            - image
-    image:
-        label_trans: sections.image
-        fields:
-            - image
-    overview:
-        label_trans: sections.overview
-    form:
-        label_trans: sections.form
-        fields:
-            - text
-            - form
-fields:
-    content:
-        label_trans: section_fields.content
-        type: richtext
-        field: content.text
-    text:
-        label_trans: section_fields.text
-        type: richtext
-        field: content.text
-    image:
-        label_trans: section_fields.image
-        type: image
-        field: content.image
-    form:
-        label_trans: section_fields.form
-        type: select
-        field: content.form
-        items_trans:
-            contact: form.contact.subject
+richtext:
+    label_trans: sections.richtext
+    fields:
+        - content
+richtext_image:
+    label_trans: sections.richtext_image
+    fields:
+        - content
+        - image
+image:
+    label_trans: sections.image
+    fields:
+        - image
+overview:
+    label_trans: sections.overview
+form:
+    label_trans: sections.form
+    fields:
+        - text
+        - form

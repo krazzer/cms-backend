@@ -1,48 +1,19 @@
-templates:
-    home:
-        label_trans: templates.home
-        fields: [ title, hero, sections ]
+home:
+    label_trans: templates.home
+    fields: [ title, hero, sections ]
 
-    default:
-        label_trans: templates.default
-        fields: [ title, sections ]
+default:
+    label_trans: templates.default
+    fields: [ title, sections ]
 
-    project:
-        label_trans: templates.project
-        fields: [ title, image, content ]
+project:
+    label_trans: templates.project
+    fields: [ title, image, content ]
 
-    blog:
-        label_trans: templates.blog
-        fields: [ title, content ]
+blog:
+    label_trans: templates.blog
+    fields: [ title, content ]
 
-    overview:
-        label_trans: templates.overview
-        fields: [ title ]
-
-fields:
-    title:
-        type: text
-        field: name.*
-        label: Name
-        validator:
-            name: presence
-
-    hero:
-        type: text
-        field: content.*.hero
-        label: Hero image text
-
-    sections:
-        type: datatable
-        label: Content
-        instance: page_content
-
-    content:
-        type: richtext
-        field: content.*.content
-        label: Inhoud pagina
-
-    image:
-        type: filepicker
-        field: content.*.image
-        label: Afbeelding
+overview:
+    label_trans: templates.overview
+    fields: [ title ]
