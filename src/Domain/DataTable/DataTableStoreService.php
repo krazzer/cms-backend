@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\DataTable;
 
+use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\DataTablePathService;
 use KikCMS\Domain\DataTable\Config\SourceType;
@@ -66,7 +67,14 @@ readonly class DataTableStoreService
             $dataTable = $this->dataTableConfigService->getFromConfigByInstance($field->getInstance());
 
             foreach ($value as $index => $row) {
-                $value[$index] = $this->getDataArrayToStore($dataTable, $filters, $row);
+                $storeData = $this->getDataArrayToStore($dataTable, $filters, $row);
+
+                // if the source is local, we need to add the id to the store data
+                if($dataTable->getSource() === SourceType::Local && isset($row[DataTableConfig::ID])){
+                    $storeData[DataTableConfig::ID] = $row[DataTableConfig::ID];
+                }
+
+                $value[$index] = $storeData;
             }
         }
 

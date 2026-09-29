@@ -59,6 +59,9 @@ form:
 
         check: Bot controle
 
+fields:
+    gallery: Galerij
+
 forms:
     page:
         seo:
@@ -86,7 +89,8 @@ dataTable:
 
 sections:
     richtext: Tekst
-    richtext_image: Tekst met afbeelding
+    richtext_image: Tekst + afbeelding
+    richtext_gallery: Tekst + gallerij
     image: Afbeelding
     overview: Overzicht van subpagina's
     form: Tekst met formulier

@@ -7,6 +7,11 @@ richtext_image:
     fields:
         - content
         - image
+richtext_gallery:
+    label_trans: sections.richtext_gallery
+    fields:
+        - content
+        - gallery
 image:
     label_trans: sections.image
     fields:

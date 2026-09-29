@@ -59,6 +59,9 @@ form:
 
         check: Bot check
 
+fields:
+    gallery: Gallery
+
 forms:
     page:
         seo:
@@ -86,7 +89,8 @@ dataTable:
 
 sections:
     richtext: Rich text
-    richtext_image: Rich text with image
+    richtext_image: Rich text + image
+    richtext_gallery: Rich text + gallery
     image: Image
     overview: Overview of sub-pages
     form: Text with form

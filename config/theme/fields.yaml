@@ -30,3 +30,8 @@ sections:
     type: datatable
     label: Content
     instance: page_content
+gallery:
+    type: datatable
+    label_trans: fields.gallery
+    field: content.gallery
+    instance: page_images

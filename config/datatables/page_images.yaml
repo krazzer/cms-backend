@@ -1,10 +1,10 @@
 buttons:
     -   label: Add image
         action: add
-        icon: 'mdi-plus'
+        icon: mdi-plus
     -   label: Delete
         action: delete
-        icon: 'mdi-delete'
+        icon: mdi-delete
 headers:
     id: Id
     name: Name
@@ -12,20 +12,19 @@ headers:
     display_order: Order
 cells:
     active:
-        image_id: 'image'
+        image_id: image
 mobile_columns:
     - image_id
 form:
     fields:
         name:
-            type: 'text'
-            label: 'Naam'
+            type: text
+            label: Naam
             validator:
                 name: presence
         image_id:
-            type: 'text'
-            label: 'Afbeelding'
+            type: filepicker
+            label: Afbeelding
 rearrange: true
 source:
-    type: pdo
-    model: KikCMS\Entity\PageImage\PageImage
+    type: local
