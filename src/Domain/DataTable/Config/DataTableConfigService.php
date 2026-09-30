@@ -27,6 +27,9 @@ readonly class DataTableConfigService
             throw new Exception("No config found for DataTable '$instance'");
         }
 
+        // missing means null, empty array means []
+        $buttons = array_key_exists('buttons', $config) ? ($config['buttons'] ?: []) : null;
+
         $form             = $config['form'] ?? [];
         $formProvider     = $config['form_provider'] ?? null;
         $rowViewModifier  = $config['row_view_modifier'] ?? null;
@@ -34,7 +37,6 @@ readonly class DataTableConfigService
         $source           = $config['source'];
         $headers          = $config['headers'] ?? [];
         $headersTranslate = $config['headers_translate'] ?? [];
-        $buttons          = $config['buttons'] ?? [];
         $mobileColumns    = $config['mobile_columns'] ?? [];
         $cells            = $config['cells'] ?? [];
         $class            = $config['class'] ?? null;

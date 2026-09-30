@@ -103,6 +103,9 @@ datatables:
             page: Pagina
             seo: SEO
             advanced: Geavanceerd
+    section:
+        button:
+            add: Nieuwe sectie
 
 sections:
     richtext: Tekst

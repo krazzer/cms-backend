@@ -15,7 +15,7 @@ class DataTable
     private string $cachePool;
     private array $actions;
     private array $headers;
-    private array $buttons;
+    private ?array $buttons;
     private array $mobileColumns;
     private array $cells;
     private array $searchColumns;
@@ -91,12 +91,12 @@ class DataTable
         return $this;
     }
 
-    public function getButtons(): array
+    public function getButtons(): ?array
     {
         return $this->buttons;
     }
 
-    public function setButtons(array $buttons): DataTable
+    public function setButtons(?array $buttons): DataTable
     {
         $this->buttons = $buttons;
         return $this;
