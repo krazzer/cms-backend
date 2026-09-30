@@ -4,6 +4,7 @@ namespace KikCMS\Domain\DataTable;
 
 use KikCMS\Doctrine\Service\RelationService;
 use KikCMS\Domain\App\Config\Provider\Context;
+use KikCMS\Domain\DataTable\Button\DataTableButtonService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\Config\DataTableConfigService;
 use KikCMS\Domain\DataTable\Config\SourceType;
@@ -32,6 +33,7 @@ readonly class DataTableService
         private DataTableFormService $dataTableFormService,
         private FileRepository $fileRepository,
         private FileThumbnailService $fileThumbnailService,
+        private DataTableButtonService $dataTableButtonService,
     ) {}
 
     public function getData(DataTable $dataTable, Filters $filters, ?StoreData $storeData = null): array
@@ -119,8 +121,9 @@ readonly class DataTableService
             $actions[] = ['key' => 'rearrange', 'type' => 'rearrange'];
         }
 
+        $buttons = $this->dataTableButtonService->normalize($dataTable->getButtons());
+
         return [
-            'buttons'       => $dataTable->getButtons(),
             'mobileColumns' => $dataTable->getMobileColumns(),
             'headers'       => $dataTable->getHeaders(),
             'cells'         => $dataTable->getCells(),
@@ -128,6 +131,7 @@ readonly class DataTableService
             'search'        => $dataTable->getSearch(),
             'source'        => $dataTable->getSource(),
             'instance'      => $dataTable->getInstance(),
+            'buttons'       => $buttons,
             'actions'       => $actions,
         ];
     }

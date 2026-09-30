@@ -17,7 +17,7 @@ readonly class DeleteImpactMessageBuilder
             $relations[] = "➜ " . $this->getEntityName($class) . ": " . $count . "x";
         }
 
-        return $this->translator->trans("dataTable.deleteRelations", ['relations' => implode("\n", $relations)]);
+        return $this->translator->trans("datatable.delete_relations", ['relations' => implode("\n", $relations)]);
     }
 
     private function getEntityName(string $class): string

@@ -2,6 +2,7 @@
 
 namespace KikCMS\Domain\Form;
 
+use KikCMS\Domain\App\Config\ConfigService;
 use KikCMS\Domain\DataTable\Config\DataTableConfig;
 use KikCMS\Domain\DataTable\DataTableService;
 use KikCMS\Domain\Form\Config\FormConfigService;
@@ -11,8 +12,9 @@ use KikCMS\Domain\Form\Source\SourceService;
 readonly class FormService
 {
     public function __construct(
-        private FieldService $fieldService,
+        private ConfigService $configService,
         private DataTableService $dataTableService,
+        private FieldService $fieldService,
         private FormConfigService $formConfigService,
         private SourceService $sourceService
     ) {}
@@ -56,7 +58,7 @@ readonly class FormService
         ];
 
         if ($tabs = $form->getTabs()) {
-            $config['tabs'] = $tabs;
+            $config['tabs'] = $this->configService->translateLabels($tabs);
         }
 
         return $config;

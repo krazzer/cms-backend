@@ -4,6 +4,9 @@ namespace KikCMS\Domain\DataTable\Config;
 
 class DataTableConfig
 {
+    const string BUTTON_ADD_ICON    = 'mdi-plus';
+    const string BUTTON_DELETE_ICON = 'mdi-delete';
+
     const string FIELD_TYPE_SELECT     = 'select';
     const string FIELD_TYPE_DATATABLE  = 'datatable';
     const string FIELD_TYPE_RICHTEXT   = 'richtext';

@@ -4,9 +4,11 @@ general:
     email: E-mail
     role: Rol
     blocked: Geblokkeerd
-    template: Sjabloon
+    template: Template
     slug: Slug
     active: Actief
+    identifier: Identifier
+    content: Content
 
 form:
     success: Bedankt! Je bericht is succesvol verzonden.
@@ -78,14 +80,29 @@ roles:
 entityName:
     PageImage: Pagina-afbeelding
 
-dataTable:
-    objectNotFound: Object met ID {id} niet gevonden
-    deleteRelations: |
+datatable:
+    object_not_found: Object met ID {id} niet gevonden
+    delete_relations: |
         Het verwijderen van dit item zal ook het volgende verwijderen:
         
         {relations}
         
         Weet je zeker dat je wilt doorgaan?
+    button:
+        add: Nieuw
+        delete: Verwijderen
+
+datatables:
+    page:
+        button:
+            add_page: Nieuwe pagina
+            add_new: Nieuwe...
+            add_link: Nieuwe link
+            add_menu: Nieuw menu
+        tab:
+            page: Pagina
+            seo: SEO
+            advanced: Geavanceerd
 
 sections:
     richtext: Tekst

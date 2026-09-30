@@ -7,6 +7,8 @@ general:
     template: Template
     slug: Slug
     active: Active
+    identifier: Identifier
+    content: Content
 
 form:
     success: Thanks! Your form has been submitted successfully.
@@ -78,14 +80,29 @@ roles:
 entityName:
     PageImage: Page image
 
-dataTable:
-    objectNotFound: Object for ID {id} not found
-    deleteRelations: |
+datatable:
+    object_not_found: Object for ID {id} not found
+    delete_relations: |
         Deleting this item will also remove the following:
         
         {relations}
         
         Are you sure you want to continue?
+    button:
+        add: Add new
+        delete: Delete
+
+datatables:
+    page:
+        button:
+            add_page: New page
+            add_new: New...
+            add_link: New link
+            add_menu: New menu
+        tab:
+            page: Page
+            seo: SEO
+            advanced: Advanced
 
 sections:
     richtext: Rich text

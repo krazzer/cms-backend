@@ -8,30 +8,31 @@ headers_translate:
     id: general.id
 cells:
     name.*:
-        type: 'page'
+        type: page
     active.*:
-        type: 'checkbox'
+        type: checkbox
 mobile_columns:
     - name.*
 buttons:
-    -   label: Add page
-        action: add
-        icon: 'mdi-plus'
-    -   label: Delete
-        action: delete
-        icon: 'mdi-delete'
-    -   label: 'Add new…'
-        icon: 'mdi-menu'
-        type: 'menu'
+    add:
+        label_trans: datatables.page.button.add_page
+    delete:
+        label_trans: datatable.button.delete
+    add_new:
+        label_trans: datatables.page.button.add_new
+        icon: mdi-menu
+        type: menu
         items:
-            -   title: 'Add link'
-                icon: 'mdi-link-variant'
-                action: 'add'
-                addType: 'link'
-            -   title: 'Add menu'
-                icon: 'mdi-menu'
-                action: 'add'
-                addType: 'menu'
+            link:
+                label_trans: datatables.page.button.add_link
+                icon: mdi-link-variant
+                action: add
+                addType: link
+            menu:
+                label_trans: datatables.page.button.add_menu
+                icon: mdi-menu
+                action: add
+                addType: menu
 form_provider: KikCMS\Entity\Page\PageFormProvider
 row_view_modifier: KikCMS\Entity\Page\DataTableModifier\PageViewRowDataModifier
 source:

@@ -18,16 +18,12 @@ form:
 title:
     type: text
     field: name.*
-    label: Name
+    label_trans: general.name
     validator:
         name: presence
-hero:
-    type: text
-    field: content.*.hero
-    label: Hero image text
 sections:
     type: datatable
-    label: Content
+    label: general.content
     instance: page_content
 gallery:
     type: datatable
