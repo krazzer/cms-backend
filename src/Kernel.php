@@ -129,4 +129,22 @@ class Kernel extends BaseKernel
     {
         return isset($_ENV['PROJECT_ROOT']);
     }
+
+    public function getCacheDir(): string
+    {
+        if( ! $this->isProject()) {
+            return parent::getCacheDir();
+        }
+
+        return $this->getAppDir() . '/var/cache/' . $this->environment;
+    }
+
+    public function getLogDir(): string
+    {
+        if( ! $this->isProject()) {
+            return parent::getLogDir();
+        }
+
+        return $this->getAppDir() . '/var/log';
+    }
 }
