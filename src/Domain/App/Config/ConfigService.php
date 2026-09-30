@@ -33,13 +33,13 @@ readonly class ConfigService
         $baseConfig = $this->getByName($name);
 
         if ( ! $this->kernel->isProject()) {
-            return $baseConfig;
+            return $this->translateLabels($baseConfig);
         }
 
         $appConfigPath = $this->getFilePathByNameApp($name);
 
         if ( ! file_exists($appConfigPath)) {
-            return $baseConfig;
+            return $this->translateLabels($baseConfig);
         }
 
         $appConfig = $this->getByPath($appConfigPath);
@@ -61,13 +61,7 @@ readonly class ConfigService
             }
         }
 
-        foreach ($finalConfig as &$item) {
-            if (isset($item['label_trans'])) {
-                $item['label'] = $this->translator->trans($item['label_trans']);
-            }
-        }
-
-        return $finalConfig;
+        return $this->translateLabels($finalConfig);
     }
 
     public function getByNameApp(string $name): array
@@ -87,5 +81,17 @@ readonly class ConfigService
         }
 
         throw new Exception("No config file found at '$filePath'");
+    }
+
+    public function translateLabels(array $config): array
+    {
+        foreach ($config as &$item) {
+            if (isset($item['label_trans'])) {
+                $item['label'] = $this->translator->trans($item['label_trans']);
+                unset($item['label_trans']);
+            }
+        }
+
+        return $config;
     }
 }
