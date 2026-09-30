@@ -1,0 +1,7 @@
+# this file contains the configuration for frontend-forms, used in the website frontend, not to be confused with the
+# backend forms which are used in the backend admin panel
+
+# this file can be over-ridden by the project settings
+contact:
+    label: Contact
+    class: KikCMS\Domain\FrontendForm\ContactFormType

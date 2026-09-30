@@ -2,7 +2,7 @@
 
 namespace KikCMS\Entity\Page\Renderer\GlobalVariables;
 
-use KikCMS\Domain\Form\Config\FormConfig;
+use KikCMS\Domain\FrontendForm\FormOption\FormOptionService;
 use KikCMS\Domain\FrontendForm\FrontendFormService;
 use KikCMS\Entity\Page\Page;
 use KikCMS\Entity\Page\PageRepository;
@@ -13,6 +13,7 @@ readonly class DefaultGlobalVariableProvider implements GlobalVariableProviderIn
     public function __construct(
         private PageRepository $pageRepository,
         private FrontendFormService $frontendFormService,
+        private FormOptionService $formOptionService,
     ) {}
 
     public function provide(Request $request, ?Page $page = null): array
@@ -44,6 +45,6 @@ readonly class DefaultGlobalVariableProvider implements GlobalVariableProviderIn
             return null;
         }
 
-        return FormConfig::FORM_CLASS_MAP[$formName] ?? null;
+        return $this->formOptionService->getClass($formName);
     }
 }

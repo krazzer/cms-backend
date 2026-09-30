@@ -14,8 +14,7 @@ form:
     label_trans: section_fields.form
     type: select
     field: content.form
-    items_trans:
-        contact: form.contact.subject
+    item_provider: form_options
 title:
     type: text
     field: name.*
