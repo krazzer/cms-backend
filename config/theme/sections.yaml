@@ -1,25 +1,25 @@
 richtext:
-    label_trans: sections.richtext
+    label: sections.richtext
     fields:
         - content
 richtext_image:
-    label_trans: sections.richtext_image
+    label: sections.richtext_image
     fields:
         - content
         - image
 richtext_gallery:
-    label_trans: sections.richtext_gallery
+    label: sections.richtext_gallery
     fields:
         - content
         - gallery
 image:
-    label_trans: sections.image
+    label: sections.image
     fields:
         - image
 overview:
-    label_trans: sections.overview
+    label: sections.overview
 form:
-    label_trans: sections.form
+    label: sections.form
     fields:
         - text
         - form

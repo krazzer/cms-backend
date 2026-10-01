@@ -90,7 +90,7 @@ datatable:
         Weet je zeker dat je wilt doorgaan?
     button:
         add: Nieuw
-        delete: Verwijderen
+        delete: Verwijder
 
 datatables:
     page:
@@ -106,6 +106,13 @@ datatables:
     section:
         button:
             add: Nieuwe sectie
+
+menu:
+    pages: Pagina's
+    media: Media
+    statistics: Statistieken
+    users: Gebruikers
+    settings: Instellingen
 
 sections:
     richtext: Tekst

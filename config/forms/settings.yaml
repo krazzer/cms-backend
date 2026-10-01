@@ -1,6 +1,6 @@
 tabs:
     -   key: general
-        name: General
+        label: General
         fields:
             darkmode:
                 type: select
@@ -17,7 +17,7 @@ tabs:
                 store: false
 
     -   key: advanced
-        name: Advanced
+        label: Advanced
         fields:
             settings.cms.text1:
                 type: text

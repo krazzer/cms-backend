@@ -15,21 +15,21 @@ mobile_columns:
     - name.*
 buttons:
     add:
-        label_trans: datatables.page.button.add_page
+        label: datatables.page.button.add_page
     delete:
-        label_trans: datatable.button.delete
+        label: datatable.button.delete
     add_new:
-        label_trans: datatables.page.button.add_new
+        label: datatables.page.button.add_new
         icon: mdi-menu
         type: menu
         items:
             link:
-                label_trans: datatables.page.button.add_link
+                label: datatables.page.button.add_link
                 icon: mdi-link-variant
                 action: add
                 addType: link
             menu:
-                label_trans: datatables.page.button.add_menu
+                label: datatables.page.button.add_menu
                 icon: mdi-menu
                 action: add
                 addType: menu

@@ -1,19 +1,19 @@
 home:
-    label_trans: templates.home
+    label: templates.home
     fields: [ title, hero, sections ]
 
 default:
-    label_trans: templates.default
+    label: templates.default
     fields: [ title, sections ]
 
 project:
-    label_trans: templates.project
+    label: templates.project
     fields: [ title, image, content ]
 
 blog:
-    label_trans: templates.blog
+    label: templates.blog
     fields: [ title, content ]
 
 overview:
-    label_trans: templates.overview
+    label: templates.overview
     fields: [ title ]

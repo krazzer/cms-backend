@@ -1,14 +1,14 @@
 pages:
-    label: "Pages"
-    icon: "view-grid"
+    label: menu.pages
+    icon: view-grid
 media:
-    label: "Media"
-    icon: "image-outline"
+    label: menu.media
+    icon: image-outline
 statistics:
-    label: "Statistieken"
-    icon: "google-analytics"
+    label: menu.statistics
+    icon: google-analytics
 users:
-    label: "Users"
-    icon: "account-multiple-outline"
+    label: menu.users
+    icon: account-multiple-outline
 settings:
-    label: "Settings"
+    label: menu.settings

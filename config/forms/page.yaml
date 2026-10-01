@@ -1,38 +1,38 @@
 tabs:
     -   key: page
-        label_trans: datatables.page.tab.page
+        label: datatables.page.tab.page
         field_provider: page_template
     -   key: seo
-        label_trans: datatables.page.tab.seo
+        label: datatables.page.tab.seo
         fields:
             seo_title:
                 field: seo.*.title
                 type: text
-                label_trans: forms.page.seo.title
+                label: forms.page.seo.title
             seo_keywords:
                 field: seo.*.keywords
                 type: textarea
-                label_trans: forms.page.seo.keywords
+                label: forms.page.seo.keywords
             seo_description:
                 field: seo.*.description
                 type: textarea
-                label_trans: forms.page.seo.description
+                label: forms.page.seo.description
     -   key: advanced
-        label_trans: datatables.page.tab.advanced
+        label: datatables.page.tab.advanced
         fields:
             template:
                 type: select
-                label_trans: general.template
+                label: general.template
                 item_provider: page_template_options
                 is_form_modifier: true
             slug:
                 type: text
-                label_trans: general.slug
+                label: general.slug
                 field: slug.*
             identifier:
                 type: text
-                label_trans: general.identifier
+                label: general.identifier
             active:
                 type: checkbox
-                label_trans: general.active
+                label: general.active
                 field: active.*

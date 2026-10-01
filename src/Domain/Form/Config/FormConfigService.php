@@ -93,8 +93,8 @@ readonly class FormConfigService
     private function translateFields(Form $form): void
     {
         $this->fieldService->walk($form, function ($field): array {
-            if (array_key_exists(FieldConfig::LABEL_TRANS, $field)) {
-                $field[FieldConfig::LABEL] = $this->translator->trans($field[FieldConfig::LABEL_TRANS]);
+            if (array_key_exists(FieldConfig::LABEL, $field)) {
+                $field[FieldConfig::LABEL] = $this->translator->trans($field[FieldConfig::LABEL]);
             }
 
             if (array_key_exists(FieldConfig::ITEMS_TRANS, $field)) {

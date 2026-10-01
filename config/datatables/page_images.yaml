@@ -1,10 +1,7 @@
 buttons:
-    -   label: Add image
-        action: add
-        icon: mdi-plus
-    -   label: Delete
-        action: delete
-        icon: mdi-delete
+    add:
+        label: Add image
+    delete: ~
 headers:
     id: Id
     name: Name

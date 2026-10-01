@@ -1,6 +1,6 @@
 buttons:
     add:
-        label_trans: datatables.section.button.add
+        label: datatables.section.button.add
     delete: ~
 headers:
     id: Id

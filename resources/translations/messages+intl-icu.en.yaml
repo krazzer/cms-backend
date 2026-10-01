@@ -107,6 +107,13 @@ datatables:
         button:
             add: Nieuwe sectie
 
+menu:
+    pages: Pages
+    media: Media
+    statistics: Statistics
+    users: Users
+    settings: Settings
+
 sections:
     richtext: Rich text
     richtext_image: Rich text + image

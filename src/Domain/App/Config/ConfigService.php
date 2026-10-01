@@ -86,9 +86,8 @@ readonly class ConfigService
     public function translateLabels(array $config): array
     {
         foreach ($config as &$item) {
-            if (isset($item['label_trans'])) {
-                $item['label'] = $this->translator->trans($item['label_trans']);
-                unset($item['label_trans']);
+            if (isset($item['label'])) {
+                $item['label'] = $this->translator->trans($item['label']);
             }
         }
 

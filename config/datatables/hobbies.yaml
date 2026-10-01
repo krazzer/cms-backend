@@ -1,8 +1,7 @@
 buttons:
-    -   label: Add hobby
-        action: add
-    -   label: Delete
-        action: delete
+    add:
+        label: Add hobby
+    delete: ~
 headers:
     id: "Id"
     name: "Name"
