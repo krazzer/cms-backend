@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use KikCMS\Doctrine\Service\EntityService;
+use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\DataTable;
 use ReflectionProperty;
 
@@ -18,6 +19,10 @@ readonly class DeleteImpactCalculator
 
     public function inspect(DataTable $dataTable, array $ids): array
     {
+        if ($dataTable->getSource() !== SourceType::Pdo) {
+            return [];
+        }
+
         $entities = $this->entityService->getByIds($dataTable->getPdoModel(), $ids);
 
         $result = [];
