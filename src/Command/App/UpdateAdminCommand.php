@@ -6,26 +6,21 @@ use KikCMS\Domain\App\Admin\AdminService;
 use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
     name: 'kikcms:app:update-admin',
     description: 'Update the admin panel for the CMS of this app',
 )]
-class UpdateAdminCommand extends Command
+class UpdateAdminCommand extends AppCommand
 {
-    public function __construct(readonly AdminService $adminService, private readonly KernelInterface $kernel)
+    public function __construct(readonly AdminService $adminService)
     {
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function executeScoped(SymfonyStyle $io): int
     {
-        $io = new SymfonyStyle($input, $output);
-
         $adminDir = $this->kernel->getAppDir(PathConfig::DIR_ADMIN);
 
         $this->adminService->update($adminDir, $io);

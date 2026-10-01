@@ -6,27 +6,26 @@ use KikCMS\Domain\App\Development\Docker\DockerComposeService;
 use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
     name: 'kikcms:app:down',
     description: 'Shut down development environment for this app',
 )]
-class DownCommand extends Command
+class DownCommand extends AppCommand
 {
     public function __construct(
         #[Autowire('%app.id%')] readonly int $id,
         #[Autowire('%app.name%')] readonly string $name,
         #[Autowire('%app.portBase%')] readonly int $portBase,
-        readonly DockerComposeService $dockerComposeService, readonly KernelInterface $kernel)
+        readonly DockerComposeService $dockerComposeService
+    )
     {
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function executeScoped(SymfonyStyle $io): int
     {
         $dockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE_SITE);
 

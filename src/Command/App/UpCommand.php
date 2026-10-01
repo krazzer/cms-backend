@@ -7,18 +7,14 @@ use KikCMS\Domain\App\Development\Cert\AppCertService;
 use KikCMS\Domain\App\Development\Docker\DockerService;
 use KikCMS\Domain\App\Path\PathConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
     name: 'kikcms:app:up',
     description: 'Launch development environment for this app',
 )]
-class UpCommand extends Command
+class UpCommand extends AppCommand
 {
     public function __construct(
         #[Autowire('%app.id%')] readonly int $id,
@@ -26,19 +22,16 @@ class UpCommand extends Command
         #[Autowire('%app.portBase%')] readonly int $portBase,
         private readonly DockerService $dockerService,
         private readonly AppCertService $certService,
-        private readonly KernelInterface $kernel,
         private readonly AdminService $adminService)
     {
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function executeScoped(SymfonyStyle $io): int
     {
         $port       = $this->portBase + $this->id;
         $dockerFile = $this->kernel->getCmsDir(PathConfig::FILE_DOCKER_COMPOSE_SITE);
         $adminDir   = $this->kernel->getAppDir(PathConfig::DIR_PUBLIC . '/' . PathConfig::SUBDIR_ADMIN);
-
-        $io = new SymfonyStyle($input, $output);
 
         if ( ! $this->certService->certsAreInPlace($this->name)) {
             $this->certService->showCertWarning($io, $this->name);
