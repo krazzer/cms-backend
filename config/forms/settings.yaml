@@ -1,5 +1,5 @@
 tabs:
-    -   key: general
+    general:
         label: General
         fields:
             darkmode:
@@ -16,7 +16,7 @@ tabs:
                 special: darkModeSelect
                 store: false
 
-    -   key: advanced
+    advanced:
         label: Advanced
         fields:
             settings.cms.text1:
@@ -38,7 +38,6 @@ tabs:
                 settings: this.appMocker.dataTableMock.subDataTableData
 
         save: true
-
 name: settings
 source:
     type: keyValue

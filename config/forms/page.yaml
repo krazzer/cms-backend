@@ -1,8 +1,8 @@
 tabs:
-    -   key: page
+    page:
         label: datatables.page.tab.page
         field_provider: page_template
-    -   key: seo
+    seo:
         label: datatables.page.tab.seo
         fields:
             seo_title:
@@ -17,7 +17,7 @@ tabs:
                 field: seo.*.description
                 type: textarea
                 label: forms.page.seo.description
-    -   key: advanced
+    advanced:
         label: datatables.page.tab.advanced
         fields:
             template:
