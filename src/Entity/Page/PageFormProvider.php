@@ -19,13 +19,13 @@ readonly class PageFormProvider implements ConfigProviderInterface
         if (($id = $context->getId()) && ($page = $this->pageRepository->find($id))) {
             $type = $page->getType();
         } else {
-            $type = $context->getType();
+            $type = PageType::tryFrom($context->getType());
         }
 
-        return match ($type) {
-            'link' => $this->formConfigService->getConfigFromFile('link'),
-            'menu' => $this->formConfigService->getConfigFromFile('menu'),
-            default => $this->formConfigService->getConfigFromFile('page'),
-        };
+        if( ! $type){
+            $type = PageType::Page;
+        }
+
+        return $this->formConfigService->getConfigFromFile($type->value);
     }
 }

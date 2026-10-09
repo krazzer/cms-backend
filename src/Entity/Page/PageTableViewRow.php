@@ -9,7 +9,7 @@ class PageTableViewRow extends TableViewRow
     public ?bool $collapsed = null;
     public bool $children;
     public int $level;
-    public string $type;
+    public PageType $type;
 
     public function __construct(TableViewRow $tableViewRow)
     {
@@ -49,12 +49,12 @@ class PageTableViewRow extends TableViewRow
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): ?PageType
     {
         return $this->type;
     }
 
-    public function setType(string $type): PageTableViewRow
+    public function setType(PageType $type): PageTableViewRow
     {
         $this->type = $type;
         return $this;

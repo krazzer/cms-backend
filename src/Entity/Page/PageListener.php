@@ -17,11 +17,13 @@ readonly class PageListener
 
     public function prePersist(Page $page): void
     {
-        if ($page->getSlug() === null) {
-            $page->setSlug($this->getSlugs($page));
-        }
+        if($page->getType() === PageType::Page) {
+            if ($page->getSlug() === null) {
+                $page->setSlug($this->getSlugs($page));
+            }
 
-        $this->pathService->updatePath($page);
+            $this->pathService->updatePath($page);
+        }
 
         if($page->getDisplayOrder() === null){
             $maxDisplayOrder = $this->pageTreeService->getMaxDisplayOrder();

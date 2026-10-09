@@ -16,6 +16,7 @@ use KikCMS\Domain\DataTable\Dto\ShowDto;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation;
 use KikCMS\Entity\Page\Page;
+use KikCMS\Entity\Page\PageType;
 use KikCMS\Entity\PageSection\PageSection;
 use KikCMS\Tests\Integration\DbKernelTestCase;
 
@@ -53,7 +54,7 @@ class DataTableControllerTest extends DbKernelTestCase
 
         $page = new Page();
         $page->setId(1);
-        $page->setType('page');
+        $page->setType(PageType::Page);
         $page->setCreatedAt(new DateTimeImmutable());
         $page->setUpdatedAt(new DateTimeImmutable());
         $page->setActive(['nl' => true]);
@@ -103,7 +104,7 @@ class DataTableControllerTest extends DbKernelTestCase
     {
         $page = new Page();
         $page->setId(1);
-        $page->setType('page');
+        $page->setType(PageType::Page);
         $page->setCreatedAt(new DateTimeImmutable());
         $page->setUpdatedAt(new DateTimeImmutable());
         $page->setActive(['nl' => false]);

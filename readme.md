@@ -12,6 +12,9 @@ Use this guide to set up the CMS as part of a project. This is the recommended s
 - `php bin/console kikcms:app:up`
 - `php bin/console kikcms:app:down`
 
+#### Synlink to CMS (for CMS development)
+- `rm -rf vendor/kiksaus && ln -s ../../KikCMS vendor/kiksaus`
+
 #### Do a composer update while having a linked CMS
 
 1. Run `rm -rf vendor/kiksaus && composer update && rm -rf vendor/kiksaus && ln -s ../../KikCMS vendor/kiksaus`

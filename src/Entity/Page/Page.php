@@ -55,7 +55,7 @@ class Page
     private ?int $display_order = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $type;
+    private ?PageType $type;
 
     #[ORM\Column(length: 255, nullable: true, options: ['comment' => 'String to identify this page'])]
     private ?string $identifier = null;
@@ -80,7 +80,7 @@ class Page
     {
         $this->sections = new ArrayCollection();
 
-        $this->type = 'page';
+        $this->type = PageType::Page;
 
         $this->created_at = new DateTimeImmutable();
         $this->updated_at = new DateTimeImmutable();
@@ -146,12 +146,12 @@ class Page
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?PageType
     {
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(PageType $type): static
     {
         $this->type = $type;
 

@@ -17,7 +17,7 @@ readonly class PageSectionTypeFieldsProvider implements ConfigProviderInterface
 
     public function getConfig(FormContext|Context $context): array
     {
-        $type = $context->getType() ?? null;
+        $type = $context->getType();
 
         if ( ! $context->getTrigger() && ($id = $context->getId()) && ($section = $this->repository->find($id))) {
             $type = $section->getType();

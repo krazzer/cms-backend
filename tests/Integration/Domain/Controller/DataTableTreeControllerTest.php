@@ -11,6 +11,7 @@ use KikCMS\Domain\DataTable\Filter\DataTableFilters;
 use KikCMS\Domain\DataTable\Rearrange\RearrangeLocation;
 use KikCMS\Domain\DataTable\Tree\CollapseService;
 use KikCMS\Entity\Page\Page;
+use KikCMS\Entity\Page\PageType;
 use KikCMS\Tests\Integration\DbKernelTestCase;
 
 class DataTableTreeControllerTest extends DbKernelTestCase
@@ -80,7 +81,7 @@ class DataTableTreeControllerTest extends DbKernelTestCase
         $page = new Page();
         $page->setId($id);
         $page->setParents($parentId ? [$parentId] : null);
-        $page->setType('page');
+        $page->setType(PageType::Page);
         $page->setCreatedAt(new DateTimeImmutable());
         $page->setUpdatedAt(new DateTimeImmutable());
         $page->setActive(['nl' => true]);
