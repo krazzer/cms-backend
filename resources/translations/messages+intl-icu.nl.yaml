@@ -9,6 +9,9 @@ general:
     active: Actief
     identifier: Identifier
     content: Content
+    header: Koptekst
+    image: Afbeelding
+    text: Tekst
 
 form:
     success: Bedankt! Je bericht is succesvol verzonden.
@@ -106,6 +109,11 @@ datatables:
     section:
         button:
             add: Nieuwe sectie
+    slides:
+        button:
+            add: Nieuwe slide
+        button_label: Knop label
+        button_link: Knop link
 
 menu:
     pages: Pagina's

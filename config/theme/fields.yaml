@@ -30,3 +30,8 @@ gallery:
     label: fields.gallery
     field: content.gallery
     instance: page_images
+slider:
+    type: datatable
+    label: fields.slider
+    field: content.slider
+    instance: home_slides

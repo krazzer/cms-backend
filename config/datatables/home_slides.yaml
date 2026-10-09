@@ -1,0 +1,38 @@
+buttons:
+    add:
+        label: datatables.slides.button.add
+    delete: ~
+headers_translate:
+    id: general.id
+    header: general.header
+    image_id: general.image
+cells:
+    image_id:
+        type: image
+mobile_columns:
+    - header
+form:
+    fields:
+        header:
+            type: text
+            label: general.header
+            validator:
+                name: presence
+        text:
+            type: textarea
+            label: general.text
+            validator:
+                name: presence
+        image_id:
+            type: filepicker
+            label: general.image
+        button_label:
+            type: text
+            label: datatables.slides.button_label
+        button_url:
+            type: text
+            label: datatables.slides.button_link
+
+rearrange: true
+source:
+    type: local

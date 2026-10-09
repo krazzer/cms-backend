@@ -1,6 +1,6 @@
 home:
     label: templates.home
-    fields: [ title, hero, sections ]
+    fields: [ title, slider, sections ]
 
 default:
     label: templates.default
