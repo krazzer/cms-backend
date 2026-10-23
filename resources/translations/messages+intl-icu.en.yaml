@@ -9,6 +9,11 @@ general:
     active: Active
     identifier: Identifier
     content: Content
+    header: Header
+    image: Image
+    text: Text
+    order: Order
+    description: Description
 
 form:
     success: Thanks! Your form has been submitted successfully.
@@ -105,7 +110,10 @@ datatables:
             advanced: Advanced
     section:
         button:
-            add: Nieuwe sectie
+            add: New section
+    page_images:
+        button:
+            add: New image
 
 menu:
     pages: Pages

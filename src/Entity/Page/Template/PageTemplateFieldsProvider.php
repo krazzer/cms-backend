@@ -21,7 +21,7 @@ readonly class PageTemplateFieldsProvider implements ConfigProviderInterface
         $template = $context->getValue('template') ?? 'default';
 
         if ( ! $context->getTrigger() && ($id = $context->getId()) && ($page = $this->pageRepository->find($id))) {
-            $template = $page->getTemplate();
+            $template = $page->getTemplate() ?: 'default';
         }
 
         return $this->templateService->getFieldsByTemplate($template);

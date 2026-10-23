@@ -25,6 +25,9 @@ tabs:
                 label: general.template
                 item_provider: page_template_options
                 is_form_modifier: true
+                default: default
+                validator:
+                    name: presence
             slug:
                 type: text
                 label: general.slug

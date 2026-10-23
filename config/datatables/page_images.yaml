@@ -1,12 +1,12 @@
 buttons:
     add:
-        label: Add image
+        label: datatables.page_images.button.add
     delete: ~
 headers:
-    id: Id
-    name: Name
-    image_id: Afbeelding
-    display_order: Order
+    id: general.id
+    name: general.name
+    image_id: general.image
+    display_order: general.order
 cells:
     active:
         image_id: image
@@ -16,12 +16,13 @@ form:
     fields:
         name:
             type: text
-            label: Naam
-            validator:
-                name: presence
+            label: general.name
+        description:
+            type: text
+            label: general.description
         image_id:
             type: filepicker
-            label: Afbeelding
+            label: general.image
 rearrange: true
 source:
     type: local

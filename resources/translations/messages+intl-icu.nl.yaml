@@ -12,6 +12,8 @@ general:
     header: Koptekst
     image: Afbeelding
     text: Tekst
+    order: Volgorde
+    description: Omschrijving
 
 form:
     success: Bedankt! Je bericht is succesvol verzonden.
@@ -106,6 +108,9 @@ datatables:
             page: Pagina
             seo: SEO
             advanced: Geavanceerd
+    page_images:
+        button:
+            add: Nieuwe afbeelding
     section:
         button:
             add: Nieuwe sectie
