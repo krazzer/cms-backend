@@ -4,8 +4,8 @@ buttons:
     delete: ~
 headers:
     id: general.id
-    name: general.name
     image_id: general.image
+    name: general.name
 cells:
     image_id:
         type: image
@@ -22,6 +22,8 @@ form:
         image_id:
             type: filepicker
             label: general.image
+            validator:
+                name: presence
 rearrange: true
 source:
     type: local

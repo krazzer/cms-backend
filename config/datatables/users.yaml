@@ -1,4 +1,4 @@
-headers_translate:
+headers:
     id: general.id
     email: general.email
     role: general.role

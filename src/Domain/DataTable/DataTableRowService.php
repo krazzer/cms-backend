@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use KikCMS\Domain\DataTable\Config\SourceType;
 use KikCMS\Domain\DataTable\Filter\DataTableFilters as Filters;
 use KikCMS\Domain\DataTable\TableRow\TableViewRow;
+use KikCMS\Entity\File\FileThumbnailService;
 
 readonly class DataTableRowService
 {
@@ -15,6 +16,7 @@ readonly class DataTableRowService
         private EntityManagerInterface $entityManager,
         private DataTableDataService $dataService,
         private ModifierRegistry $modifierRegistry,
+        private FileThumbnailService $fileThumbnailService,
     ) {}
 
     public function getRowView(mixed $rawRow, DataTable $dataTable, Filters $filters, string|int|null $id = null): TableViewRow
@@ -72,6 +74,7 @@ readonly class DataTableRowService
     {
         return match ($cellType) {
             DataTableConfig::CELL_TYPE_CHECKBOX => (bool) $value,
+            DataTableConfig::CELL_TYPE_IMAGE => $this->fileThumbnailService->getOrGenerateUrlById((int) $value),
             default => $value,
         };
     }

@@ -1,6 +1,6 @@
 class: pages
 search_columns: ['name.*']
-headers_translate:
+headers:
     name.*: general.name
     template: general.template
     slug.*: general.slug

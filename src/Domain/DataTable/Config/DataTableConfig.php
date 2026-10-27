@@ -14,6 +14,7 @@ class DataTableConfig
     const string FIELD_TYPE_IMAGE      = 'image';
 
     const string CELL_TYPE_CHECKBOX = 'checkbox';
+    const string CELL_TYPE_IMAGE    = 'image';
 
     const string FORM_FIELDS = 'fields';
     const string FORM_FIELD  = 'field';

@@ -21,6 +21,7 @@ readonly class FileThumbnailService
         #[Autowire('%cms.thumbnail.width%')] private string $thumbnailWidth,
         #[Autowire('%cms.thumbnail.height%')] private string $thumbnailHeight,
         private FilePathService $filePathService,
+        private FileRepository $fileRepository,
         private Filesystem $filesystem,
         private Kernel $kernel,
         private Packages $assetPackages,
@@ -84,5 +85,14 @@ readonly class FileThumbnailService
         }
 
         return $this->getUrl($file);
+    }
+
+    public function getOrGenerateUrlById(int $id): ?string
+    {
+        if ( ! $file = $this->fileRepository->find($id)) {
+            return null;
+        }
+
+        return $this->getOrGenerateUrl($file);
     }
 }

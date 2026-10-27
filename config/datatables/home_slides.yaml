@@ -2,7 +2,7 @@ buttons:
     add:
         label: datatables.slides.button.add
     delete: ~
-headers_translate:
+headers:
     id: general.id
     header: general.header
     image_id: general.image
