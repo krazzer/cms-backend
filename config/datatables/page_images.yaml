@@ -6,10 +6,9 @@ headers:
     id: general.id
     name: general.name
     image_id: general.image
-    display_order: general.order
 cells:
-    active:
-        image_id: image
+    image_id:
+        type: image
 mobile_columns:
     - image_id
 form:

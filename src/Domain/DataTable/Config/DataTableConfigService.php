@@ -36,7 +36,6 @@ readonly class DataTableConfigService
         $actions          = $config['actions'] ?? [];
         $source           = $config['source'];
         $headers          = $config['headers'] ?? [];
-        $headersTranslate = $config['headers_translate'] ?? [];
         $mobileColumns    = $config['mobile_columns'] ?? [];
         $cells            = $config['cells'] ?? [];
         $class            = $config['class'] ?? null;
@@ -58,8 +57,8 @@ readonly class DataTableConfigService
             throw new Exception("Class '$pdoModel' doesn't exist for DataTable '$instance'");
         }
 
-        if ($headersTranslate) {
-            $headers = array_map(fn($value) => $this->translator->trans($value), $headersTranslate);
+        if ($headers) {
+            $headers = array_map(fn($value) => $this->translator->trans($value), $headers);
         }
 
         $form = is_string($form) ? $this->formConfigService->getConfigFromFile($form) : $form;
