@@ -19,7 +19,7 @@ readonly class PageFormProvider implements ConfigProviderInterface
         if (($id = $context->getId()) && ($page = $this->pageRepository->find($id))) {
             $type = $page->getType();
         } else {
-            $type = PageType::tryFrom($context->getType());
+            $type = PageType::tryFrom((string) $context->getType());
         }
 
         if( ! $type){

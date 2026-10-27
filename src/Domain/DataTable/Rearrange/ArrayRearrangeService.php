@@ -12,12 +12,11 @@ class ArrayRearrangeService
         $ids  = array_column($data, DataTableConfig::ID);
         $from = array_search($source, $ids);
         $to   = array_search($target, $ids);
+        $item = array_splice($data, $from, 1)[0];
 
-        $item = $data[$from];
-
-        unset($data[$from]);
-
-        $data = array_values($data);
+        if ($from < $to) {
+            $to--;
+        }
 
         if ($location === RearrangeLocation::AFTER) {
             $to++;

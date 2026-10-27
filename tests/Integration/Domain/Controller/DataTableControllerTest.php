@@ -97,7 +97,7 @@ class DataTableControllerTest extends DbKernelTestCase
         $responseData = json_decode($response->getContent(), true);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals([], $responseData['data']);
+        $this->assertEquals(['template' => 'default'], $responseData['data']);
     }
 
     public function testCheck()
