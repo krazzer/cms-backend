@@ -1,4 +1,4 @@
-{% extends 'theme/base.twig' %}
+{% extends '@cms/theme/base.twig' %}
 
 {% block javascripts %}
     {% block importmap importmap('app') %}
@@ -20,7 +20,7 @@
     <main>
         <h1>{{ title }}</h1>
         {% block content %}
-            {% include 'theme/partials/sections.twig' %}
+            {% include '@cms/theme/partials/sections.twig' %}
             {% set content = page.content[lang]['content'] ?? null %}
             {{ content ? content|raw }}
         {% endblock %}

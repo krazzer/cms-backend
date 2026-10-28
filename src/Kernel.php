@@ -5,13 +5,26 @@ namespace KikCMS;
 use KikCMS\Domain\App\Path\PathConfig;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
-class Kernel extends BaseKernel
+class Kernel extends BaseKernel implements CompilerPassInterface
 {
     use MicroKernelTrait;
+
+    public function process(ContainerBuilder $container): void
+    {
+        $twig = $container->getDefinition('twig.loader.native_filesystem');
+
+        $twig->addMethodCall('addPath', [$this->getCmsDir('templates'), 'cms']);
+
+        if($this->isProject()){
+            $twig->addMethodCall('addPath', [$this->getAppDir('templates'), 'app']);
+        }
+    }
 
     public function boot(): void
     {
@@ -76,7 +89,7 @@ class Kernel extends BaseKernel
         }
 
         // Allow routes from the project src directory
-        if(is_dir($this->getAppDir(PathConfig::DIR_SRC))) {
+        if (is_dir($this->getAppDir(PathConfig::DIR_SRC))) {
             $routes->import($this->getAppDir(PathConfig::DIR_SRC) . '/', 'attribute');
         }
     }
@@ -132,7 +145,7 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        if( ! $this->isProject()) {
+        if ( ! $this->isProject()) {
             return parent::getCacheDir();
         }
 
@@ -141,7 +154,7 @@ class Kernel extends BaseKernel
 
     public function getLogDir(): string
     {
-        if( ! $this->isProject()) {
+        if ( ! $this->isProject()) {
             return parent::getLogDir();
         }
 
