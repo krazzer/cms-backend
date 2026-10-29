@@ -21,7 +21,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
         $twig->addMethodCall('addPath', [$this->getCmsDir('templates'), 'cms']);
 
-        if($this->isProject()){
+        if ($this->isProject()) {
             $twig->addMethodCall('addPath', [$this->getAppDir('templates'), 'app']);
         }
     }
@@ -55,6 +55,11 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
         if ( ! $this->isProject()) {
             return;
+        }
+
+        // Add assets of the app if they exist
+        if (is_dir($projectAssets = $this->getAppDir('assets'))) {
+            $container->extension('framework', ['asset_mapper' => ['paths' => [$projectAssets]]]);
         }
 
         // Add app namespace to autowire

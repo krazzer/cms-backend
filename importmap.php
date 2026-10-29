@@ -11,9 +11,18 @@
  *
  * The "importmap:require" command can be used to add new entries to this file.
  */
-return [
-    'app' => [
+$map = [
+    'cms' => [
         'path'       => './assets/app.js',
         'entrypoint' => true,
     ],
 ];
+
+if (isset($_ENV['PROJECT_ROOT'])) {
+    $map['app'] = [
+        'path'       => $_ENV['PROJECT_ROOT'] . '/assets/app.js',
+        'entrypoint' => true,
+    ];
+}
+
+return $map;
