@@ -3,8 +3,11 @@
 namespace KikCMS;
 
 use KikCMS\Domain\App\Path\PathConfig;
+use LogicException;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\AssetMapper\CompiledAssetMapperConfigReader;
+use Symfony\Component\AssetMapper\Path\LocalPublicAssetsFilesystem;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -23,6 +26,42 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
         if ($this->isProject()) {
             $twig->addMethodCall('addPath', [$this->getAppDir('templates'), 'app']);
+            $this->redirectAssetMapperOutput($container);
+        }
+    }
+
+    /**
+     * AssetMapper derives its public dir from kernel.project_dir, which is the CMS package.
+     * Point it to the public dir of the app instead.
+     */
+    private function redirectAssetMapperOutput(ContainerBuilder $container): void
+    {
+        $filesystem = null;
+        $readers    = [];
+
+        foreach ($container->getDefinitions() as $definition) {
+            if ($definition->getClass() === LocalPublicAssetsFilesystem::class) {
+                $filesystem = $definition;
+            } elseif ($definition->getClass() === CompiledAssetMapperConfigReader::class) {
+                $readers[] = $definition;
+            }
+        }
+
+        if ( ! $filesystem) {
+            throw new LogicException('AssetMapper public assets filesystem service not found');
+        }
+
+        $oldPublicDir = $filesystem->getArgument(0);
+        $newPublicDir = $this->getPublicDir();
+
+        $filesystem->replaceArgument(0, $newPublicDir);
+
+        foreach ($readers as $reader) {
+            $dir = $reader->getArgument(0); // <public dir>/assets
+
+            if (str_starts_with($dir, $oldPublicDir)) {
+                $reader->replaceArgument(0, $newPublicDir . substr($dir, strlen($oldPublicDir)));
+            }
         }
     }
 
@@ -58,9 +97,13 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         }
 
         // Add assets of the app if they exist
+        $assets = [$this->getCmsDir('assets')];
+
         if (is_dir($projectAssets = $this->getAppDir('assets'))) {
-            $container->extension('framework', ['asset_mapper' => ['paths' => [$projectAssets]]]);
+            $assets[] = $projectAssets;
         }
+
+        $container->extension('framework', ['asset_mapper' => ['paths' => $assets]]);
 
         // Add app namespace to autowire
         $container->services()

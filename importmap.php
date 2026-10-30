@@ -13,7 +13,7 @@
  */
 $map = [
     'cms' => [
-        'path'       => './assets/app.js',
+        'path'       => './assets/cms.js',
         'entrypoint' => true,
     ],
 ];
