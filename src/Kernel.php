@@ -92,18 +92,18 @@ class Kernel extends BaseKernel implements CompilerPassInterface
             $container->import($envPackagesDir . '/**/*.yaml');
         }
 
-        if ( ! $this->isProject()) {
-            return;
-        }
-
-        // Add assets of the app if they exist
+        // Add asset location to the asset mapper
         $assets = [$this->getCmsDir('assets')];
 
-        if (is_dir($projectAssets = $this->getAppDir('assets'))) {
+        if ($this->isProject() && is_dir($projectAssets = $this->getAppDir('assets'))) {
             $assets[] = $projectAssets;
         }
 
         $container->extension('framework', ['asset_mapper' => ['paths' => $assets]]);
+
+        if ( ! $this->isProject()) {
+            return;
+        }
 
         // Add app namespace to autowire
         $container->services()
