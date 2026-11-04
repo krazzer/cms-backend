@@ -3,6 +3,7 @@
 namespace KikCMS\Domain\Menu;
 
 use KikCMS\Domain\Frontend\FrontendConfig;
+use KikCMS\Entity\Page\Page;
 use KikCMS\Entity\Page\PageRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -23,10 +24,13 @@ readonly class MenuService
             $pages = $this->pageRepository->findByMenuIdentifier($id, $maxLevel);
         }
 
+        /** @var Page $page */
         return array_map(fn($page) => [
-            'name'    => $page->getName()[$locale] ?? null,
-            'url'     => '/' . ($page->getSlug()[$locale] ?? null),
-            'content' => $page->getContent()[$locale] ?? null,
+            'id'         => $page->getId(),
+            'name'       => $page->getName()[$locale] ?? null,
+            'url'        => '/' . ($page->getSlug()[$locale] ?? null),
+            'content'    => $page->getContent()[$locale] ?? null,
+            'identifier' => $page->getIdentifier(),
         ], $pages);
     }
 }

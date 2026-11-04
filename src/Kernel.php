@@ -26,6 +26,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
         if ($this->isProject()) {
             $twig->addMethodCall('addPath', [$this->getAppDir('templates'), 'app']);
+            $twig->addMethodCall('addPath', [$this->getPublicDir(), 'public']);
             $this->redirectAssetMapperOutput($container);
         }
     }
