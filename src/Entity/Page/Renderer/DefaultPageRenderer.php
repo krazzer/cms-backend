@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
-#[AutoconfigureTag('page.renderer')]
+#[AutoconfigureTag('page.renderer', ['priority' => -1])]
 readonly class DefaultPageRenderer implements PageRendererInterface
 {
     public function __construct(private Environment $twig) {}
