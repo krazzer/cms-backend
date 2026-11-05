@@ -9,17 +9,18 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class FilePublicService
+readonly class FilePublicService
 {
     public function __construct(
         #[Autowire('%cms.storage.dir%')] public string $storageDir,
         #[Autowire('%cms.media.public_dir%')] public string $publicMediaDir,
         #[Autowire('%cms.media.public_subdir%')] public string $publicMediaSubDir,
         #[Autowire('%cms.media.url_prefix%')] public string $publicMediaUrlPrefix,
-        private readonly Kernel $kernel,
-        private readonly Filesystem $filesystem,
-        private readonly SluggerInterface $slugger,
-        private readonly Packages $assetPackages,
+        private Kernel $kernel,
+        private Filesystem $filesystem,
+        private SluggerInterface $slugger,
+        private Packages $assetPackages,
+        private FileRepository $fileRepository,
     ) {}
 
     public function getUrlCreateIfMissing(File $file, bool $private = false): string
@@ -44,6 +45,15 @@ class FilePublicService
         }
 
         return $url;
+    }
+
+    public function getUrlCreateIfMissingById(int $fileId, bool $private = false): ?string
+    {
+        if ( ! $file = $this->fileRepository->find($fileId)) {
+            return null;
+        }
+
+        return $this->getUrlCreateIfMissing($file, $private);
     }
 
     public function deletePublicFiles(File $file): void
